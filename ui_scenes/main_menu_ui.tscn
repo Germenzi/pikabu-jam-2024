@@ -1,0 +1,56 @@
+[gd_scene load_steps=2 format=3 uid="uid://b42q4ijugjonw"]
+
+[sub_resource type="GDScript" id="GDScript_ouk37"]
+script/source = "extends Control
+
+signal start_game_button_pressed
+signal about_team_button_pressed
+
+
+func _on_about_team_button_pressed() -> void:
+	about_team_button_pressed.emit()
+
+
+func _on_start_game_button_pressed() -> void:
+	start_game_button_pressed.emit()
+"
+
+[node name="MainMenuUi" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = SubResource("GDScript_ouk37")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_right = 1280.0
+offset_bottom = 720.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 62
+text = "Название игры"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="StartGameButton" type="Button" parent="CenterContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Начать игру"
+
+[node name="AboutTeamButton" type="Button" parent="CenterContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "О команде"
+
+[connection signal="pressed" from="CenterContainer/VBoxContainer/VBoxContainer/StartGameButton" to="." method="_on_start_game_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/VBoxContainer/AboutTeamButton" to="." method="_on_about_team_button_pressed"]

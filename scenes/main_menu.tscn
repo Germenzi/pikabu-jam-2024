@@ -1,3 +1,92 @@
-[gd_scene format=3 uid="uid://2s1je4np2g86"]
+[gd_scene load_steps=6 format=3 uid="uid://2s1je4np2g86"]
+
+[ext_resource type="PackedScene" uid="uid://b42q4ijugjonw" path="res://ui_scenes/main_menu_ui.tscn" id="1_tystq"]
+[ext_resource type="Script" path="res://addons/simple-gui-transitions/transition.gd" id="2_i371i"]
+[ext_resource type="PackedScene" uid="uid://13rysv2wruf6" path="res://ui_scenes/game_menu_ui.tscn" id="3_vmc2y"]
+[ext_resource type="PackedScene" uid="uid://bwomdo5fmsyeg" path="res://ui_scenes/about_team_ui.tscn" id="4_olqej"]
+
+[sub_resource type="GDScript" id="GDScript_r53em"]
+script/source = "extends Node
+
+
+func _on_main_menu_ui_about_team_button_pressed() -> void:
+	if not GuiTransitions.in_transition():
+		GuiTransitions.go_to(\"AboutTeamUI\")
+
+
+func _on_main_menu_ui_start_game_button_pressed() -> void:
+	if not GuiTransitions.in_transition():
+		GuiTransitions.go_to(\"GameMenuUI\")
+
+
+func _on_game_menu_continue_game_button_pressed() -> void:
+	pass # Replace with function body.
+
+
+func _on_game_menu_main_menu_button_pressed() -> void:
+	if not GuiTransitions.in_transition():
+		GuiTransitions.go_to(\"MainMenuUI\")
+
+
+func _on_game_menu_new_game_button_pressed() -> void:
+	if not GuiTransitions.in_transition():
+		GuiTransitions.hide()
+		await GuiTransitions.hide_completed
+		get_tree().change_scene_to_file(\"res://scenes/game.tscn\")
+
+
+func _on_about_team_ui_back_button_pressed() -> void:
+	if not GuiTransitions.in_transition():
+		GuiTransitions.go_to(\"MainMenuUI\")
+"
 
 [node name="main_menu" type="Node"]
+script = SubResource("GDScript_r53em")
+
+[node name="MainMenuUI" parent="." instance=ExtResource("1_tystq")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GuiTransition" type="Node" parent="MainMenuUI"]
+script = ExtResource("2_i371i")
+layout = NodePath("..")
+
+[node name="GameMenuUI" parent="." instance=ExtResource("3_vmc2y")]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GuiTransition" type="Node" parent="GameMenuUI"]
+script = ExtResource("2_i371i")
+layout = NodePath("..")
+
+[node name="AboutTeamUI" parent="." instance=ExtResource("4_olqej")]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GuiTransition" type="Node" parent="AboutTeamUI"]
+script = ExtResource("2_i371i")
+layout = NodePath("..")
+
+[connection signal="about_team_button_pressed" from="MainMenuUI" to="." method="_on_main_menu_ui_about_team_button_pressed"]
+[connection signal="start_game_button_pressed" from="MainMenuUI" to="." method="_on_main_menu_ui_start_game_button_pressed"]
+[connection signal="continue_game_button_pressed" from="GameMenuUI" to="." method="_on_game_menu_continue_game_button_pressed"]
+[connection signal="main_menu_button_pressed" from="GameMenuUI" to="." method="_on_game_menu_main_menu_button_pressed"]
+[connection signal="new_game_button_pressed" from="GameMenuUI" to="." method="_on_game_menu_new_game_button_pressed"]
+[connection signal="back_button_pressed" from="AboutTeamUI" to="." method="_on_about_team_ui_back_button_pressed"]

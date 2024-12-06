@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://bwomdo5fmsyeg"]
+[gd_scene load_steps=3 format=3 uid="uid://bwomdo5fmsyeg"]
 
 [sub_resource type="GDScript" id="GDScript_msimd"]
 script/source = "extends Control
@@ -9,6 +9,8 @@ signal back_button_pressed
 func _on_back_button_pressed() -> void:
 	back_button_pressed.emit()
 "
+
+[sub_resource type="GDScript" id="GDScript_h70fo"]
 
 [node name="AboutTeamUi" type="Control"]
 layout_mode = 3
@@ -28,6 +30,7 @@ theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
+script = SubResource("GDScript_h70fo")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2

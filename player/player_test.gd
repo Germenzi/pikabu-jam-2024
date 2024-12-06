@@ -2,9 +2,9 @@ class_name Player
 
 var health: int
 var name: String
-var player_node: Node2D
+var player_node: CharacterBody2D
 
-func _init(health_c: int = 100, name_c = "Noname", player_node_c = null):
+func _init(health_c: int = 100, name_c = "Noname", player_node_c: CharacterBody2D = null):
 	self.health = health_c
 	self.name = name_c
 	self.player_node = player_node_c

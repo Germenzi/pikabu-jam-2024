@@ -1,7 +1,32 @@
-[gd_scene load_steps=5 format=3 uid="uid://dg5mqjc8kv415"]
+[gd_scene load_steps=8 format=3 uid="uid://dg5mqjc8kv415"]
 
 [ext_resource type="Texture2D" uid="uid://rueaxelq4yh1" path="res://player/player.png" id="1_7wx4g"]
 [ext_resource type="Script" path="res://player/player.gd" id="1_obxbl"]
+[ext_resource type="Texture2D" uid="uid://bxr87cgaey3kp" path="res://shadow.png" id="2_hosbl"]
+
+[sub_resource type="Shader" id="Shader_aorki"]
+code = "shader_type canvas_item;
+
+uniform sampler2D sprite_texture;
+uniform vec4 chroma_key: source_color;
+
+void fragment() {
+	COLOR = texture(sprite_texture, UV);
+	if (COLOR == chroma_key) {
+		COLOR.a = 0.0;
+	}
+}
+
+//void light() {
+	// Called for every pixel for every light affecting the CanvasItem.
+	// Uncomment to replace the default light processing function with this one.
+//}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cxn28"]
+shader = SubResource("Shader_aorki")
+shader_parameter/chroma_key = Color(1, 1, 1, 1)
+shader_parameter/sprite_texture = ExtResource("2_hosbl")
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_soi4w"]
 animations = [{
@@ -15,12 +40,18 @@ animations = [{
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_lajyx"]
-radius = 58.0
+radius = 59.0
 height = 168.0
 
 [node name="Player" type="CharacterBody2D"]
 slide_on_ceiling = false
 script = ExtResource("1_obxbl")
+
+[node name="Shadow" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_cxn28")
+position = Vector2(-2, 65)
+scale = Vector2(0.265625, 0.265625)
+texture = ExtResource("2_hosbl")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 scale = Vector2(0.135945, 0.192375)
@@ -31,3 +62,6 @@ animation = &"idle"
 shape = SubResource("CapsuleShape2D_lajyx")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+visible = false
+
+[node name="Node2D" type="Node2D" parent="."]

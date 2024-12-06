@@ -1,9 +1,13 @@
 extends CharacterBody2D
 
+@export var bullet_container : Node
 
 @export_subgroup("Energy")
 @export var max_energy : float = 100.0
 @export var energy_regen_speed : float = 0.5
+@export var flying_energy_cost : float = 30.0
+@export var dashing_energy_cost : float = 80.0
+@export var shoot_energy_cost : float = 1.0
 
 @export_subgroup("Moving")
 @export var speed : float = 300.0
@@ -13,6 +17,10 @@ extends CharacterBody2D
 @export var fly_duraction_sec : float = 1.0
 @export var fly_distance : float = 150.0
 @export var fly_height_curve : Curve
+
+@export_subgroup("Dashing")
+@export var dash_distance : float = 250.0
+@export var dash_duration_sec : float = 0.4
 
 signal energy_runout
 
@@ -39,13 +47,17 @@ var _energy : float = max_energy
 var _moving_direction : Vector2
 var _height : float = 0.0
 
-var _collision_layer_buffer : int
-var _collision_mask_buffer : int
-
 # flying state data
 var _flying_time : float
-var _initial_flying_local_position : Vector2
-var _finish_flying_local_position : Vector2
+var _initial_flying_global_position : Vector2
+var _finish_flying_global_position : Vector2
+
+
+# dashing state data
+var _dasing_time : float 
+var _initial_dashing_global_position : Vector2
+var _finish_dashing_global_position : Vector2
+var _dashed_rids : Array[RID] = []
 
 
 func play_death() -> void:
@@ -78,27 +90,86 @@ func _process(delta: float) -> void:
 
 
 func _process_moving(delta:float) -> void:
+	const BULLET_SCENE : PackedScene = preload(ScenesNamespace.PLAYER_BULLET_FILEPATH)
+	
 	_moving_direction = Input.get_vector("A", "D", "W", "S")
 	velocity = _moving_direction * speed
 	
 	if Input.is_action_just_pressed("player_fly_ability"):
 		_state_flying(_moving_direction)
+	
+	if Input.is_action_just_pressed("player_dash_ability"):
+		if _moving_direction.length() >= 0.01:
+			_state_dashing(_moving_direction)
+	
+	if Input.is_action_just_pressed("shoot_down"):
+		_use_energy(shoot_energy_cost)
+		var bullet : Node2D = BULLET_SCENE.instantiate()
+		bullet.flying_direction = Vector2.DOWN
+		bullet.global_position = global_position
+		bullet.excludes.append(get_rid())
+		bullet_container.add_child(bullet)
+	
+	if Input.is_action_just_pressed("shoot_left"):
+		_use_energy(shoot_energy_cost)
+		var bullet : Node2D = BULLET_SCENE.instantiate()
+		bullet.flying_direction = Vector2.LEFT
+		bullet.global_position = global_position
+		bullet.excludes.append(get_rid())
+		bullet_container.add_child(bullet)
+	
+	if Input.is_action_just_pressed("shoot_right"):
+		_use_energy(shoot_energy_cost)
+		var bullet : Node2D = BULLET_SCENE.instantiate()
+		bullet.flying_direction = Vector2.RIGHT
+		bullet.global_position = global_position
+		bullet.excludes.append(get_rid())
+		bullet_container.add_child(bullet)
+	
+	if Input.is_action_just_pressed("shoot_up"):
+		_use_energy(shoot_energy_cost)
+		var bullet : Node2D = BULLET_SCENE.instantiate()
+		bullet.flying_direction = Vector2.UP
+		bullet.global_position = global_position
+		bullet.excludes.append(get_rid())
+		bullet_container.add_child(bullet)
 
 
 func _process_flying(delta:float) -> void:
+	const BOMB_SCENE : PackedScene = preload(ScenesNamespace.PLAYER_BOMB_FILEPATH)
+	
 	_flying_time += delta
 	if _flying_time >= fly_duraction_sec:
+		global_position = _finish_flying_global_position
 		_state_moving()
 		return
 	
-	var dashing_progress : float = _flying_time / fly_duraction_sec
+	if Input.is_action_just_pressed("player_bomb_action"):
+		_use_energy(shoot_energy_cost)
+		var bullet : Node2D = BOMB_SCENE.instantiate()
+		bullet.height = _height
+		bullet.global_position = Vector2(global_position.x, global_position.y-_height)
+		bullet.excludes.append(get_rid())
+		bullet_container.add_child(bullet)
 	
-	_set_height(fly_height_curve.sample_baked(dashing_progress)*fly_height)
-	position = lerp(_initial_flying_local_position, _finish_flying_local_position, dashing_progress)
+	var flying_progress : float = _flying_time / fly_duraction_sec
+	
+	_set_height(fly_height_curve.sample_baked(flying_progress)*fly_height)
+	global_position = lerp(_initial_flying_global_position, _finish_flying_global_position, flying_progress)
 
 
-func _process_dashing(delta:float) -> void:
-	pass
+func _process_dashing(delta:float) -> void: 
+	_dasing_time += delta
+	if _dasing_time >= dash_duration_sec:
+		if _slice_between_points(global_position, _finish_dashing_global_position):
+			global_position = _finish_dashing_global_position
+		_state_moving()
+		return
+	
+	var dashing_progress : float = _dasing_time / dash_duration_sec
+	var next_pos : Vector2 = lerp(_initial_dashing_global_position, _finish_dashing_global_position, dashing_progress)
+	if _slice_between_points(global_position, next_pos):
+		global_position = next_pos
 
 
 func _physics_process(delta: float):
@@ -106,16 +177,14 @@ func _physics_process(delta: float):
 
 
 func _set_ghost(is_ghost:bool) -> void:
-	if is_ghost:
-		_ghost = true
-		collision_layer = _collision_layer_buffer
-		collision_mask = _collision_mask_buffer
-	else:
-		_ghost = false
-		_collision_layer_buffer = collision_layer
-		_collision_mask_buffer = collision_mask
-		collision_layer = 0
-		collision_mask = 0
+	%EnergyBallShape.set_deferred("disabled", is_ghost)
+
+
+func _use_energy(amount:float) -> void:
+	_energy -= amount
+	if _energy <= 0.0:
+		_energy = 0.0
+		energy_runout.emit()
 
 
 func _set_height(new_height:float) -> void:
@@ -129,14 +198,58 @@ func _state_moving() -> void:
 	_state = State.MOVING
 
 
-func _state_flying(dashing_direction:Vector2) -> void:
+func _state_flying(flying_direction:Vector2) -> void:
+	_use_energy(flying_energy_cost)
 	_set_ghost(true)
-	_initial_flying_local_position = position
-	_finish_flying_local_position = position + dashing_direction.normalized()*fly_distance
+	_initial_flying_global_position = global_position
+	_finish_flying_global_position = global_position + flying_direction.normalized()*fly_distance
 	_flying_time = 0.0
 	velocity = Vector2.ZERO
 	_state = State.FLYING
 
 
-func _state_dashing() -> void:
+func _state_dashing(dashing_direction:Vector2) -> void:
+	_use_energy(dashing_energy_cost)
+	_set_ghost(true)
+	_initial_dashing_global_position = global_position
+	_finish_dashing_global_position = global_position + dashing_direction.normalized()*dash_distance
+	_dasing_time = 0.0
+	velocity = Vector2.ZERO
+	_dashed_rids = []
 	_state = State.DASHING
+
+
+func _slice_between_points(start:Vector2, end:Vector2) -> bool: # returns true if continue dashing
+	var intersect_parameters : PhysicsRayQueryParameters2D = PhysicsRayQueryParameters2D.new()
+	intersect_parameters.from = start
+	intersect_parameters.to = end
+	intersect_parameters.collide_with_areas = true
+	intersect_parameters.exclude = [get_rid()] + _dashed_rids
+
+	var collision : Dictionary = \
+		PhysicsServer2D.space_get_direct_state(get_world_2d().space).intersect_ray(intersect_parameters)
+	
+	while not collision.is_empty():
+		if not _process_dash_sliced_object(collision["collider"]):
+			global_position = collision["position"] - (end-start).normalized()*%EnergyBallShape.shape.radius
+			return false
+		
+		#intersect_parameters.from = collision["position"]
+		_dashed_rids.append(collision["rid"])
+		intersect_parameters.exclude = [get_rid()] + _dashed_rids
+		collision = PhysicsServer2D.space_get_direct_state(get_world_2d().space).intersect_ray(intersect_parameters)
+	
+	return true
+
+
+func _process_dash_sliced_object(object:Object) -> bool:
+	if object is CollisionObject2D:
+		print(object.name) 
+		
+		if object.is_in_group(GroupsNamespace.DESTRUCTABLE_OBJECT):
+			object.queue_free()
+		else:
+			_state_moving.call_deferred()
+			return false
+	
+	return true

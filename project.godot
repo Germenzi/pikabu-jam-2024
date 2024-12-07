@@ -38,6 +38,9 @@ enabled=PackedStringArray("res://addons/simple-gui-transitions/plugin.cfg")
 player="Player scene"
 solid_object="Solid objects that cannot be destroyed"
 destructable="Objects that can be destroyed by dash"
+cockroach_target="Targets to be attacked by cockroach"
+cookie="Cookie that heals"
+damagable="Has method \"take_damage(int)\""
 
 [gui_transitions]
 

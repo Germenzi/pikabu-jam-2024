@@ -37,7 +37,6 @@ func _explode() -> void:
 	
 	var intersect_parameters : PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
 	intersect_parameters.shape = shape
-	intersect_parameters.collide_with_areas = true
 	intersect_parameters.exclude = excludes
 	intersect_parameters.transform = Transform2D(0.0, global_position)
 	

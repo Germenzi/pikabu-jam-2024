@@ -11,6 +11,8 @@ script/source = "extends CharacterBody2D
 @export var attack_distance : float = 40.0
 @export var attack_damage : float = 30.0
 @export var max_health : float = 70.0
+@export_range(0.0, 1.0) var cookie_drop_rate : float = 0.5
+@export_range(0.0, 1.0) var cake_drop_rate : float = 0.25
 
 @export var cookie_container : Node
 @export var bullets_container : Node
@@ -38,6 +40,19 @@ func take_damage(damage:int) -> void:
 	_health -= damage
 	if _health <= 0.0:
 		_state = State.NONE
+		
+		var dropvalue : float = randf()
+		if dropvalue <= cake_drop_rate:
+			var cake : Node2D = preload(ScenesNamespace.CAKE_FILEPATH).instantiate()
+			cake.global_position = global_position
+			cookie_container.add_child.call_deferred(cake)
+			print(\"Cake dropped\")
+		elif dropvalue <= cookie_drop_rate:
+			var cookie : Node2D = preload(ScenesNamespace.COOKIE_FILEPATH).instantiate()
+			cookie.global_position = global_position
+			cookie_container.add_child.call_deferred(cookie)
+			print(\"Cookie dropped\")
+		
 		queue_free()
 
 
@@ -144,7 +159,7 @@ func _draw() -> void:
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2kqfu"]
 size = Vector2(26, 36)
 
-[node name="CockroachShovel" type="CharacterBody2D" groups=["damagable", "destructable"]]
+[node name="CockroachShovel" type="CharacterBody2D" groups=["damagable"]]
 motion_mode = 1
 script = SubResource("GDScript_38a08")
 hunt_distance = 250.0

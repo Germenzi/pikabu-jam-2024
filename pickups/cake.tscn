@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3 uid="uid://dg8xtwwkkgcm4"]
+
+[ext_resource type="Texture2D" uid="uid://rueaxelq4yh1" path="res://player/player.png" id="1_4pptk"]
+
+[sub_resource type="GDScript" id="GDScript_ba513"]
+resource_name = "main"
+script/source = "extends Area2D
+
+@export var healing_amount : float = 3000000.0
+
+
+func _on_body_entered(body: Node2D) -> void:
+	if body.is_in_group(GroupsNamespace.PLAYER):
+		body.take_heal(healing_amount)
+		queue_free()
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_02qvi"]
+size = Vector2(30, 30)
+
+[node name="Cake" type="Area2D" groups=["cookie"]]
+script = SubResource("GDScript_ba513")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.0345622, 0.0345622)
+texture = ExtResource("1_4pptk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_02qvi")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

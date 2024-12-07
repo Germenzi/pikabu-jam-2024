@@ -86,6 +86,9 @@ func take_damage(damage:float) -> void:
 	_change_energy(-damage)
 
 
+func take_heal(healing:float) -> void:
+	_change_energy(healing)
+
 
 func _process(delta: float) -> void:
 	_change_energy(energy_regen_speed*delta)
@@ -240,7 +243,6 @@ func _slice_between_points(start:Vector2, end:Vector2) -> bool: # returns true i
 	var intersect_parameters : PhysicsRayQueryParameters2D = PhysicsRayQueryParameters2D.new()
 	intersect_parameters.from = start
 	intersect_parameters.to = end
-	intersect_parameters.collide_with_areas = true
 	intersect_parameters.exclude = [get_rid()] + _dashed_rids
 
 	var collision : Dictionary = \
@@ -264,6 +266,8 @@ func _process_dash_sliced_object(object:Object) -> bool:
 		
 		if object.is_in_group(GroupsNamespace.DESTRUCTABLE_OBJECT):
 			object.queue_free()
+		elif object.is_in_group(GroupsNamespace.DAMAGABLE):
+			object.take_damage(9999999999.0)
 		else:
 			_state_moving.call_deferred()
 			return false

@@ -41,7 +41,6 @@ func _slice_between_points(start:Vector2, end:Vector2) -> bool: # true if stayed
 	
 	var intersect_parameters : PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
 	intersect_parameters.shape = shape
-	intersect_parameters.collide_with_areas = true
 	intersect_parameters.exclude = _dashed_rids + excludes
 	
 	var collisions : Array[Dictionary] = \\

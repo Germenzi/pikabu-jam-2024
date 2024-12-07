@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dg8pv0nc3mu1m"]
+[gd_scene load_steps=18 format=3 uid="uid://dg8pv0nc3mu1m"]
 
 [ext_resource type="Texture2D" uid="uid://dma5yiu162184" path="res://Background.png" id="1_5ir7b"]
 [ext_resource type="Texture2D" uid="uid://d1b6x5uxndoo4" path="res://test.png" id="2_alfl5"]
@@ -6,7 +6,8 @@
 [ext_resource type="Script" path="res://scenes/camera_2d.gd" id="5_4gi1x"]
 [ext_resource type="Shader" path="res://vignette.gdshader" id="6_rpb5q"]
 [ext_resource type="PackedScene" uid="uid://c2h3kd7hpvrbn" path="res://cockroaches/cockroach_fat.tscn" id="6_uhv55"]
-[ext_resource type="PackedScene" uid="uid://cu1opk84g5j3u" path="res://cockroaches/cockroach_shovel.tscn" id="7_uuqm4"]
+[ext_resource type="PackedScene" uid="uid://drou6gyyk1wv3" path="res://pickups/cookie.tscn" id="7_ryx4a"]
+[ext_resource type="PackedScene" uid="uid://dg8xtwwkkgcm4" path="res://pickups/cake.tscn" id="8_gx4r8"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_h6t75"]
 normal = Vector2(0, 1)
@@ -146,8 +147,17 @@ chilling_walk_time_sec = 1.5
 cookie_container = NodePath("..")
 bullets_container = NodePath("..")
 
-[node name="CockroachShovel" parent="." instance=ExtResource("7_uuqm4")]
-position = Vector2(946, 462)
+[node name="CockroachFat2" parent="." node_paths=PackedStringArray("cookie_container", "bullets_container") instance=ExtResource("6_uhv55")]
+position = Vector2(914, 395)
+chilling_walk_time_sec = 1.5
+cookie_container = NodePath("..")
+bullets_container = NodePath("..")
+
+[node name="CockroachFat3" parent="." node_paths=PackedStringArray("cookie_container", "bullets_container") instance=ExtResource("6_uhv55")]
+position = Vector2(1076, 376)
+chilling_walk_time_sec = 1.5
+cookie_container = NodePath("..")
+bullets_container = NodePath("..")
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
 navigation_polygon = SubResource("NavigationPolygon_dnbpq")
@@ -159,26 +169,29 @@ affect_navigation_mesh = true
 
 [node name="Cookies" type="Node" parent="."]
 
-[node name="Cookie" type="Node2D" parent="Cookies" groups=["cookie"]]
-position = Vector2(1159, 423)
-metadata/_edit_group_ = true
+[node name="Cookie" parent="Cookies" instance=ExtResource("7_ryx4a")]
+position = Vector2(300, 432)
 
-[node name="Polygon2D" type="Polygon2D" parent="Cookies/Cookie"]
-polygon = PackedVector2Array(-1, 5, 9, 7, 10, -7, -7, -13, -10, 6)
+[node name="Cookie2" parent="Cookies" instance=ExtResource("7_ryx4a")]
+position = Vector2(787, 524)
 
-[node name="Cookie2" type="Node2D" parent="Cookies" groups=["cookie"]]
-position = Vector2(1261, 510)
-metadata/_edit_group_ = true
+[node name="Cookie3" parent="Cookies" instance=ExtResource("7_ryx4a")]
+position = Vector2(1436, 437)
 
-[node name="Polygon2D" type="Polygon2D" parent="Cookies/Cookie2"]
-polygon = PackedVector2Array(-1, 5, 9, 7, 10, -7, -7, -13, -10, 6)
+[node name="Cookie4" parent="Cookies" instance=ExtResource("7_ryx4a")]
+position = Vector2(1701, 534)
 
-[node name="Cookie3" type="Node2D" parent="Cookies" groups=["cookie"]]
-position = Vector2(1545, 511)
-metadata/_edit_group_ = true
+[node name="Cake" parent="Cookies" instance=ExtResource("8_gx4r8")]
+position = Vector2(602, 419)
 
-[node name="Polygon2D" type="Polygon2D" parent="Cookies/Cookie3"]
-polygon = PackedVector2Array(-1, 5, 9, 7, 10, -7, -7, -13, -10, 6)
+[node name="Cake2" parent="Cookies" instance=ExtResource("8_gx4r8")]
+position = Vector2(1023, 383)
+
+[node name="Cake3" parent="Cookies" instance=ExtResource("8_gx4r8")]
+position = Vector2(1604, 417)
+
+[node name="Cake4" parent="Cookies" instance=ExtResource("8_gx4r8")]
+position = Vector2(449, 556)
 
 [node name="LevelHUD" type="CanvasLayer" parent="."]
 script = SubResource("GDScript_73wuf")

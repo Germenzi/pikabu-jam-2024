@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=3 uid="uid://drou6gyyk1wv3"]
+
+[sub_resource type="GDScript" id="GDScript_ba513"]
+resource_name = "main"
+script/source = "extends Area2D
+
+@export var healing_amount : float = 30.0
+
+
+func _on_body_entered(body: Node2D) -> void:
+	if body.is_in_group(GroupsNamespace.PLAYER):
+		body.take_heal(healing_amount)
+		queue_free()
+"
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_454l3"]
+radius = 15.0333
+
+[node name="Cookie" type="Area2D" groups=["cookie"]]
+script = SubResource("GDScript_ba513")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_454l3")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

@@ -6,14 +6,14 @@
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.222603, 0.828947), 1.8499, 1.8499, 0, 0, Vector2(0.513699, 1), 0.0, 0.0, 0, 0, Vector2(0.828767, 0.801939), -1.68995, -1.68995, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 5
 
-[sub_resource type="Animation" id="Animation_t1ttw"]
-resource_name = "win"
+[sub_resource type="Animation" id="Animation_3jeru"]
+resource_name = "death"
 
 [sub_resource type="Animation" id="Animation_2xab4"]
 resource_name = "energy_buff"
 
-[sub_resource type="Animation" id="Animation_3jeru"]
-resource_name = "death"
+[sub_resource type="Animation" id="Animation_t1ttw"]
+resource_name = "win"
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_crln4"]
 _data = {
@@ -32,9 +32,10 @@ height = 0.01
 [sub_resource type="Gradient" id="Gradient_e622s"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
 
-[node name="Player" type="CharacterBody2D" groups=["player"]]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("bullet_container") groups=["player"]]
 slide_on_ceiling = false
 script = ExtResource("1_obxbl")
+bullet_container = NodePath("Bullets")
 fly_height = 100.0
 fly_duraction_sec = 0.4
 fly_distance = 200.0
@@ -77,3 +78,5 @@ offset_top = -56.0
 offset_right = 26.0
 offset_bottom = -33.0
 text = "energy"
+
+[node name="Bullets" type="Node" parent="."]

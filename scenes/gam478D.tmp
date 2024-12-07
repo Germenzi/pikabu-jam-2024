@@ -1,30 +1,21 @@
-[gd_scene load_steps=11 format=3 uid="uid://c2aqea12jpc5f"]
+[gd_scene load_steps=8 format=3 uid="uid://c2aqea12jpc5f"]
 
 [ext_resource type="Script" path="res://scenes/game.gd" id="1_dbmot"]
 [ext_resource type="Texture2D" uid="uid://d1b6x5uxndoo4" path="res://test.png" id="3_krgtg"]
-[ext_resource type="PackedScene" uid="uid://be3i4b12a4ldt" path="res://ui_scenes/loading_level.tscn" id="4_8dj1i"]
-[ext_resource type="PackedScene" uid="uid://dg8pv0nc3mu1m" path="res://scenes/level_1.tscn" id="4_sqkoh"]
-[ext_resource type="Script" path="res://addons/simple-gui-transitions/transition.gd" id="5_6tn1x"]
 
 [sub_resource type="GDScript" id="GDScript_6o4pm"]
 script/source = "extends Camera2D
 
-@onready var player = null
-var player_ready : bool = false
+@onready var player = $\"../Player\"
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	if player_ready:
-		position = player.position
+	position = player.position
+
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	if player_ready:
-		position = player.position
-
-
-func _on_game_player_ready() -> void:
-	player_ready = true
+	position = player.position
 "
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_40rk2"]
@@ -43,18 +34,14 @@ size = Vector2(64, 54)
 script = ExtResource("1_dbmot")
 player_x = 100
 player_y = 360
-level = ExtResource("4_sqkoh")
-camera_right_limit = 1824
+level = NodePath("")
+
+[node name="Bullets" type="Node" parent="."]
 
 [node name="Camera2D" type="Camera2D" parent="."]
-limit_left = 0
-limit_top = 0
-limit_bottom = 720
-limit_smoothed = true
 script = SubResource("GDScript_6o4pm")
 
 [node name="Node" type="Node2D" parent="."]
-visible = false
 position = Vector2(1623, -1367)
 
 [node name="Test2" type="StaticBody2D" parent="Node"]
@@ -77,6 +64,19 @@ position = Vector2(207.43, 80.957)
 shape = SubResource("RectangleShape2D_ycnr5")
 
 [node name="Sprite2D" type="Sprite2D" parent="Node/Test4"]
+position = Vector2(207.079, 74.3929)
+scale = Vector2(0.191096, 6.80342)
+texture = ExtResource("3_krgtg")
+
+[node name="Test5" type="StaticBody2D" parent="Node"]
+position = Vector2(-533, 323)
+scale = Vector2(2.85156, 0.228516)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Node/Test5"]
+position = Vector2(207.43, 80.957)
+shape = SubResource("RectangleShape2D_ycnr5")
+
+[node name="Sprite2D" type="Sprite2D" parent="Node/Test5"]
 position = Vector2(207.079, 74.3929)
 scale = Vector2(0.191096, 6.80342)
 texture = ExtResource("3_krgtg")
@@ -113,38 +113,9 @@ metadata/_edit_group_ = true
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Node/StaticBody2D3"]
 shape = SubResource("RectangleShape2D_y2ehp")
 
-[node name="Test5" type="StaticBody2D" parent="Node/StaticBody2D3"]
-position = Vector2(-870, 17)
-scale = Vector2(2.85156, 0.228516)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Node/StaticBody2D3/Test5"]
-position = Vector2(207.43, 80.957)
-shape = SubResource("RectangleShape2D_ycnr5")
-
-[node name="Sprite2D" type="Sprite2D" parent="Node/StaticBody2D3/Test5"]
-position = Vector2(207.079, 74.3929)
-scale = Vector2(0.191096, 6.80342)
-texture = ExtResource("3_krgtg")
-
 [node name="StaticBody2D4" type="StaticBody2D" parent="Node"]
 position = Vector2(434, 249)
 metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Node/StaticBody2D4"]
 shape = SubResource("RectangleShape2D_y2ehp")
-
-[node name="LoadingLevel" parent="." instance=ExtResource("4_8dj1i")]
-visible = false
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_right = 1280.0
-offset_bottom = 720.0
-grow_horizontal = 1
-grow_vertical = 1
-
-[node name="GuiTransition" type="Node" parent="LoadingLevel"]
-script = ExtResource("5_6tn1x")
-layout = NodePath("..")
-
-[connection signal="player_ready" from="." to="Camera2D" method="_on_game_player_ready"]

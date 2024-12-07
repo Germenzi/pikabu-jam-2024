@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://5skwa30kan8p"]
+[gd_scene load_steps=2 format=3 uid="uid://xi3u0frfutc5"]
 
 [sub_resource type="GDScript" id="GDScript_g8i45"]
 resource_name = "main"
@@ -61,7 +61,7 @@ func _process_collision(object:Object) -> bool: # true if stayed alive
 
 [node name="PlayerBullet" type="Node2D"]
 script = SubResource("GDScript_g8i45")
-distance = 200.0
+distance = 300.0
 
 [node name="Polygon2D" type="Polygon2D" parent="."]
 polygon = PackedVector2Array(-3, 1, 1, 4, 4, -1, -1, -4)

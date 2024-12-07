@@ -1,0 +1,64 @@
+[gd_scene load_steps=8 format=3 uid="uid://dg8pv0nc3mu1m"]
+
+[ext_resource type="Texture2D" uid="uid://dma5yiu162184" path="res://Legacy-Fantasy - High Forest 2.3/Background/Background.png" id="1_5ir7b"]
+[ext_resource type="Texture2D" uid="uid://c72x2gtw1peqg" path="res://okr.jpg" id="1_8vfel"]
+[ext_resource type="Texture2D" uid="uid://d1b6x5uxndoo4" path="res://test.png" id="2_alfl5"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dc0w1"]
+size = Vector2(176, 720)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lef0n"]
+size = Vector2(208, 720)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_i26ts"]
+size = Vector2(1798, 316.444)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j7dy5"]
+size = Vector2(1798, 118.667)
+
+[node name="Level1" type="Node2D"]
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_mirroring = Vector2(1279.56, 0)
+
+[node name="Background" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+position = Vector2(640, 360)
+scale = Vector2(2.66667, 2.64706)
+texture = ExtResource("1_5ir7b")
+
+[node name="Okr" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(524, 358)
+scale = Vector2(0.985, 0.985)
+texture = ExtResource("1_8vfel")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(924, 462.25)
+scale = Vector2(3.60938, 0.555664)
+texture = ExtResource("2_alfl5")
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D3"]
+position = Vector2(-64, 360)
+shape = SubResource("RectangleShape2D_dc0w1")
+
+[node name="StaticBody2D4" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D4"]
+position = Vector2(1896, 360)
+shape = SubResource("RectangleShape2D_lef0n")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(925, 161.778)
+scale = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_i26ts")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(925, 660.667)
+scale = Vector2(1, 1)
+shape = SubResource("RectangleShape2D_j7dy5")

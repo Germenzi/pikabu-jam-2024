@@ -1,0 +1,159 @@
+[gd_scene load_steps=3 format=3 uid="uid://cu1opk84g5j3u"]
+
+[sub_resource type="GDScript" id="GDScript_38a08"]
+resource_name = "main"
+script/source = "extends CharacterBody2D
+
+@export var hunt_distance : float = 150.0
+@export var running_speed : float = 50.0
+@export var chilling_walk_time_sec : float = 0.5
+@export var chilling_stay_time_sec : float = 0.5
+@export var attack_distance : float = 40.0
+
+@export var cookie_container : Node
+@export var bullets_container : Node
+
+enum State {
+	NONE,
+	IDLE,
+	FOLLOWING_PLAYER,
+	ATTACKING_PLAYER,
+}
+
+
+var _state : State = State.NONE
+var _attack_ready : bool = true
+
+var _target_player : Node2D = null
+
+# chilling state data
+var _chilling_time : float
+var _is_chilling_walk : bool = false
+
+
+func take_damage(damage:int) -> void:
+	pass
+
+
+func _ready() -> void:
+	_state_idle()
+
+
+func _process(delta: float) -> void:
+	if _state == State.IDLE:
+		_process_idle(delta)
+	elif _state == State.FOLLOWING_PLAYER:
+		_process_following_player(delta)
+
+
+func _physics_process(delta: float) -> void:
+	move_and_slide()
+
+
+func _process_idle(delta:float) -> void:
+	# неэффективно
+	var possible_targets : Array[Node] = get_tree().get_nodes_in_group(GroupsNamespace.PLAYER)\\
+		.filter(func(x:Node): return x is Node2D)
+	
+	var nearest : Node2D = null
+	for i:Node2D in possible_targets:
+		if nearest == null or global_position.distance_to(i.global_position) < global_position.distance_to(nearest.global_position):
+			nearest = i
+	
+	if nearest == null or global_position.distance_to(nearest.global_position) > hunt_distance:
+		%StateLabel.text = \"chilling\"
+		_chilling_time += delta
+		
+		if _is_chilling_walk:
+			if _chilling_time >= chilling_walk_time_sec:
+				_chilling_time = 0.0
+				_is_chilling_walk = false
+				velocity = Vector2.ZERO
+		else:
+			if _chilling_time >= chilling_stay_time_sec:
+				_chilling_time = 0.0
+				_is_chilling_walk = true
+				velocity = Vector2.RIGHT.rotated(2*PI*randf())*running_speed
+	else:
+		_state_following_player(nearest)
+
+
+
+func _process_following_player(delta:float) -> void:
+	if global_position.distance_to(_target_player.global_position):
+		_state_idle()
+	
+	if abs(global_position.x - _target_player.global_position.x) < attack_distance:
+		if abs(global_position.y - _target_player.global_position.y) >= 5.0:
+			velocity = Vector2(-sign(_target_player.global_position.x - global_position.x), sign(_target_player.global_position.y - global_position.y)).normalized()*running_speed
+		elif _attack_ready:
+			# я написал просто ужасную вещь...
+			if _target_player._state == _target_player.State.MOVING:
+				_state_attacking_player(_target_player)
+		else:
+			velocity = Vector2.ZERO
+	else:
+		var dir : Vector2 = global_position.direction_to(_target_player.global_position)
+		velocity = dir * running_speed
+
+
+func _state_idle() -> void:
+	velocity = Vector2.ZERO
+	_state = State.IDLE
+
+
+func _state_attacking_player(player:Node2D) -> void:
+	_state = State.ATTACKING_PLAYER
+	velocity = Vector2.ZERO
+	%StateLabel.text = \"attacking player\"
+	await get_tree().create_timer(1.0).timeout
+	
+	if global_position.distance_to(player.global_position) < attack_distance:
+		print(\"player attacked\")
+	
+	_attack_ready = false
+	%AttackCooldownTimer.start()
+	
+	_state_idle()
+
+
+func _state_following_player(player:Node2D) -> void:
+	_state = State.FOLLOWING_PLAYER
+	_target_player = player
+	%StateLabel.text = \"following player\"
+
+
+func _on_attack_cooldown_timer_timeout() -> void:
+	_attack_ready = true
+
+
+func _draw() -> void:
+	draw_circle(Vector2.ZERO, hunt_distance, Color.RED, false)
+	draw_circle(Vector2.ZERO, attack_distance, Color.GREEN, false)
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2kqfu"]
+size = Vector2(26, 36)
+
+[node name="CockroachShovel" type="CharacterBody2D" groups=["damagable", "destructable"]]
+motion_mode = 1
+script = SubResource("GDScript_38a08")
+hunt_distance = 250.0
+running_speed = 150.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_2kqfu")
+
+[node name="StateLabel" type="Label" parent="."]
+unique_name_in_owner = true
+offset_left = -185.0
+offset_top = -73.0
+offset_right = 185.0
+offset_bottom = -50.0
+horizontal_alignment = 1
+
+[node name="AttackCooldownTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+one_shot = true
+
+[connection signal="timeout" from="AttackCooldownTimer" to="." method="_on_attack_cooldown_timer_timeout"]

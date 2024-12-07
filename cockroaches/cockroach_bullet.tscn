@@ -1,7 +1,76 @@
-[gd_scene format=3 uid="uid://mww585gcx8dy"]
+[gd_scene load_steps=2 format=3 uid="uid://ice8xs2w7uds"]
+
+[sub_resource type="GDScript" id="GDScript_g8i45"]
+resource_name = "main"
+script/source = "extends Node2D
+
+@export var speed : float = 700.0
+@export var distance : float = 500.0
+@export var damage : float = 30.0
+
+@onready var _initial_position : Vector2 = global_position
+
+var direction : Vector2
+var excludes : Array[RID] = []
+
+var _dashed_rids : Array[RID] = []
+
+
+func _physics_process(delta: float) -> void:
+	var flying_distance : float = global_position.distance_to(_initial_position)
+	if flying_distance >= distance:
+		queue_free()
+		return
+	
+	var next_pos : Vector2 = global_position + direction.normalized()*speed*delta
+	if next_pos.distance_to(_initial_position) > distance:
+		next_pos = _initial_position + direction.normalized()*distance
+		queue_free()
+	
+	if not _slice_between_points(global_position, next_pos):
+		queue_free()
+		return
+	
+	global_position = next_pos
+
+
+func _slice_between_points(start:Vector2, end:Vector2) -> bool: # true if stayed alive
+	var shape : SegmentShape2D = SegmentShape2D.new()
+	shape.a = start
+	shape.b = end
+	
+	var intersect_parameters : PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
+	intersect_parameters.shape = shape
+	intersect_parameters.collide_with_areas = true
+	intersect_parameters.exclude = _dashed_rids + excludes
+	
+	var collisions : Array[Dictionary] = \\
+		PhysicsServer2D.space_get_direct_state(get_world_2d().space).intersect_shape(intersect_parameters)
+	
+	for i:Dictionary in collisions:
+		if not _process_collision(i[\"collider\"]):
+			return false
+		_dashed_rids.append(i[\"rid\"])
+	
+	return true
+
+
+func _process_collision(object:Object) -> bool: # true if stayed alive
+	if not object is Node:
+		return false
+	
+	if object.is_in_group(GroupsNamespace.DAMAGABLE):
+		pass
+		#object.take_damage(damage)
+	
+	print(\"Bullet hit %s\" % object.name)
+	return false
+"
 
 [node name="CockroachBullet" type="Node2D"]
+script = SubResource("GDScript_g8i45")
+distance = 300.0
 
 [node name="Polygon2D" type="Polygon2D" parent="."]
 color = Color(1, 1, 0, 1)
-polygon = PackedVector2Array(-3, 10, 13, 2, -2, -7, -8, 3)
+polygon = PackedVector2Array(-4, 2, 4, 5, 7, -1, -4, -5)

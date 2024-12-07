@@ -1,22 +1,61 @@
-[gd_scene load_steps=10 format=3 uid="uid://dg8pv0nc3mu1m"]
+[gd_scene load_steps=14 format=3 uid="uid://dg8pv0nc3mu1m"]
 
 [ext_resource type="Texture2D" uid="uid://dma5yiu162184" path="res://Background.png" id="1_5ir7b"]
-[ext_resource type="Texture2D" uid="uid://c72x2gtw1peqg" path="res://okr.jpg" id="1_8vfel"]
 [ext_resource type="Texture2D" uid="uid://d1b6x5uxndoo4" path="res://test.png" id="2_alfl5"]
 [ext_resource type="PackedScene" uid="uid://dg5mqjc8kv415" path="res://player/Player.tscn" id="4_rvf3r"]
 [ext_resource type="Script" path="res://scenes/camera_2d.gd" id="5_4gi1x"]
+[ext_resource type="Shader" path="res://vignette.gdshader" id="6_rpb5q"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_dc0w1"]
-size = Vector2(152, 720)
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_h6t75"]
+normal = Vector2(0, 1)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_lef0n"]
-size = Vector2(152, 720)
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_lx53p"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_i26ts"]
-size = Vector2(1848, 316.444)
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_ne8m6"]
+normal = Vector2(-1, 0)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_j7dy5"]
-size = Vector2(1848, 118.667)
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_sg475"]
+normal = Vector2(1, 0)
+
+[sub_resource type="LabelSettings" id="LabelSettings_h4yrx"]
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="GDScript" id="GDScript_73wuf"]
+resource_name = "level_hud"
+script/source = "extends CanvasLayer
+
+
+func _on_player_energy_level_changed(new_level:PlayerNamespace.EnergyLevel) -> void:
+	match new_level:
+		PlayerNamespace.EnergyLevel.HIGH, PlayerNamespace.EnergyLevel.NORMAL:
+			%PlayerMessageBG.hide()
+			%ScreenVignette.hide()
+		PlayerNamespace.EnergyLevel.LOW:
+			%PlayerMessageLabel.text = \"Energy low level message\"
+			%PlayerMessageBG.show()
+			%ScreenVignette.set_intensity(0.4)
+			%ScreenVignette.show()
+		PlayerNamespace.EnergyLevel.LOWLOW:
+			%PlayerMessageLabel.text = \"Energy low low level message\"
+			%PlayerMessageBG.show()
+			%ScreenVignette.set_intensity(0.6)
+			%ScreenVignette.show()
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fkp06"]
+shader = ExtResource("6_rpb5q")
+shader_parameter/vignette_intensity = 0.4
+shader_parameter/vignette_opacity = 0.5
+shader_parameter/vignette_rgb = Color(0, 0, 0, 1)
+
+[sub_resource type="GDScript" id="GDScript_0sh1p"]
+resource_name = "vignette"
+script/source = "extends ColorRect
+
+
+func set_intensity(intencity:float) -> void:
+	material.set_shader_parameter(\"vignette_intensity\", intencity) 
+"
 
 [node name="Level1" type="Control"]
 layout_mode = 3
@@ -36,42 +75,57 @@ position = Vector2(640, 360)
 scale = Vector2(2.66667, 2.64706)
 texture = ExtResource("1_5ir7b")
 
-[node name="Okr" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(524, 358)
-scale = Vector2(0.985, 0.985)
-texture = ExtResource("1_8vfel")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="FloorSprite" type="Sprite2D" parent="."]
 position = Vector2(924, 462.25)
 scale = Vector2(3.60938, 0.555664)
 texture = ExtResource("2_alfl5")
 
-[node name="StaticBody2D3" type="StaticBody2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D3"]
-position = Vector2(-76, 360)
-shape = SubResource("RectangleShape2D_dc0w1")
-
-[node name="StaticBody2D4" type="StaticBody2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D4"]
-position = Vector2(1924, 360)
-shape = SubResource("RectangleShape2D_lef0n")
-
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(924, 161.778)
-shape = SubResource("RectangleShape2D_i26ts")
+[node name="TopBoundary" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(1009, 321)
+shape = SubResource("WorldBoundaryShape2D_h6t75")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(924, 660.667)
-shape = SubResource("RectangleShape2D_j7dy5")
+position = Vector2(1040, 604)
+shape = SubResource("WorldBoundaryShape2D_lx53p")
 
-[node name="Player" parent="." instance=ExtResource("4_rvf3r")]
+[node name="RightBoundary" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(1848, 460)
+shape = SubResource("WorldBoundaryShape2D_ne8m6")
+
+[node name="LeftBoundary" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, 459)
+shape = SubResource("WorldBoundaryShape2D_sg475")
+
+[node name="Player" parent="." node_paths=PackedStringArray("bullet_container") instance=ExtResource("4_rvf3r")]
 position = Vector2(88, 472)
+bullet_container = NodePath("../PlayerBullets")
 energy_regen_speed = 2.0
+
+[node name="PlayerMessageBG" type="ColorRect" parent="Player"]
+unique_name_in_owner = true
+visible = false
+offset_left = -134.0
+offset_top = -48.0
+offset_right = 134.0
+offset_bottom = -24.0
+metadata/_edit_group_ = true
+
+[node name="PlayerMessageLabel" type="Label" parent="Player/PlayerMessageBG"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/line_spacing = 0
+label_settings = SubResource("LabelSettings_h4yrx")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PlayerBullets" type="Node" parent="."]
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(88, 472)
@@ -80,3 +134,19 @@ limit_top = 0
 limit_bottom = 720
 limit_smoothed = true
 script = ExtResource("5_4gi1x")
+
+[node name="LevelHUD" type="CanvasLayer" parent="."]
+script = SubResource("GDScript_73wuf")
+
+[node name="ScreenVignette" type="ColorRect" parent="LevelHUD"]
+unique_name_in_owner = true
+visible = false
+material = SubResource("ShaderMaterial_fkp06")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_0sh1p")
+
+[connection signal="energy_level_changed" from="Player" to="LevelHUD" method="_on_player_energy_level_changed"]

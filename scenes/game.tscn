@@ -27,7 +27,6 @@ camera_right_limit = 1824
 metadata/movie_file = &"\"C:\\Users\\sekhmych\\Videos\\level1.avi\""
 
 [node name="Node" type="Node2D" parent="."]
-visible = false
 position = Vector2(1623, -1367)
 
 [node name="Test2" type="StaticBody2D" parent="Node"]
@@ -107,6 +106,7 @@ metadata/_edit_group_ = true
 shape = SubResource("RectangleShape2D_y2ehp")
 
 [node name="LoadingLevel" parent="." instance=ExtResource("4_8dj1i")]
+visible = false
 
 [node name="GuiTransition" type="Node" parent="LoadingLevel"]
 script = ExtResource("5_6tn1x")

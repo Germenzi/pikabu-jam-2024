@@ -26,14 +26,15 @@ extends CharacterBody2D
 @export var dash_duration_sec : float = 0.4
 
 signal energy_runout
+signal energy_level_changed(new_level:PlayerNamespace.EnergyLevel)
 
 enum State {
 	NONE,
 	MOVING,
 	FLYING,
-	DASHING
+	DASHING,
+	OUT_OF_ENERGY,
 }
-
 
 
 var height : float : 
@@ -50,6 +51,7 @@ var _ghost : bool = false # no damage and ignore obsctacles
 var _energy : float = max_energy
 var _moving_direction : Vector2
 var _height : float = 0.0
+var _energy_level : PlayerNamespace.EnergyLevel = PlayerNamespace.EnergyLevel.HIGH
 
 # flying state data
 var _flying_time : float
@@ -64,23 +66,9 @@ var _finish_dashing_global_position : Vector2
 var _dashed_rids : Array[RID] = []
 
 
-# message items
-enum LowEnergyType {
-	LOW,
-	VERY_LOW,
-	EXTRA_LOW
-}
-var LowEnergyMessages = ["Эх, вот бы печенькуууу", 
-"Дела плохи, срочно нужна печенька!!!", "Кекс, кекс, срочно нужен кекс!!!"]
-var current_message : int = -1
-
 @export_category("message_energy")
 @export var energy_low  : Polygon2D
 @export var energy_low_label : Label
-
-# TODO: Исправить
-# Да, игрок не UI, но пусть тут побудет
-@export var vignette : ColorRect
 
 func play_death() -> void:
 	%AnimationPlayer.play("death")
@@ -98,41 +86,8 @@ func proceed_collision_area(collision_area:Area2D) -> void:
 	pass
 
 
-func show_low_energy_message(type : LowEnergyType):
-	vignette.visible = true
-	energy_low_label.text = LowEnergyMessages[type]
-	energy_low.visible = true
-	
-	await get_tree().create_timer(3, true).timeout
-	energy_low.visible = false
-	
-	
-# TODO: Спагетти
-func energy_message():
-	if (_energy < min_energy_message_show_3) and (current_message != 2):
-		vignette.material.set_shader_parameter("vignette_intensity", 1.5)
-		vignette.visible = true
-		current_message = 2
-		show_low_energy_message(current_message)
-	elif (_energy < min_energy_message_show_2) and not (_energy < min_energy_message_show_3) and (current_message != 1):
-		current_message = 1
-		vignette.visible = true
-		vignette.material.set_shader_parameter("vignette_intensity", 1)
-		show_low_energy_message(current_message)
-	elif (_energy < min_energy_message_show_1) and not (_energy < min_energy_message_show_2) and (current_message != 0):
-		current_message = 0
-		vignette.visible = true
-		vignette.material.set_shader_parameter("vignette_intensity", 0.75)
-		show_low_energy_message(current_message)
-	elif (_energy > min_energy_message_show_1):
-		vignette.visible = false
-		vignette.material.set_shader_parameter("vignette_intensity", 0.75)
-		current_message = -1
-
 func _process(delta: float) -> void:
-	_energy = clamp(_energy+energy_regen_speed*delta, 0.0, max_energy)
-	
-	energy_message()
+	_change_energy(energy_regen_speed*delta)
 	
 	%EnergyLabel.text = "energy %.0f" % _energy
 	
@@ -159,7 +114,7 @@ func _process_moving(delta:float) -> void:
 			_state_dashing(_moving_direction)
 	
 	if Input.is_action_just_pressed("shoot_down"):
-		_use_energy(shoot_energy_cost)
+		_change_energy(-shoot_energy_cost)
 		var bullet : Node2D = BULLET_SCENE.instantiate()
 		bullet.flying_direction = Vector2.DOWN
 		bullet.global_position = global_position
@@ -167,7 +122,7 @@ func _process_moving(delta:float) -> void:
 		bullet_container.add_child(bullet)
 	
 	if Input.is_action_just_pressed("shoot_left"):
-		_use_energy(shoot_energy_cost)
+		_change_energy(-shoot_energy_cost)
 		var bullet : Node2D = BULLET_SCENE.instantiate()
 		bullet.flying_direction = Vector2.LEFT
 		bullet.global_position = global_position
@@ -175,7 +130,7 @@ func _process_moving(delta:float) -> void:
 		bullet_container.add_child(bullet)
 	
 	if Input.is_action_just_pressed("shoot_right"):
-		_use_energy(shoot_energy_cost)
+		_change_energy(-shoot_energy_cost)
 		var bullet : Node2D = BULLET_SCENE.instantiate()
 		bullet.flying_direction = Vector2.RIGHT
 		bullet.global_position = global_position
@@ -183,7 +138,7 @@ func _process_moving(delta:float) -> void:
 		bullet_container.add_child(bullet)
 	
 	if Input.is_action_just_pressed("shoot_up"):
-		_use_energy(shoot_energy_cost)
+		_change_energy(-shoot_energy_cost)
 		var bullet : Node2D = BULLET_SCENE.instantiate()
 		bullet.flying_direction = Vector2.UP
 		bullet.global_position = global_position
@@ -201,7 +156,7 @@ func _process_flying(delta:float) -> void:
 		return
 	
 	if Input.is_action_just_pressed("player_bomb_action"):
-		_use_energy(shoot_energy_cost)
+		_change_energy(shoot_energy_cost)
 		var bullet : Node2D = BOMB_SCENE.instantiate()
 		bullet.height = _height
 		bullet.global_position = Vector2(global_position.x, global_position.y-_height)
@@ -236,12 +191,16 @@ func _set_ghost(is_ghost:bool) -> void:
 	%EnergyBallShape.set_deferred("disabled", is_ghost)
 
 
-func _use_energy(amount:float) -> void:
-	_energy -= amount
+func _change_energy(amount:float) -> void:
+	_energy = clamp(_energy+amount, 0.0, max_energy)
 	
-	if _energy <= 0.0:
-		_energy = 0.0
+	if _energy == 0.0: # тут сравнение флоатов допустимо, т.к. clamp вернет точно 0.0 и ничего другого
 		energy_runout.emit()
+	
+	var updated_energy_level : PlayerNamespace.EnergyLevel = _calc_energy_level()
+	if updated_energy_level != _energy_level:
+		_energy_level = updated_energy_level
+		energy_level_changed.emit(_energy_level)
 
 
 func _set_height(new_height:float) -> void:
@@ -256,7 +215,7 @@ func _state_moving() -> void:
 
 
 func _state_flying(flying_direction:Vector2) -> void:
-	_use_energy(flying_energy_cost)
+	_change_energy(-flying_energy_cost)
 	_set_ghost(true)
 	_initial_flying_global_position = global_position
 	_finish_flying_global_position = global_position + flying_direction.normalized()*fly_distance
@@ -266,7 +225,7 @@ func _state_flying(flying_direction:Vector2) -> void:
 
 
 func _state_dashing(dashing_direction:Vector2) -> void:
-	_use_energy(dashing_energy_cost)
+	_change_energy(-dashing_energy_cost)
 	_set_ghost(true)
 	_initial_dashing_global_position = global_position
 	_finish_dashing_global_position = global_position + dashing_direction.normalized()*dash_distance
@@ -291,7 +250,6 @@ func _slice_between_points(start:Vector2, end:Vector2) -> bool: # returns true i
 			global_position = collision["position"] - (end-start).normalized()*%EnergyBallShape.shape.radius
 			return false
 		
-		#intersect_parameters.from = collision["position"]
 		_dashed_rids.append(collision["rid"])
 		intersect_parameters.exclude = [get_rid()] + _dashed_rids
 		collision = PhysicsServer2D.space_get_direct_state(get_world_2d().space).intersect_ray(intersect_parameters)
@@ -310,3 +268,18 @@ func _process_dash_sliced_object(object:Object) -> bool:
 			return false
 	
 	return true
+
+
+func _calc_energy_level() -> PlayerNamespace.EnergyLevel:
+	var norm_energy : float = _energy / max_energy
+	
+	if norm_energy < 0.2:
+		return PlayerNamespace.EnergyLevel.LOWLOW
+	
+	if norm_energy < 0.4:
+		return PlayerNamespace.EnergyLevel.LOW
+	
+	if norm_energy < 0.8:
+		return PlayerNamespace.EnergyLevel.NORMAL
+	
+	return PlayerNamespace.EnergyLevel.HIGH

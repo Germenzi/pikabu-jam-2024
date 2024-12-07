@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dg5mqjc8kv415"]
+[gd_scene load_steps=10 format=3 uid="uid://dg5mqjc8kv415"]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_obxbl"]
 
@@ -32,49 +32,17 @@ height = 0.01
 [sub_resource type="Gradient" id="Gradient_e622s"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
 
-[sub_resource type="Shader" id="Shader_me3qs"]
-code = "shader_type canvas_item;
-
-uniform float vignette_intensity = 0.4;
-uniform float vignette_opacity : hint_range(0.0, 1.0) = 0.5;
-uniform vec4 vignette_rgb : source_color = vec4(0.0, 0.0, 0.0, 1.0);
-
-uniform sampler2D screen_vec : hint_screen_texture;
-
-float vignette(vec2 uv){
-	uv *= 1.0 - uv.xy;
-	float vignette = uv.x * uv.y * 15.0;
-	return pow(vignette, vignette_intensity * vignette_opacity);
-}
-
-void fragment(){
-	vec4 color = texture(screen_vec, SCREEN_UV);
-	vec4 text = texture(TEXTURE, UV);
-	
-	text.rgba *= (vignette_rgb.rgba);
-	text.rgba *= (1.0 - vignette(UV));
-	
-	COLOR = vec4((text.rgb)*color.rgb,text.a);
-}"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_hujsh"]
-shader = SubResource("Shader_me3qs")
-shader_parameter/vignette_intensity = 1.0
-shader_parameter/vignette_opacity = 1.0
-shader_parameter/vignette_rgb = Color(0, 0, 0, 1)
-
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("bullet_container", "energy_low", "energy_low_label", "vignette") groups=["player"]]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("bullet_container", "energy_low", "energy_low_label") groups=["player"]]
 slide_on_ceiling = false
 script = ExtResource("1_obxbl")
-bullet_container = NodePath("Bullets")
+bullet_container = NodePath("")
 fly_height = 100.0
 fly_duraction_sec = 0.4
 fly_distance = 200.0
 fly_height_curve = SubResource("Curve_iho00")
 dash_duration_sec = 0.1
-energy_low = NodePath("EnergyLow")
-energy_low_label = NodePath("EnergyLow/EnergyLowLabel")
-vignette = NodePath("Vignette")
+energy_low = NodePath("")
+energy_low_label = NodePath("")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 unique_name_in_owner = true
@@ -88,6 +56,7 @@ shape = SubResource("CircleShape2D_2vv4t")
 
 [node name="Shadow" type="MeshInstance2D" parent="."]
 unique_name_in_owner = true
+self_modulate = Color(1, 1, 1, 0.172549)
 position = Vector2(-2.38419e-07, 8)
 rotation = 3.14159
 scale = Vector2(2386.92, 875.165)
@@ -107,38 +76,8 @@ color_ramp = SubResource("Gradient_e622s")
 
 [node name="EnergyLabel" type="Label" parent="EnergyBall"]
 unique_name_in_owner = true
-offset_left = -27.0
-offset_top = -56.0
-offset_right = 26.0
-offset_bottom = -33.0
+offset_left = -26.0
+offset_top = 24.0
+offset_right = 27.0
+offset_bottom = 47.0
 text = "energy"
-
-[node name="Bullets" type="Node" parent="."]
-
-[node name="EnergyLow" type="Polygon2D" parent="."]
-visible = false
-position = Vector2(0, -24)
-polygon = PackedVector2Array(-192, -96, -192, -56, 192, -56, 192, -96)
-
-[node name="EnergyLowLabel" type="Label" parent="EnergyLow"]
-offset_left = -192.0
-offset_top = -88.0
-offset_right = 192.0
-offset_bottom = -65.0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-text = "Эх.... Вот бы печенькуюююю"
-horizontal_alignment = 1
-
-[node name="Vignette" type="ColorRect" parent="."]
-visible = false
-material = SubResource("ShaderMaterial_hujsh")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -840.0
-offset_top = -360.0
-offset_right = 840.0
-offset_bottom = 360.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)

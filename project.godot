@@ -31,7 +31,7 @@ movie_writer/movie_file="C:/Users/sekhmych/Videos/game_gp_pikabu.avi"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/simple-gui-transitions/plugin.cfg")
+enabled=PackedStringArray("res://addons/SpritesheetGenerator/plugin.cfg", "res://addons/simple-gui-transitions/plugin.cfg")
 
 [global_group]
 

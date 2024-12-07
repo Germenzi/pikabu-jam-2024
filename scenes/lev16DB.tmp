@@ -4,7 +4,6 @@
 [ext_resource type="Texture2D" uid="uid://c72x2gtw1peqg" path="res://okr.jpg" id="1_8vfel"]
 [ext_resource type="Texture2D" uid="uid://d1b6x5uxndoo4" path="res://test.png" id="2_alfl5"]
 [ext_resource type="PackedScene" uid="uid://dg5mqjc8kv415" path="res://player/Player.tscn" id="4_rvf3r"]
-[ext_resource type="Script" path="res://scenes/camera_2d.gd" id="5_4gi1x"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dc0w1"]
 size = Vector2(152, 720)
@@ -18,7 +17,20 @@ size = Vector2(1848, 316.444)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j7dy5"]
 size = Vector2(1848, 118.667)
 
-[sub_resource type="Shader" id="Shader_me3qs"]
+[sub_resource type="GDScript" id="GDScript_3lrax"]
+script/source = "extends Camera2D
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	position = $\"../Player\".position
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	position = $\"../Player\".position
+"
+
+[sub_resource type="Shader" id="Shader_fttnd"]
 code = "shader_type canvas_item;
 
 uniform float vignette_intensity = 0.4;
@@ -43,9 +55,9 @@ void fragment(){
 	COLOR = vec4((text.rgb)*color.rgb,text.a);
 }"
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ewsen"]
-shader = SubResource("Shader_me3qs")
-shader_parameter/vignette_intensity = 1.0
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kisye"]
+shader = SubResource("Shader_fttnd")
+shader_parameter/vignette_intensity = 0.4
 shader_parameter/vignette_opacity = 1.0
 shader_parameter/vignette_rgb = Color(0, 0, 0, 1)
 
@@ -102,25 +114,31 @@ shape = SubResource("RectangleShape2D_j7dy5")
 
 [node name="Player" parent="." instance=ExtResource("4_rvf3r")]
 position = Vector2(88, 472)
+max_energy = null
 energy_regen_speed = 2.0
+flying_energy_cost = null
+dashing_energy_cost = null
+shoot_energy_cost = null
+min_energy_message_show_1 = null
+min_energy_message_show_2 = null
+min_energy_message_show_3 = null
+speed = null
+dash_distance = null
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(88, 472)
 limit_left = 0
 limit_top = 0
 limit_bottom = 720
 limit_smoothed = true
-script = ExtResource("5_4gi1x")
+script = SubResource("GDScript_3lrax")
 
-[node name="Vignette" type="ColorRect" parent="Camera2D"]
-material = SubResource("ShaderMaterial_ewsen")
+[node name="ColorRect" type="ColorRect" parent="Camera2D"]
+visible = false
+material = SubResource("ShaderMaterial_kisye")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -840.0
-offset_top = -360.0
-offset_right = 840.0
-offset_bottom = 360.0
+offset_right = 1280.0
+offset_bottom = 720.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 1)

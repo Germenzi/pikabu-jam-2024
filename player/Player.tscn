@@ -80,3 +80,17 @@ offset_bottom = -33.0
 text = "energy"
 
 [node name="Bullets" type="Node" parent="."]
+
+[node name="EnergyLow" type="Polygon2D" parent="."]
+visible = false
+position = Vector2(0, -24)
+polygon = PackedVector2Array(-192, -96, -192, -56, 192, -56, 192, -96)
+
+[node name="EnergyLowLabel" type="Label" parent="EnergyLow"]
+offset_left = -192.0
+offset_top = -88.0
+offset_right = 192.0
+offset_bottom = -65.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Эх.... Вот бы печенькуюююю"
+horizontal_alignment = 1

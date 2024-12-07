@@ -8,6 +8,9 @@ extends CharacterBody2D
 @export var flying_energy_cost : float = 30.0
 @export var dashing_energy_cost : float = 80.0
 @export var shoot_energy_cost : float = 1.0
+@export var min_energy_message_show_1 : float = 30.0
+@export var min_energy_message_show_2 : float = 20.0
+@export var min_energy_message_show_3 : float = 10.0
 
 @export_subgroup("Moving")
 @export var speed : float = 300.0
@@ -30,6 +33,7 @@ enum State {
 	FLYING,
 	DASHING
 }
+
 
 
 var height : float : 
@@ -60,6 +64,19 @@ var _finish_dashing_global_position : Vector2
 var _dashed_rids : Array[RID] = []
 
 
+# message items
+enum LowEnergyType {
+	LOW,
+	VERY_LOW,
+	EXTRA_LOW
+}
+var LowEnergyMessages = ["Эх, вот бы печенькуууу", 
+"Дела плохи, срочно нужна печенька!!!", "Кекс, кекс, срочно нужен кекс!!!"]
+var current_message : int = -1
+@onready var energy_low = $"../Player".get_node("EnergyLow")
+@onready var energy_low_label = $"../Player".get_node("EnergyLow/EnergyLowLabel")
+@onready var vignette = $"../Camera2D/Vignette"
+
 func play_death() -> void:
 	%AnimationPlayer.play("death")
 
@@ -76,8 +93,39 @@ func proceed_collision_area(collision_area:Area2D) -> void:
 	pass
 
 
+func show_low_energy_message(type : LowEnergyType):
+	vignette.visible = true
+	energy_low_label.text = LowEnergyMessages[type]
+	energy_low.visible = true
+	
+	await get_tree().create_timer(3, true).timeout
+	energy_low.visible = false
+	
+func make_good():
+	if (_energy < min_energy_message_show_3) and (current_message != 2):
+		vignette.material.set_shader_parameter("vignette_intensity", 1.5)
+		vignette.visible = true
+		current_message = 2
+		show_low_energy_message(current_message)
+	elif (_energy < min_energy_message_show_2) and not (_energy < min_energy_message_show_3) and (current_message != 1):
+		current_message = 1
+		vignette.visible = true
+		vignette.material.set_shader_parameter("vignette_intensity", 1)
+		show_low_energy_message(current_message)
+	elif (_energy < min_energy_message_show_1) and not (_energy < min_energy_message_show_2) and (current_message != 0):
+		current_message = 0
+		vignette.visible = true
+		vignette.material.set_shader_parameter("vignette_intensity", 0.75)
+		show_low_energy_message(current_message)
+	elif (_energy > min_energy_message_show_1):
+		vignette.visible = false
+		vignette.material.set_shader_parameter("vignette_intensity", 0.75)
+		current_message = -1
+
 func _process(delta: float) -> void:
 	_energy = clamp(_energy+energy_regen_speed*delta, 0.0, max_energy)
+	make_good()
+	
 	%EnergyLabel.text = "energy %.0f" % _energy
 	
 	match _state:
@@ -182,6 +230,7 @@ func _set_ghost(is_ghost:bool) -> void:
 
 func _use_energy(amount:float) -> void:
 	_energy -= amount
+	
 	if _energy <= 0.0:
 		_energy = 0.0
 		energy_runout.emit()

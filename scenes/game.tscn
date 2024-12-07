@@ -1,31 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://c2aqea12jpc5f"]
+[gd_scene load_steps=10 format=3 uid="uid://c2aqea12jpc5f"]
 
 [ext_resource type="Script" path="res://scenes/game.gd" id="1_dbmot"]
 [ext_resource type="Texture2D" uid="uid://d1b6x5uxndoo4" path="res://test.png" id="3_krgtg"]
 [ext_resource type="PackedScene" uid="uid://be3i4b12a4ldt" path="res://ui_scenes/loading_level.tscn" id="4_8dj1i"]
 [ext_resource type="PackedScene" uid="uid://dg8pv0nc3mu1m" path="res://scenes/level_1.tscn" id="4_sqkoh"]
 [ext_resource type="Script" path="res://addons/simple-gui-transitions/transition.gd" id="5_6tn1x"]
-
-[sub_resource type="GDScript" id="GDScript_6o4pm"]
-script/source = "extends Camera2D
-
-@onready var player = null
-var player_ready : bool = false
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	if player_ready:
-		position = player.position
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	if player_ready:
-		position = player.position
-
-
-func _on_game_player_ready() -> void:
-	player_ready = true
-"
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_40rk2"]
 size = Vector2(513.753, 503.248)
@@ -46,13 +25,6 @@ player_y = 360
 level = ExtResource("4_sqkoh")
 camera_right_limit = 1824
 metadata/movie_file = &"\"C:\\Users\\sekhmych\\Videos\\level1.avi\""
-
-[node name="Camera2D" type="Camera2D" parent="."]
-limit_left = 0
-limit_top = 0
-limit_bottom = 720
-limit_smoothed = true
-script = SubResource("GDScript_6o4pm")
 
 [node name="Node" type="Node2D" parent="."]
 visible = false
@@ -139,5 +111,3 @@ shape = SubResource("RectangleShape2D_y2ehp")
 [node name="GuiTransition" type="Node" parent="LoadingLevel"]
 script = ExtResource("5_6tn1x")
 layout = NodePath("..")
-
-[connection signal="player_ready" from="." to="Camera2D" method="_on_game_player_ready"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dg5mqjc8kv415"]
+[gd_scene load_steps=12 format=3 uid="uid://dg5mqjc8kv415"]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_obxbl"]
 
@@ -32,7 +32,38 @@ height = 0.01
 [sub_resource type="Gradient" id="Gradient_e622s"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("bullet_container") groups=["player"]]
+[sub_resource type="Shader" id="Shader_me3qs"]
+code = "shader_type canvas_item;
+
+uniform float vignette_intensity = 0.4;
+uniform float vignette_opacity : hint_range(0.0, 1.0) = 0.5;
+uniform vec4 vignette_rgb : source_color = vec4(0.0, 0.0, 0.0, 1.0);
+
+uniform sampler2D screen_vec : hint_screen_texture;
+
+float vignette(vec2 uv){
+	uv *= 1.0 - uv.xy;
+	float vignette = uv.x * uv.y * 15.0;
+	return pow(vignette, vignette_intensity * vignette_opacity);
+}
+
+void fragment(){
+	vec4 color = texture(screen_vec, SCREEN_UV);
+	vec4 text = texture(TEXTURE, UV);
+	
+	text.rgba *= (vignette_rgb.rgba);
+	text.rgba *= (1.0 - vignette(UV));
+	
+	COLOR = vec4((text.rgb)*color.rgb,text.a);
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hujsh"]
+shader = SubResource("Shader_me3qs")
+shader_parameter/vignette_intensity = 1.0
+shader_parameter/vignette_opacity = 1.0
+shader_parameter/vignette_rgb = Color(0, 0, 0, 1)
+
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("bullet_container", "energy_low", "energy_low_label", "vignette") groups=["player"]]
 slide_on_ceiling = false
 script = ExtResource("1_obxbl")
 bullet_container = NodePath("Bullets")
@@ -41,6 +72,9 @@ fly_duraction_sec = 0.4
 fly_distance = 200.0
 fly_height_curve = SubResource("Curve_iho00")
 dash_duration_sec = 0.1
+energy_low = NodePath("EnergyLow")
+energy_low_label = NodePath("EnergyLow/EnergyLowLabel")
+vignette = NodePath("Vignette")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 unique_name_in_owner = true
@@ -94,3 +128,17 @@ offset_bottom = -65.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "Эх.... Вот бы печенькуюююю"
 horizontal_alignment = 1
+
+[node name="Vignette" type="ColorRect" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_hujsh")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -840.0
+offset_top = -360.0
+offset_right = 840.0
+offset_bottom = 360.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)

@@ -73,9 +73,14 @@ enum LowEnergyType {
 var LowEnergyMessages = ["Эх, вот бы печенькуууу", 
 "Дела плохи, срочно нужна печенька!!!", "Кекс, кекс, срочно нужен кекс!!!"]
 var current_message : int = -1
-@onready var energy_low = $"../Player".get_node("EnergyLow")
-@onready var energy_low_label = $"../Player".get_node("EnergyLow/EnergyLowLabel")
-@onready var vignette = $"../Camera2D/Vignette"
+
+@export_category("message_energy")
+@export var energy_low  : Polygon2D
+@export var energy_low_label : Label
+
+# TODO: Исправить
+# Да, игрок не UI, но пусть тут побудет
+@export var vignette : ColorRect
 
 func play_death() -> void:
 	%AnimationPlayer.play("death")
@@ -101,7 +106,9 @@ func show_low_energy_message(type : LowEnergyType):
 	await get_tree().create_timer(3, true).timeout
 	energy_low.visible = false
 	
-func make_good():
+	
+# TODO: Спагетти
+func energy_message():
 	if (_energy < min_energy_message_show_3) and (current_message != 2):
 		vignette.material.set_shader_parameter("vignette_intensity", 1.5)
 		vignette.visible = true
@@ -124,7 +131,8 @@ func make_good():
 
 func _process(delta: float) -> void:
 	_energy = clamp(_energy+energy_regen_speed*delta, 0.0, max_energy)
-	make_good()
+	
+	energy_message()
 	
 	%EnergyLabel.text = "energy %.0f" % _energy
 	

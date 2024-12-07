@@ -60,8 +60,7 @@ func _process_collision(object:Object) -> bool: # true if stayed alive
 		return false
 	
 	if object.is_in_group(GroupsNamespace.DAMAGABLE):
-		pass
-		#object.take_damage(damage)
+		object.take_damage(damage)
 	
 	print(\"Bullet hit %s\" % object.name)
 	return false

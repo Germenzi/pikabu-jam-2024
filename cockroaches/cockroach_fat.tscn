@@ -1,4 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://c2h3kd7hpvrbn"]
+[gd_scene load_steps=9 format=3 uid="uid://c2h3kd7hpvrbn"]
+
+[ext_resource type="Texture2D" uid="uid://b84ggc06s6dbx" path="res://assets/fat-eating.png" id="1_r7g37"]
 
 [sub_resource type="GDScript" id="GDScript_38a08"]
 resource_name = "main"
@@ -9,6 +11,8 @@ script/source = "extends CharacterBody2D
 @export var running_speed : float = 50.0
 @export var chilling_walk_time_sec : float = 0.5
 @export var chilling_stay_time_sec : float = 0.5
+
+@export var max_health : float = 50.0
 
 @export var cookie_container : Node
 @export var bullets_container : Node
@@ -25,8 +29,9 @@ enum State {
 
 var _state : State = State.NONE
 var _attack_ready : bool = true
-
 var _target_cookie : Node2D = null
+var _health : float = max_health
+
 
 # chilling state data
 var _chilling_time : float
@@ -34,7 +39,10 @@ var _is_chilling_walk : bool = false
 
 
 func take_damage(damage:int) -> void:
-	pass
+	_health -= damage
+	if _health <= 0.0:
+		_state = State.NONE
+		queue_free()
 
 
 func _ready() -> void:
@@ -42,6 +50,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	%HealthLabel.text = \"Health: %.1f\" % _health
 	if _state == State.IDLE:
 		_process_idle(delta)
 
@@ -155,6 +164,42 @@ func _draw() -> void:
 radius = 17.0
 height = 58.0
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_bmim3"]
+atlas = ExtResource("1_r7g37")
+region = Rect2(0, 0, 201, 209)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7jteo"]
+atlas = ExtResource("1_r7g37")
+region = Rect2(201, 0, 201, 209)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vpa6o"]
+atlas = ExtResource("1_r7g37")
+region = Rect2(402, 0, 201, 209)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_obukx"]
+atlas = ExtResource("1_r7g37")
+region = Rect2(603, 0, 201, 209)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_o3eya"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bmim3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7jteo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vpa6o")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_obukx")
+}],
+"loop": true,
+"name": &"eating_cookie",
+"speed": 5.0
+}]
+
 [node name="CockroachFat" type="CharacterBody2D" groups=["damagable", "destructable"]]
 motion_mode = 1
 script = SubResource("GDScript_38a08")
@@ -175,8 +220,23 @@ offset_right = 185.0
 offset_bottom = -50.0
 horizontal_alignment = 1
 
+[node name="HealthLabel" type="Label" parent="."]
+unique_name_in_owner = true
+offset_left = -186.0
+offset_top = -53.0
+offset_right = 184.0
+offset_bottom = -30.0
+horizontal_alignment = 1
+
 [node name="AttackCooldownTimer" type="Timer" parent="."]
 unique_name_in_owner = true
 one_shot = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -12)
+scale = Vector2(0.3, 0.3)
+sprite_frames = SubResource("SpriteFrames_o3eya")
+animation = &"eating_cookie"
+frame_progress = 0.120601
 
 [connection signal="timeout" from="AttackCooldownTimer" to="." method="_on_attack_cooldown_timer_timeout"]

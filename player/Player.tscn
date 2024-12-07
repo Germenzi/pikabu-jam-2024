@@ -32,7 +32,7 @@ height = 0.01
 [sub_resource type="Gradient" id="Gradient_e622s"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
 
-[node name="Player" type="CharacterBody2D" groups=["player"]]
+[node name="Player" type="CharacterBody2D" groups=["damagable", "player"]]
 motion_mode = 1
 slide_on_ceiling = false
 script = ExtResource("1_obxbl")
@@ -79,3 +79,5 @@ offset_top = 24.0
 offset_right = 27.0
 offset_bottom = 47.0
 text = "energy"
+
+[connection signal="energy_runout" from="." to="." method="_on_energy_runout" flags=3]

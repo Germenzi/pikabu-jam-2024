@@ -6,6 +6,7 @@ script/source = "extends Node2D
 
 @export var speed : float = 700.0
 @export var distance : float = 500.0
+@export var damage : float = 5.0
 
 @onready var _initial_position : Vector2 = global_position
 
@@ -55,7 +56,13 @@ func _slice_between_points(start:Vector2, end:Vector2) -> bool: # true if stayed
 
 
 func _process_collision(object:Object) -> bool: # true if stayed alive
-	print(\"Bullet hit %s\" % object.name)
+	if object is not Node:
+		return false
+	
+	if object.is_in_group(GroupsNamespace.DAMAGABLE):
+		object.take_damage(damage)
+	
+	print(\"Bullet hit %s for %.2f damage\" % [object.name, damage])
 	return false
 "
 

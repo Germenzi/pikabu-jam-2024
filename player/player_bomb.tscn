@@ -8,6 +8,7 @@ script/source = "extends Node2D
 @export var explosion_radius : float = 20.0
 @export var max_affected_targets : int = 1
 @export var gravity : float = 100.0
+@export var damage : float = 10.0
 
 @onready var _initial_position : Vector2 = global_position
 
@@ -50,7 +51,14 @@ func _explode() -> void:
 
 func _explode_target(target:Object) -> bool:
 	_exploded_targets_count += 1
-	print(\"Exploded: %s\" % target.name)
+	
+	if target is not Node:
+		return _exploded_targets_count < max_affected_targets
+	
+	if target.is_in_group(GroupsNamespace.DAMAGABLE):
+		target.take_damage(damage)
+	
+	print(\"Exploded: %s for %.2f dmg\" % [target.name, damage])
 	return _exploded_targets_count < max_affected_targets
 "
 

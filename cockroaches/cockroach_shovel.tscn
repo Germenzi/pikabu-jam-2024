@@ -9,6 +9,8 @@ script/source = "extends CharacterBody2D
 @export var chilling_walk_time_sec : float = 0.5
 @export var chilling_stay_time_sec : float = 0.5
 @export var attack_distance : float = 40.0
+@export var attack_damage : float = 30.0
+@export var max_health : float = 70.0
 
 @export var cookie_container : Node
 @export var bullets_container : Node
@@ -25,6 +27,7 @@ var _state : State = State.NONE
 var _attack_ready : bool = true
 
 var _target_player : Node2D = null
+var _health : float = max_health
 
 # chilling state data
 var _chilling_time : float
@@ -32,7 +35,10 @@ var _is_chilling_walk : bool = false
 
 
 func take_damage(damage:int) -> void:
-	pass
+	_health -= damage
+	if _health <= 0.0:
+		_state = State.NONE
+		queue_free()
 
 
 func _ready() -> void:
@@ -40,6 +46,8 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	%HealthLabel.text = \"Health: %.1f\" % _health
+	
 	if _state == State.IDLE:
 		_process_idle(delta)
 	elif _state == State.FOLLOWING_PLAYER:
@@ -109,6 +117,7 @@ func _state_attacking_player(player:Node2D) -> void:
 	await get_tree().create_timer(1.0).timeout
 	
 	if global_position.distance_to(player.global_position) < attack_distance:
+		player.take_damage(attack_damage)
 		print(\"player attacked\")
 	
 	_attack_ready = false
@@ -150,6 +159,14 @@ offset_left = -185.0
 offset_top = -73.0
 offset_right = 185.0
 offset_bottom = -50.0
+horizontal_alignment = 1
+
+[node name="HealthLabel" type="Label" parent="."]
+unique_name_in_owner = true
+offset_left = -184.0
+offset_top = -46.0
+offset_right = 186.0
+offset_bottom = -23.0
 horizontal_alignment = 1
 
 [node name="AttackCooldownTimer" type="Timer" parent="."]

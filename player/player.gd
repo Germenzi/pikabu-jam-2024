@@ -82,8 +82,9 @@ func play_energy_buff() -> void:
 	%AnimationPlayer.play("energy_buff")
 
 
-func proceed_collision_area(collision_area:Area2D) -> void:
-	pass
+func take_damage(damage:float) -> void:
+	_change_energy(-damage)
+
 
 
 func _process(delta: float) -> void:
@@ -283,3 +284,7 @@ func _calc_energy_level() -> PlayerNamespace.EnergyLevel:
 		return PlayerNamespace.EnergyLevel.NORMAL
 	
 	return PlayerNamespace.EnergyLevel.HIGH
+
+
+func _on_energy_runout() -> void:
+	_state = State.NONE

@@ -68,7 +68,7 @@ grow_vertical = 2
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 
 [node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(1279.56, 0)
+motion_mirroring = Vector2(1279, 0)
 
 [node name="Background" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
 position = Vector2(640, 360)
@@ -99,6 +99,7 @@ position = Vector2(0, 459)
 shape = SubResource("WorldBoundaryShape2D_sg475")
 
 [node name="Player" parent="." node_paths=PackedStringArray("bullet_container") instance=ExtResource("4_rvf3r")]
+unique_name_in_owner = true
 position = Vector2(88, 472)
 bullet_container = NodePath("../PlayerBullets")
 energy_regen_speed = 2.0
@@ -128,11 +129,11 @@ vertical_alignment = 1
 [node name="PlayerBullets" type="Node" parent="."]
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(88, 472)
+position = Vector2(104, 472)
 limit_left = 0
 limit_top = 0
+limit_right = 2000
 limit_bottom = 720
-limit_smoothed = true
 script = ExtResource("5_4gi1x")
 
 [node name="LevelHUD" type="CanvasLayer" parent="."]

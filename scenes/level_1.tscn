@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://dg8pv0nc3mu1m"]
 
-[ext_resource type="Texture2D" uid="uid://dma5yiu162184" path="res://Legacy-Fantasy - High Forest 2.3/Background/Background.png" id="1_5ir7b"]
+[ext_resource type="Texture2D" uid="uid://dma5yiu162184" path="res://Background.png" id="1_5ir7b"]
 [ext_resource type="Texture2D" uid="uid://c72x2gtw1peqg" path="res://okr.jpg" id="1_8vfel"]
 [ext_resource type="Texture2D" uid="uid://d1b6x5uxndoo4" path="res://test.png" id="2_alfl5"]
 
@@ -55,10 +55,8 @@ shape = SubResource("RectangleShape2D_lef0n")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 position = Vector2(925, 161.778)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_i26ts")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D"]
 position = Vector2(925, 660.667)
-scale = Vector2(1, 1)
 shape = SubResource("RectangleShape2D_j7dy5")

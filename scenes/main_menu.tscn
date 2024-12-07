@@ -12,8 +12,7 @@ script/source = "extends Node
 func _on_main_menu_ui_about_team_button_pressed() -> void:
 	if not GuiTransitions.in_transition():
 		GuiTransitions.go_to(\"AboutTeamUI\")
-
-
+		
 func _on_main_menu_ui_start_game_button_pressed() -> void:
 	if not GuiTransitions.in_transition():
 		GuiTransitions.go_to(\"GameMenuUI\")

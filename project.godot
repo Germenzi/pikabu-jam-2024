@@ -23,6 +23,11 @@ GuiTransitions="*res://addons/simple-gui-transitions/singleton.gd"
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+
+[editor]
+
+movie_writer/movie_file="C:/Users/sekhmych/Videos/game_gp_pikabu.avi"
 
 [editor_plugins]
 

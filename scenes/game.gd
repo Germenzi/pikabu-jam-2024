@@ -1,4 +1,4 @@
-extends Node2D
+extends Node
 
 signal player_ready
 
@@ -22,6 +22,9 @@ enum Levels {
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	load_level()
+
+func load_level():
 	$Camera2D.position.x = 0
 	$Camera2D.position.y = 0
 	$Camera2D.limit_left = camera_left_limit
@@ -29,21 +32,31 @@ func _ready() -> void:
 	$Camera2D.limit_top = camera_top_limit
 	$Camera2D.limit_bottom = camera_bottom_limit
 	
-	add_child(level.instantiate())
+	
+	var level_temp = level.instantiate()
+	level_temp.visible = false
+	level_temp.set_anchors_preset(Control.PRESET_FULL_RECT)
+	level_temp.size = Vector2(1280, 720)
+	add_child(level_temp)
 	
 	var player = preload(ScenesNamespace.PLAYER_FILEPATH)
 	player = player.instantiate()
+	player.set_process(false)
 	player.position.x = player_x
 	player.position.y = player_y
+	player.visible = false
 	add_child(player)
 	$Camera2D.player = player
 	player_ready.emit()
 	
+	
 	if not GuiTransitions.in_transition():
-		await(get_tree().create_timer(2).timeout)
-		print("HIED")
+		await(get_tree().create_timer(3).timeout)
 		GuiTransitions.hide("LoadingLevel")
-
+		await GuiTransitions.hide_completed
+		level_temp.visible = true
+		player.visible = true
+		player.set_process(true)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:

@@ -35,7 +35,7 @@ enum State {
 var _state : State = State.NONE
 var _attack_ready : bool = true
 var _target_cookie : Node2D = null
-var _health : float = max_health
+@onready var _health : float = max_health
 
 
 # chilling state data
@@ -183,7 +183,7 @@ func _state_attacking_player(player:Node2D) -> void:
 	_state = State.ATTACKING_PLAYER
 	velocity = Vector2.ZERO
 	%StateLabel.text = \"attacking player\"
-	await get_tree().create_timer(1.0).timeout
+	await get_tree().create_timer(0.5).timeout
 	if global_position.distance_to(player.global_position) <= hunt_distance:
 		var bullet : Node2D = BULLET_SCENE.instantiate()
 		bullet.global_position = global_position
@@ -199,9 +199,9 @@ func _on_attack_cooldown_timer_timeout() -> void:
 	_attack_ready = true
 
 
-func _draw() -> void:
-	draw_circle(Vector2.ZERO, hunt_distance, Color.RED, false)
-	draw_circle(Vector2.ZERO, cookie_scan_distance, Color.GREEN, false)
+#func _draw() -> void:
+	#draw_circle(Vector2.ZERO, hunt_distance, Color.RED, false)
+	#draw_circle(Vector2.ZERO, cookie_scan_distance, Color.GREEN, false)
 
 
 func _on_target_cookie_removed() -> void:
@@ -287,7 +287,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"attacking",
-"speed": 3.0
+"speed": 6.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -344,6 +344,11 @@ animations = [{
 [node name="CockroachFat" type="CharacterBody2D" groups=["damagable"]]
 motion_mode = 1
 script = SubResource("GDScript_38a08")
+hunt_distance = 350.0
+running_speed = 200.0
+cookie_drop_rate = 0.2
+cake_drop_rate = 0.0
+max_health = 100.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_7nbhp")
@@ -379,6 +384,5 @@ position = Vector2(1, -7)
 scale = Vector2(0.3, 0.3)
 sprite_frames = SubResource("SpriteFrames_o3eya")
 animation = &"attacking"
-frame_progress = 0.427286
 
 [connection signal="timeout" from="AttackCooldownTimer" to="." method="_on_attack_cooldown_timer_timeout"]

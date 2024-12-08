@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://crb667dgdds3y"]
+
+[ext_resource type="Texture2D" uid="uid://bxc4orj7jcpf1" path="res://assets/mug.png" id="1_uxlx8"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_oen4p"]
+radius = 45.0
+height = 130.0
+
+[node name="MugObjstacle" type="StaticBody2D" groups=["destructable"]]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(3.99999, -31)
+scale = Vector2(0.625, 0.625)
+texture = ExtResource("1_uxlx8")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-1, -6)
+shape = SubResource("CapsuleShape2D_oen4p")

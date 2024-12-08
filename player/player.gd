@@ -8,9 +8,6 @@ extends CharacterBody2D
 @export var flying_energy_cost : float = 30.0
 @export var dashing_energy_cost : float = 80.0
 @export var shoot_energy_cost : float = 1.0
-@export var min_energy_message_show_1 : float = 30.0
-@export var min_energy_message_show_2 : float = 20.0
-@export var min_energy_message_show_3 : float = 10.0
 
 @export_subgroup("Moving")
 @export var speed : float = 300.0
@@ -24,6 +21,7 @@ extends CharacterBody2D
 @export_subgroup("Dashing")
 @export var dash_distance : float = 250.0
 @export var dash_duration_sec : float = 0.4
+@export var dash_damage : float = 50.0
 
 signal energy_runout
 signal energy_level_changed(new_level:PlayerNamespace.EnergyLevel)
@@ -46,9 +44,17 @@ var energy : float :
 		return _energy
 
 var allow_walk : bool = true
-var allow_jump : bool = true
-var allow_dash : bool = true
-var allow_shoot : bool = true
+var allow_jump : bool = false
+var allow_dash : bool = false :
+	get:
+		return allow_dash
+	set(v):
+		if v:
+			%EnergyBall.color = Color.GOLD
+		else:
+			%EnergyBall.color = Color.WHITE
+		allow_dash = v
+var allow_shoot : bool = false
 
 var _state : State = State.MOVING
 
@@ -119,14 +125,14 @@ func _process_moving(delta:float) -> void:
 		velocity = Vector2.ZERO
 	
 	if Input.is_action_just_pressed("player_fly_ability"):
-		if allow_jump:
+		if allow_jump and _energy > flying_energy_cost:
 			_state_flying(_moving_direction)
 	
 	if Input.is_action_just_pressed("player_dash_ability"):
 		if _moving_direction.length() >= 0.01 and allow_dash:
 			_state_dashing(_moving_direction)
 	
-	if allow_shoot:
+	if allow_shoot and _energy > shoot_energy_cost:
 		if Input.is_action_just_pressed("shoot_down"):
 			_change_energy(-shoot_energy_cost)
 			var bullet : Node2D = BULLET_SCENE.instantiate()
@@ -216,6 +222,8 @@ func _change_energy(amount:float) -> void:
 	if updated_energy_level != _energy_level:
 		_energy_level = updated_energy_level
 		energy_level_changed.emit(_energy_level)
+	
+	%EnergyBall.self_modulate.a = lerp(0.0, 1.0, _energy/max_energy)
 
 
 func _set_height(new_height:float) -> void:
@@ -240,7 +248,6 @@ func _state_flying(flying_direction:Vector2) -> void:
 
 
 func _state_dashing(dashing_direction:Vector2) -> void:
-	_change_energy(-dashing_energy_cost)
 	_set_ghost(true)
 	_initial_dashing_global_position = global_position
 	_finish_dashing_global_position = global_position + dashing_direction.normalized()*dash_distance
@@ -248,6 +255,7 @@ func _state_dashing(dashing_direction:Vector2) -> void:
 	velocity = Vector2.ZERO
 	_dashed_rids = []
 	_state = State.DASHING
+	allow_dash = false
 
 
 func _slice_between_points(start:Vector2, end:Vector2) -> bool: # returns true if continue dashing
@@ -279,7 +287,7 @@ func _process_dash_sliced_object(object:Object) -> bool:
 		if object.is_in_group(GroupsNamespace.DESTRUCTABLE_OBJECT):
 			object.queue_free()
 		elif object.is_in_group(GroupsNamespace.DAMAGABLE):
-			object.take_damage(9999999999.0)
+			object.take_damage(dash_damage)
 		else:
 			_state_moving.call_deferred()
 			return false

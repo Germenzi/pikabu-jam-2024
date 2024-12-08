@@ -43,6 +43,7 @@ cookie="Cookie that heals"
 damagable="Has method \"take_damage(int)\""
 hunted_by_fat="Cookie, already hunted by fat cockroach"
 dash_immunity="Impossible to dash through"
+cake="Cake object, giving dash"
 
 [gui_transitions]
 

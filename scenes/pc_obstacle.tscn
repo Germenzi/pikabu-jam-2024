@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://bo36t0nl5y850"]
+
+[ext_resource type="Texture2D" uid="uid://dmuopmca1ardb" path="res://assets/computer.png" id="1_1g0ww"]
+
+[node name="PcObstacle" type="StaticBody2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(12, -46)
+texture = ExtResource("1_1g0ww")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." groups=["destructable"]]
+polygon = PackedVector2Array(-104, 93, -31, 110, 92, 75, 90, -113, -86, -82, -134, -53)

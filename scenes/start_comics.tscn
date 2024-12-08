@@ -1,0 +1,38 @@
+[gd_scene load_steps=3 format=3 uid="uid://bsj87w44h1jhp"]
+
+[ext_resource type="Texture2D" uid="uid://dk5ubeu7r3so4" path="res://start_comics.jpg" id="1_wpago"]
+
+[sub_resource type="GDScript" id="GDScript_8ni01"]
+script/source = "extends Control
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	await get_tree().create_timer(5).timeout
+	get_tree().change_scene_to_file(\"res://scenes/level_1.tscn\")
+"
+
+[node name="StartComics" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_8ni01")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="CenterContainer/VBoxContainer"]
+scale = Vector2(0.805, 0.805)
+texture = ExtResource("1_wpago")

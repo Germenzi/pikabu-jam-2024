@@ -34,81 +34,87 @@ script = SubResource("GDScript_h70fo")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 60
 alignment = 1
 
 [node name="TeamLabel" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Команда: Название команды"
+theme_override_font_sizes/font_size = 36
+text = "Команда: Ludum Dare"
 horizontal_alignment = 1
 
 [node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme_override_constants/h_separation = 240
 columns = 2
 
 [node name="RoleLabel1" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-text = "Роль 1"
+theme_override_font_sizes/font_size = 26
+text = "Программист"
 
 [node name="NameLabel1" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-text = "Имя 1"
+theme_override_font_sizes/font_size = 26
+text = "Никита"
 
 [node name="RoleLabel2" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-text = "Роль2"
+theme_override_font_sizes/font_size = 26
+text = "Программист"
 
 [node name="NameLabel2" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-text = "Имя 2"
+theme_override_font_sizes/font_size = 26
+text = "Владимир"
 
 [node name="RoleLabel3" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-text = "Роль 3"
+theme_override_font_sizes/font_size = 26
+text = "Нарративный дизайнер"
 
 [node name="NameLabel3" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-text = "Имя 3"
+theme_override_font_sizes/font_size = 26
+text = "Егор"
 
 [node name="RoleLabel4" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-text = "Роль 4"
+theme_override_font_sizes/font_size = 26
+text = "Нарративный дизайнер"
 
 [node name="NameLabel4" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-text = "Имя 4"
+theme_override_font_sizes/font_size = 26
+text = "Лана"
 
 [node name="RoleLabel5" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-text = "Роль 5"
+theme_override_font_sizes/font_size = 26
+text = "Художник"
 
 [node name="NameLabel5" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-text = "Имя 5"
+theme_override_font_sizes/font_size = 26
+text = "Дмитрий"
 
 [node name="RoleLabel6" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-text = "Роль 6"
+theme_override_font_sizes/font_size = 26
+text = "Геймдизайнер, представитель"
 
 [node name="NameLabel6" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-text = "Имя 6"
-
-[node name="RoleLabel7" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
-layout_mode = 2
-text = "Роль 7"
-
-[node name="NameLabel7" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
-layout_mode = 2
-text = "Имя 7"
+theme_override_font_sizes/font_size = 26
+text = "Ксения"
 
 [node name="BackButton" type="Button" parent="MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 36
 text = "Назад"
 
 [connection signal="pressed" from="MarginContainer/BackButton" to="." method="_on_back_button_pressed"]

@@ -18,10 +18,6 @@ func _on_main_menu_ui_start_game_button_pressed() -> void:
 		GuiTransitions.go_to(\"GameMenuUI\")
 
 
-func _on_game_menu_continue_game_button_pressed() -> void:
-	pass # Replace with function body.
-
-
 func _on_game_menu_main_menu_button_pressed() -> void:
 	if not GuiTransitions.in_transition():
 		GuiTransitions.go_to(\"MainMenuUI\")
@@ -31,7 +27,7 @@ func _on_game_menu_new_game_button_pressed() -> void:
 	if not GuiTransitions.in_transition():
 		GuiTransitions.hide()
 		await GuiTransitions.hide_completed
-		get_tree().change_scene_to_file(\"res://scenes/level_1.tscn\")
+		get_tree().change_scene_to_file(\"res://scenes/start_comics.tscn\")
 
 
 func _on_about_team_ui_back_button_pressed() -> void:
@@ -85,7 +81,6 @@ layout = NodePath("..")
 
 [connection signal="about_team_button_pressed" from="MainMenuUI" to="." method="_on_main_menu_ui_about_team_button_pressed"]
 [connection signal="start_game_button_pressed" from="MainMenuUI" to="." method="_on_main_menu_ui_start_game_button_pressed"]
-[connection signal="continue_game_button_pressed" from="GameMenuUI" to="." method="_on_game_menu_continue_game_button_pressed"]
 [connection signal="main_menu_button_pressed" from="GameMenuUI" to="." method="_on_game_menu_main_menu_button_pressed"]
 [connection signal="new_game_button_pressed" from="GameMenuUI" to="." method="_on_game_menu_new_game_button_pressed"]
 [connection signal="back_button_pressed" from="AboutTeamUI" to="." method="_on_about_team_ui_back_button_pressed"]

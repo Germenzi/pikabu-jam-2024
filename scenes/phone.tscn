@@ -1,5 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://b6acobdd1i8mc"]
 
+[ext_resource type="Texture2D" uid="uid://bjipc46dngrst" path="res://assets/phone and book.png" id="1_gt840"]
+
 [sub_resource type="GDScript" id="GDScript_npwxh"]
 resource_name = "main"
 script/source = "extends StaticBody2D
@@ -38,19 +40,21 @@ func _process(delta: float) -> void:
 	%HealthLabel.text = \"Health: %.1f\\nDamagable: %s\\nStage: %s\" % [health, _taking_damage, round(health/_max_health * stages)]
 "
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_855ep"]
-size = Vector2(112, 208)
-
 [node name="Phone" type="StaticBody2D" groups=["damagable", "dash_immunity"]]
 script = SubResource("GDScript_npwxh")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_855ep")
-
 [node name="HealthLabel" type="Label" parent="."]
 unique_name_in_owner = true
+visible = false
 offset_left = -607.0
-offset_top = -193.0
+offset_top = -291.0
 offset_right = 603.0
-offset_bottom = -145.0
+offset_bottom = -243.0
 horizontal_alignment = 1
+
+[node name="PhoneAndBook" type="Sprite2D" parent="."]
+position = Vector2(113, -56)
+texture = ExtResource("1_gt840")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-79, 89, 39, 126, 121, -154, -18, -162)

@@ -66,6 +66,7 @@ script = SubResource("GDScript_rx2pe")
 speed = 50.0
 explosion_radius = 10.0
 gravity = 200.0
+damage = 20.0
 
 [node name="Polygon2D" type="Polygon2D" parent="."]
 position = Vector2(1, -1)

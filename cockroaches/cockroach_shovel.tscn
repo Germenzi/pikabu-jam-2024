@@ -143,7 +143,7 @@ func _state_attacking_player(player:Node2D) -> void:
 	_state = State.ATTACKING_PLAYER
 	velocity = Vector2.ZERO
 	%StateLabel.text = \"attacking player\"
-	await get_tree().create_timer(1.0).timeout
+	await get_tree().create_timer(0.5).timeout
 	
 	if global_position.distance_to(player.global_position) < attack_distance:
 		player.take_damage(attack_damage)
@@ -166,9 +166,9 @@ func _on_attack_cooldown_timer_timeout() -> void:
 	_attack_ready = true
 
 
-func _draw() -> void:
-	draw_circle(Vector2.ZERO, hunt_distance, Color.RED, false)
-	draw_circle(Vector2.ZERO, attack_distance, Color.GREEN, false)
+#func _draw() -> void:
+	#draw_circle(Vector2.ZERO, hunt_distance, Color.RED, false)
+	#draw_circle(Vector2.ZERO, attack_distance, Color.GREEN, false)
 "
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2kqfu"]
@@ -224,7 +224,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"attack",
-"speed": 3.0
+"speed": 6.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -258,8 +258,13 @@ animations = [{
 [node name="CockroachShovel" type="CharacterBody2D" groups=["damagable"]]
 motion_mode = 1
 script = SubResource("GDScript_38a08")
-hunt_distance = 250.0
-running_speed = 150.0
+hunt_distance = 300.0
+running_speed = 200.0
+attack_distance = 60.0
+attack_damage = 20.0
+max_health = 60.0
+cookie_drop_rate = 0.1
+cake_drop_rate = 0.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0.5, 13)
@@ -292,6 +297,7 @@ position = Vector2(-1, -8)
 scale = Vector2(0.3, 0.3)
 sprite_frames = SubResource("SpriteFrames_x41un")
 animation = &"attack"
-frame_progress = 0.940642
+frame = 1
+frame_progress = 0.394216
 
 [connection signal="timeout" from="AttackCooldownTimer" to="." method="_on_attack_cooldown_timer_timeout"]

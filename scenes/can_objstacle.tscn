@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://bwpmlrwjjjxny"]
+
+[ext_resource type="Texture2D" uid="uid://dc1jj24juwme2" path="res://assets/can.png" id="1_m5ie1"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_l87fg"]
+radius = 36.0
+height = 148.0
+
+[node name="CanObjstacle" type="StaticBody2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(10, -19)
+scale = Vector2(0.52625, 0.52625)
+texture = ExtResource("1_m5ie1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=["destructable"]]
+shape = SubResource("CapsuleShape2D_l87fg")

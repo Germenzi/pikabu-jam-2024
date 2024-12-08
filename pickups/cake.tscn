@@ -12,13 +12,14 @@ script/source = "extends Area2D
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group(GroupsNamespace.PLAYER):
 		body.take_heal(healing_amount)
+		body.allow_dash = true
 		queue_free()
 "
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_02qvi"]
 size = Vector2(30, 30)
 
-[node name="Cake" type="Area2D" groups=["cookie"]]
+[node name="Cake" type="Area2D" groups=["cake", "cookie"]]
 script = SubResource("GDScript_ba513")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

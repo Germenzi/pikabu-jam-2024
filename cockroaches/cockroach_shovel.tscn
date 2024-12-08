@@ -1,4 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://cu1opk84g5j3u"]
+[gd_scene load_steps=16 format=3 uid="uid://cu1opk84g5j3u"]
+
+[ext_resource type="Texture2D" uid="uid://ds317wjep3rlx" path="res://assets/shovel-attack.png" id="1_qon1v"]
+[ext_resource type="Texture2D" uid="uid://dfe0re316871a" path="res://assets/shovel-idle.png" id="1_uynmc"]
+[ext_resource type="Texture2D" uid="uid://cnx3nt5whsnmi" path="res://assets/shovel-walk.png" id="3_78hep"]
 
 [sub_resource type="GDScript" id="GDScript_38a08"]
 resource_name = "main"
@@ -92,21 +96,26 @@ func _process_idle(delta:float) -> void:
 				_chilling_time = 0.0
 				_is_chilling_walk = false
 				velocity = Vector2.ZERO
+				%AnimatedSprite.play(\"idle\")
 		else:
 			if _chilling_time >= chilling_stay_time_sec:
 				_chilling_time = 0.0
 				_is_chilling_walk = true
 				velocity = Vector2.RIGHT.rotated(2*PI*randf())*running_speed
+				%AnimatedSprite.play(\"walk\")
+				if sign(%AnimatedSprite.scale.x) != sign(velocity.x) and abs(velocity.x) >= 0.001:
+					%AnimatedSprite.scale = Vector2(%AnimatedSprite.scale.x*-1, %AnimatedSprite.scale.y)
 	else:
 		_state_following_player(nearest)
 
 
 
 func _process_following_player(delta:float) -> void:
-	if global_position.distance_to(_target_player.global_position):
+	if global_position.distance_to(_target_player.global_position) > hunt_distance:
 		_state_idle()
 	
 	if abs(global_position.x - _target_player.global_position.x) < attack_distance:
+		%AnimatedSprite.scale.x = abs(%AnimatedSprite.scale.x)*sign(_target_player.global_position.x - global_position.x)
 		if abs(global_position.y - _target_player.global_position.y) >= 5.0:
 			velocity = Vector2(-sign(_target_player.global_position.x - global_position.x), sign(_target_player.global_position.y - global_position.y)).normalized()*running_speed
 		elif _attack_ready:
@@ -118,14 +127,19 @@ func _process_following_player(delta:float) -> void:
 	else:
 		var dir : Vector2 = global_position.direction_to(_target_player.global_position)
 		velocity = dir * running_speed
+	
+		if sign(%AnimatedSprite.scale.x) != sign(velocity.x) and abs(velocity.x) >= 0.001:
+			%AnimatedSprite.scale = Vector2(%AnimatedSprite.scale.x*-1, %AnimatedSprite.scale.y)
 
 
 func _state_idle() -> void:
+	%AnimatedSprite.play(\"idle\")
 	velocity = Vector2.ZERO
 	_state = State.IDLE
 
 
 func _state_attacking_player(player:Node2D) -> void:
+	%AnimatedSprite.play(\"attack\")
 	_state = State.ATTACKING_PLAYER
 	velocity = Vector2.ZERO
 	%StateLabel.text = \"attacking player\"
@@ -142,6 +156,7 @@ func _state_attacking_player(player:Node2D) -> void:
 
 
 func _state_following_player(player:Node2D) -> void:
+	%AnimatedSprite.play(\"walk\")
 	_state = State.FOLLOWING_PLAYER
 	_target_player = player
 	%StateLabel.text = \"following player\"
@@ -157,7 +172,88 @@ func _draw() -> void:
 "
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2kqfu"]
-size = Vector2(26, 36)
+size = Vector2(29, 72)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rxgnu"]
+atlas = ExtResource("1_qon1v")
+region = Rect2(0, 0, 237, 386)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6emsb"]
+atlas = ExtResource("1_qon1v")
+region = Rect2(237, 0, 237, 386)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lqrxq"]
+atlas = ExtResource("1_qon1v")
+region = Rect2(474, 0, 237, 386)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mi216"]
+atlas = ExtResource("1_uynmc")
+region = Rect2(0, 0, 237, 386)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l127c"]
+atlas = ExtResource("1_uynmc")
+region = Rect2(237, 0, 237, 386)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nbx2l"]
+atlas = ExtResource("1_uynmc")
+region = Rect2(474, 0, 237, 386)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rufsa"]
+atlas = ExtResource("1_uynmc")
+region = Rect2(711, 0, 237, 386)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6webt"]
+atlas = ExtResource("3_78hep")
+region = Rect2(0, 0, 237, 386)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6v4sc"]
+atlas = ExtResource("3_78hep")
+region = Rect2(237, 0, 237, 386)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_x41un"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rxgnu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6emsb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lqrxq")
+}],
+"loop": true,
+"name": &"attack",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mi216")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l127c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nbx2l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rufsa")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6webt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6v4sc")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 3.0
+}]
 
 [node name="CockroachShovel" type="CharacterBody2D" groups=["damagable"]]
 motion_mode = 1
@@ -166,6 +262,7 @@ hunt_distance = 250.0
 running_speed = 150.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.5, 13)
 shape = SubResource("RectangleShape2D_2kqfu")
 
 [node name="StateLabel" type="Label" parent="."]
@@ -186,6 +283,15 @@ horizontal_alignment = 1
 
 [node name="AttackCooldownTimer" type="Timer" parent="."]
 unique_name_in_owner = true
+wait_time = 0.05
 one_shot = true
+
+[node name="AnimatedSprite" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(-1, -8)
+scale = Vector2(0.3, 0.3)
+sprite_frames = SubResource("SpriteFrames_x41un")
+animation = &"attack"
+frame_progress = 0.940642
 
 [connection signal="timeout" from="AttackCooldownTimer" to="." method="_on_attack_cooldown_timer_timeout"]

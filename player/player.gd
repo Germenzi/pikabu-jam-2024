@@ -45,10 +45,10 @@ var energy : float :
 	get:
 		return _energy
 
-var allow_walk : bool = false
-var allow_jump : bool = false
-var allow_dash : bool = false
-var allow_shoot : bool = false
+var allow_walk : bool = true
+var allow_jump : bool = true
+var allow_dash : bool = true
+var allow_shoot : bool = true
 
 var _state : State = State.MOVING
 

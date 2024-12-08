@@ -308,6 +308,9 @@ unique_name_in_owner = true
 [node name="Cake" parent="Cookies" instance=ExtResource("8_gx4r8")]
 position = Vector2(4438, 448)
 
+[node name="Cake2" parent="Cookies" instance=ExtResource("8_gx4r8")]
+position = Vector2(774, 478)
+
 [node name="TutorialAreas" type="Node" parent="."]
 script = SubResource("GDScript_cois7")
 
@@ -365,6 +368,16 @@ hunt_distance = 300.0
 cookie_scan_distance = 1.0
 running_speed = 150.0
 chilling_walk_time_sec = 0.0
+cookie_drop_rate = 1.0
+cake_drop_rate = 0.0
+cookie_container = NodePath("../../Cookies")
+bullets_container = NodePath("../Bullets")
+
+[node name="FirstCockroach2" parent="Cockroaches" node_paths=PackedStringArray("cookie_container", "bullets_container") instance=ExtResource("6_uhv55")]
+unique_name_in_owner = true
+position = Vector2(520, 466)
+hunt_distance = 300.0
+running_speed = 150.0
 cookie_drop_rate = 1.0
 cake_drop_rate = 0.0
 cookie_container = NodePath("../../Cookies")

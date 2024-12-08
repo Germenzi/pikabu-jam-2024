@@ -404,8 +404,6 @@ shape = SubResource("CapsuleShape2D_7nbhp")
 
 [node name="NavigationAgent" type="NavigationAgent2D" parent="."]
 unique_name_in_owner = true
-debug_enabled = true
-debug_use_custom = true
 
 [node name="StateLabel" type="Label" parent="."]
 unique_name_in_owner = true

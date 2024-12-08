@@ -1,0 +1,71 @@
+[gd_scene load_steps=2 format=3 uid="uid://b01m8jpwgisf0"]
+
+[sub_resource type="GDScript" id="GDScript_3u7pb"]
+script/source = "extends Control
+
+signal main_menu_button_pressed
+signal restart_button_pressed
+
+func _on_main_menu_button_pressed() -> void:
+	#main_menu_button_pressed.emit()
+	get_tree().change_scene_to_file(\"res://scenes/main_menu.tscn\")
+
+
+func _on_restart_button_pressed() -> void:
+	#restart_button_pressed.emit()
+	get_tree().change_scene_to_file(\"res://scenes/level_1.tscn\")
+"
+
+[node name="GameOverUi" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_3u7pb")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 24
+text = "Утром вы просто не проснулись...."
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+
+[node name="MainMenuButton" type="Button" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 24
+text = "Main Menu"
+
+[node name="RestartButton" type="Button" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 24
+text = "Restart"
+
+[connection signal="pressed" from="MarginContainer/HBoxContainer/MainMenuButton" to="." method="_on_main_menu_button_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/RestartButton" to="." method="_on_restart_button_pressed"]

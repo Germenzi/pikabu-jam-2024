@@ -292,3 +292,5 @@ func _calc_energy_level() -> PlayerNamespace.EnergyLevel:
 
 func _on_energy_runout() -> void:
 	_state = State.NONE
+	await get_tree().create_timer(2).timeout
+	get_tree().change_scene_to_file("res://scenes/game_over.tscn")

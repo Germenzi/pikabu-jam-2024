@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://bsj87w44h1jhp"]
+[gd_scene load_steps=4 format=3 uid="uid://bsj87w44h1jhp"]
 
 [ext_resource type="Texture2D" uid="uid://xqnnns3w8p86" path="res://tutorial.jpg" id="1_jc3cr"]
+[ext_resource type="AudioStream" uid="uid://bsi4gwcxytxrg" path="res://sounds/Keyboard_comic_sound.wav" id="2_oewyb"]
 
 [sub_resource type="GDScript" id="GDScript_8ni01"]
 script/source = "extends Control
@@ -9,6 +10,10 @@ var scene : PackedScene = preload(\"res://scenes/level_1.tscn\")
 
 func _on_button_pressed() -> void:
 	get_tree().change_scene_to_packed(scene)
+
+
+func _on_audio_stream_player_2d_finished() -> void:
+	$AudioStreamPlayer2D.play()
 "
 
 [node name="StartComics" type="Control"]
@@ -44,4 +49,10 @@ offset_bottom = 706.0
 theme_override_font_sizes/font_size = 36
 text = "Далее"
 
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+visible = false
+stream = ExtResource("2_oewyb")
+autoplay = true
+
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
+[connection signal="finished" from="AudioStreamPlayer2D" to="." method="_on_audio_stream_player_2d_finished"]

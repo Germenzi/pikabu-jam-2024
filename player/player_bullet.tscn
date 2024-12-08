@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://xi3u0frfutc5"]
+[gd_scene load_steps=3 format=3 uid="uid://xi3u0frfutc5"]
 
 [sub_resource type="GDScript" id="GDScript_g8i45"]
 resource_name = "main"
@@ -65,10 +65,20 @@ func _process_collision(object:Object) -> bool: # true if stayed alive
 	return false
 "
 
+[sub_resource type="Gradient" id="Gradient_0eayy"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
 [node name="PlayerBullet" type="Node2D"]
 script = SubResource("GDScript_g8i45")
 distance = 300.0
 damage = 10.0
 
-[node name="Polygon2D" type="Polygon2D" parent="."]
-polygon = PackedVector2Array(-3, 1, 1, 4, 4, -1, -1, -4)
+[node name="EnergyBall" type="CPUParticles2D" parent="."]
+unique_name_in_owner = true
+amount = 500
+lifetime = 0.4
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 47.87
+initial_velocity_max = 47.87
+color_ramp = SubResource("Gradient_0eayy")

@@ -95,6 +95,7 @@ func play_energy_buff() -> void:
 
 
 func take_damage(damage:float) -> void:
+	%DamageSound.play()
 	_change_energy(-damage)
 
 
@@ -135,6 +136,7 @@ func _process_moving(delta:float) -> void:
 	
 	if allow_shoot and _energy > shoot_energy_cost:
 		if Input.is_action_just_pressed("shoot_down"):
+			%ShootSound.play()
 			_change_energy(-shoot_energy_cost)
 			var bullet : Node2D = BULLET_SCENE.instantiate()
 			bullet.flying_direction = Vector2.DOWN
@@ -143,6 +145,7 @@ func _process_moving(delta:float) -> void:
 			bullet_container.add_child(bullet)
 		
 		if Input.is_action_just_pressed("shoot_left"):
+			%ShootSound.play()
 			_change_energy(-shoot_energy_cost)
 			var bullet : Node2D = BULLET_SCENE.instantiate()
 			bullet.flying_direction = Vector2.LEFT
@@ -151,6 +154,7 @@ func _process_moving(delta:float) -> void:
 			bullet_container.add_child(bullet)
 		
 		if Input.is_action_just_pressed("shoot_right"):
+			%ShootSound.play()
 			_change_energy(-shoot_energy_cost)
 			var bullet : Node2D = BULLET_SCENE.instantiate()
 			bullet.flying_direction = Vector2.RIGHT
@@ -159,6 +163,7 @@ func _process_moving(delta:float) -> void:
 			bullet_container.add_child(bullet)
 		
 		if Input.is_action_just_pressed("shoot_up"):
+			%ShootSound.play()
 			_change_energy(-shoot_energy_cost)
 			var bullet : Node2D = BULLET_SCENE.instantiate()
 			bullet.flying_direction = Vector2.UP
@@ -178,6 +183,7 @@ func _process_flying(delta:float) -> void:
 	
 	if allow_shoot:
 		if Input.is_action_just_pressed("player_bomb_action"):
+			%ShootSound.play()
 			_change_energy(shoot_energy_cost)
 			var bullet : Node2D = BOMB_SCENE.instantiate()
 			bullet.height = _height
@@ -239,6 +245,7 @@ func _state_moving() -> void:
 
 
 func _state_flying(flying_direction:Vector2) -> void:
+	%JumpSound.play()
 	_change_energy(-flying_energy_cost)
 	_set_ghost(true)
 	_initial_flying_global_position = global_position

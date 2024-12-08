@@ -296,8 +296,12 @@ shape = SubResource("WorldBoundaryShape2D_34wev")
 disabled = true
 
 [node name="CanObjstacle" parent="Obstacles" instance=ExtResource("8_urq80")]
-position = Vector2(1837, 382)
+position = Vector2(1975, 363)
 rotation = 0.445059
+
+[node name="CanObjstacle7" parent="Obstacles" instance=ExtResource("8_urq80")]
+position = Vector2(1843, 360)
+rotation = -1.69471
 
 [node name="PcObstacle" parent="Obstacles" instance=ExtResource("9_ql67c")]
 position = Vector2(541, 356)
@@ -389,6 +393,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="HideTimer" type="Timer" parent="Player/PlayerMessageBG"]
+wait_time = 2.5
 
 [node name="PlayerBullets" type="Node" parent="."]
 

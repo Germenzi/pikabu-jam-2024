@@ -1,4 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://ice8xs2w7uds"]
+[gd_scene load_steps=3 format=3 uid="uid://ice8xs2w7uds"]
+
+[ext_resource type="Texture2D" uid="uid://bfxw3pj38sc3c" path="res://мусор.png" id="1_vk46y"]
 
 [sub_resource type="GDScript" id="GDScript_g8i45"]
 resource_name = "main"
@@ -71,5 +73,11 @@ speed = 500.0
 damage = 10.0
 
 [node name="Polygon2D" type="Polygon2D" parent="."]
+visible = false
 color = Color(1, 1, 0, 1)
 polygon = PackedVector2Array(-4, 2, 4, 5, 7, -1, -4, -5)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -3)
+scale = Vector2(0.133333, 0.133333)
+texture = ExtResource("1_vk46y")

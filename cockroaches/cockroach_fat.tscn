@@ -33,7 +33,7 @@ enum State {
 }
 
 
-var _state : State = State.NONE
+var _state : State = State.IDLE
 var _attack_ready : bool = true
 var _target_cookie : Node2D = null
 @onready var _health : float = max_health
@@ -73,6 +73,7 @@ func take_damage(damage:int) -> void:
 		%StateLabel.text = \"dead\"
 		velocity = Vector2.ZERO
 		await %AnimatedSprite.animation_finished
+		%StateLabel.text = \"already dead\"
 		queue_free()
 
 
@@ -153,12 +154,16 @@ func _process_idle(delta:float) -> void:
 
 
 func _state_idle() -> void:
+	if _state == State.NONE:
+		return
 	%AnimatedSprite.play(\"idle\")
 	velocity = Vector2.ZERO
 	_state = State.IDLE
 
 
 func _state_hunting_cookie(cookie:Node2D) -> void:
+	if _state == State.NONE:
+		return
 	%AnimatedSprite.play(\"walking\")
 	velocity = Vector2.ZERO
 	cookie.tree_exited.connect(_on_target_cookie_removed, CONNECT_ONE_SHOT)
@@ -170,6 +175,8 @@ func _state_hunting_cookie(cookie:Node2D) -> void:
 
 
 func _state_eating_cookie() -> void:
+	if _state == State.NONE:
+		return
 	%AnimatedSprite.play(\"eating_cookie\")
 	_state = State.EATING_COOKIE
 	%StateLabel.text = \"eating cookie\"
@@ -184,6 +191,8 @@ func _state_eating_cookie() -> void:
 
 
 func _state_attacking_player(player:Node2D) -> void:
+	if _state == State.NONE:
+		return
 	const BULLET_SCENE : PackedScene = preload(ScenesNamespace.COCKROACH_BULLET_FILEPATH)
 	%AnimatedSprite.scale = Vector2(abs(%AnimatedSprite.scale.x)*sign(global_position.x-player.global_position.x), %AnimatedSprite.scale.y)
 	%AnimatedSprite.play(\"attacking\")

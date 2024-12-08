@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://bbmol3s4xc4e7"]
+
+[ext_resource type="Texture2D" uid="uid://refea6scc6nu" path="res://assets/pile.png" id="1_t2uaa"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_77ir3"]
+size = Vector2(162, 132)
+
+[node name="MugObjstacle" type="StaticBody2D" groups=["destructable"]]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(3.99999, -31)
+scale = Vector2(0.625, 0.625)
+texture = ExtResource("1_t2uaa")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-1, -6)
+shape = SubResource("RectangleShape2D_77ir3")

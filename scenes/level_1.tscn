@@ -1,9 +1,10 @@
-[gd_scene load_steps=35 format=3 uid="uid://dg8pv0nc3mu1m"]
+[gd_scene load_steps=38 format=3 uid="uid://dg8pv0nc3mu1m"]
 
 [ext_resource type="Texture2D" uid="uid://d1b6x5uxndoo4" path="res://test.png" id="2_alfl5"]
 [ext_resource type="PackedScene" uid="uid://dg5mqjc8kv415" path="res://player/Player.tscn" id="4_rvf3r"]
 [ext_resource type="Script" path="res://scenes/camera_2d.gd" id="5_4gi1x"]
 [ext_resource type="Script" path="res://scenes/rotating.gd" id="5_8t18p"]
+[ext_resource type="PackedScene" uid="uid://bbmol3s4xc4e7" path="res://scenes/heap_objstacle.tscn" id="6_ohe81"]
 [ext_resource type="Shader" path="res://vignette.gdshader" id="6_rpb5q"]
 [ext_resource type="PackedScene" uid="uid://c2h3kd7hpvrbn" path="res://cockroaches/cockroach_fat.tscn" id="6_uhv55"]
 [ext_resource type="PackedScene" uid="uid://b6acobdd1i8mc" path="res://scenes/phone.tscn" id="7_jh8l6"]
@@ -11,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://bwpmlrwjjjxny" path="res://scenes/can_objstacle.tscn" id="8_urq80"]
 [ext_resource type="PackedScene" uid="uid://bo36t0nl5y850" path="res://scenes/pc_obstacle.tscn" id="9_ql67c"]
 [ext_resource type="PackedScene" uid="uid://crb667dgdds3y" path="res://scenes/mug_objstacle.tscn" id="10_ndagk"]
+[ext_resource type="Texture2D" uid="uid://cqh7t0hjcn8jg" path="res://assets/gold-plus.png" id="10_y0aco"]
 
 [sub_resource type="GDScript" id="GDScript_rom7t"]
 script/source = "extends Node
@@ -170,6 +172,11 @@ func _on_phone_area_body_entered(body: Node2D) -> void:
 		%PhoneArenaLimiter.set_deferred(\"disabled\", false)
 		%CookieSpawner.activate()
 		%PlayerMessageBG.show_message(\"  Вот оно - лицо прокрастинции. Надо показать ему!  \")
+
+
+func _on_plus_area_body_entered(body: Node2D) -> void:
+	if body.is_in_group(GroupsNamespace.PLAYER):
+		get_tree().change_scene_to_file(\"res://scenes/main_menu.tscn\")
 "
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_p7mxx"]
@@ -183,6 +190,9 @@ size = Vector2(506, 426)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iajsx"]
 size = Vector2(478, 348)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xp4wh"]
+size = Vector2(164, 166)
 
 [sub_resource type="GDScript" id="GDScript_73wuf"]
 resource_name = "level_hud"
@@ -296,11 +306,11 @@ shape = SubResource("WorldBoundaryShape2D_34wev")
 disabled = true
 
 [node name="CanObjstacle" parent="Obstacles" instance=ExtResource("8_urq80")]
-position = Vector2(1975, 363)
+position = Vector2(1957, 418)
 rotation = 0.445059
 
 [node name="CanObjstacle7" parent="Obstacles" instance=ExtResource("8_urq80")]
-position = Vector2(1843, 360)
+position = Vector2(1838, 377)
 rotation = -1.69471
 
 [node name="PcObstacle" parent="Obstacles" instance=ExtResource("9_ql67c")]
@@ -308,9 +318,6 @@ position = Vector2(541, 356)
 
 [node name="MugObjstacle" parent="Obstacles" instance=ExtResource("10_ndagk")]
 position = Vector2(2357, 478)
-
-[node name="PcObstacle2" parent="Obstacles" instance=ExtResource("9_ql67c")]
-position = Vector2(1901, 502)
 
 [node name="MugObjstacle2" parent="Obstacles" instance=ExtResource("10_ndagk")]
 position = Vector2(3664, 398)
@@ -353,6 +360,9 @@ script = ExtResource("5_8t18p")
 [node name="MugObjstacle5" parent="Obstacles" instance=ExtResource("10_ndagk")]
 position = Vector2(5148, 190)
 script = ExtResource("5_8t18p")
+
+[node name="MugObjstacle6" parent="Obstacles" instance=ExtResource("6_ohe81")]
+position = Vector2(1887, 526)
 
 [node name="Player" parent="." node_paths=PackedStringArray("bullet_container") instance=ExtResource("4_rvf3r")]
 unique_name_in_owner = true
@@ -461,6 +471,17 @@ position = Vector2(4861, 506)
 position = Vector2(3, -39)
 shape = SubResource("RectangleShape2D_iajsx")
 
+[node name="PlusArea" type="Area2D" parent="TutorialAreas"]
+unique_name_in_owner = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TutorialAreas/PlusArea"]
+position = Vector2(6417, 464)
+shape = SubResource("RectangleShape2D_xp4wh")
+
+[node name="Plus" type="Sprite2D" parent="TutorialAreas/PlusArea"]
+position = Vector2(6417, 464)
+texture = ExtResource("10_y0aco")
+
 [node name="LevelHUD" type="CanvasLayer" parent="."]
 script = SubResource("GDScript_73wuf")
 
@@ -508,5 +529,6 @@ position = Vector2(4861, 502)
 [connection signal="body_entered" from="TutorialAreas/CockroachActivate" to="TutorialAreas" method="_on_cockroach_activate_body_entered"]
 [connection signal="body_entered" from="TutorialAreas/AllowDash" to="TutorialAreas" method="_on_allow_dash_body_entered"]
 [connection signal="body_entered" from="TutorialAreas/PhoneArea" to="TutorialAreas" method="_on_phone_area_body_entered"]
+[connection signal="body_entered" from="TutorialAreas/PlusArea" to="TutorialAreas" method="_on_plus_area_body_entered"]
 [connection signal="destroyed" from="PhoneBoss/Phone" to="PhoneBoss" method="_on_phone_destroyed"]
 [connection signal="stage_changed" from="PhoneBoss/Phone" to="PhoneBoss" method="_on_phone_stage_changed"]

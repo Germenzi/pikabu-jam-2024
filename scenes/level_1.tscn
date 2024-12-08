@@ -263,6 +263,7 @@ func _on_gang_cleared() -> void:
 
 func _on_phone_destroyed() -> void:
 	print(\"---------------------------------YOU WIN!!!!!!!!!!----------------------------\")
+	$Phone.queue_free()
 "
 
 [node name="Level1" type="Node"]

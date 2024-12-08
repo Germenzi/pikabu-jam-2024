@@ -59,6 +59,7 @@ var allow_shoot : bool = false
 var _state : State = State.MOVING
 
 var _ghost : bool = false # no damage and ignore obsctacles
+@onready
 var _energy : float = max_energy
 var _moving_direction : Vector2
 var _height : float = 0.0

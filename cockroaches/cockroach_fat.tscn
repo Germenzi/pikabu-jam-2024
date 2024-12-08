@@ -346,8 +346,6 @@ motion_mode = 1
 script = SubResource("GDScript_38a08")
 hunt_distance = 350.0
 running_speed = 200.0
-cookie_drop_rate = 0.2
-cake_drop_rate = 0.0
 max_health = 100.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

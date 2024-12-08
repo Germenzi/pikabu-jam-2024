@@ -1,4 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://drou6gyyk1wv3"]
+[gd_scene load_steps=4 format=3 uid="uid://drou6gyyk1wv3"]
+
+[ext_resource type="Texture2D" uid="uid://b4yj6gp444dvy" path="res://assets/cookie-test.jpg" id="1_fug15"]
 
 [sub_resource type="GDScript" id="GDScript_ba513"]
 resource_name = "main"
@@ -21,5 +23,10 @@ script = SubResource("GDScript_ba513")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_454l3")
+
+[node name="Cookie-test" type="Sprite2D" parent="."]
+position = Vector2(0, -1)
+scale = Vector2(0.14, 0.14)
+texture = ExtResource("1_fug15")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

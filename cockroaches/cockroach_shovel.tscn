@@ -263,8 +263,6 @@ running_speed = 200.0
 attack_distance = 60.0
 attack_damage = 20.0
 max_health = 60.0
-cookie_drop_rate = 0.1
-cake_drop_rate = 0.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0.5, 13)

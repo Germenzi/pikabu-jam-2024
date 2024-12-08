@@ -1,6 +1,5 @@
-[gd_scene load_steps=38 format=3 uid="uid://dg8pv0nc3mu1m"]
+[gd_scene load_steps=40 format=3 uid="uid://dg8pv0nc3mu1m"]
 
-[ext_resource type="Texture2D" uid="uid://d1b6x5uxndoo4" path="res://test.png" id="2_alfl5"]
 [ext_resource type="PackedScene" uid="uid://dg5mqjc8kv415" path="res://player/Player.tscn" id="4_rvf3r"]
 [ext_resource type="Script" path="res://scenes/camera_2d.gd" id="5_4gi1x"]
 [ext_resource type="Script" path="res://scenes/rotating.gd" id="5_8t18p"]
@@ -13,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://bo36t0nl5y850" path="res://scenes/pc_obstacle.tscn" id="9_ql67c"]
 [ext_resource type="PackedScene" uid="uid://crb667dgdds3y" path="res://scenes/mug_objstacle.tscn" id="10_ndagk"]
 [ext_resource type="Texture2D" uid="uid://cqh7t0hjcn8jg" path="res://assets/gold-plus.png" id="10_y0aco"]
+[ext_resource type="Texture2D" uid="uid://nk71mnhliku5" path="res://assets/floor.jpg" id="14_yujnw"]
 
 [sub_resource type="GDScript" id="GDScript_rom7t"]
 script/source = "extends Node
@@ -191,7 +191,7 @@ func _on_phone_area_body_entered(body: Node2D) -> void:
 
 func _on_plus_area_body_entered(body: Node2D) -> void:
 	if body.is_in_group(GroupsNamespace.PLAYER):
-		get_tree().change_scene_to_file(\"res://scenes/main_menu.tscn\")
+		get_tree().change_scene_to_file.call_deferred(\"res://scenes/main_menu.tscn\")
 "
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_p7mxx"]
@@ -297,10 +297,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="FloorSprite" type="Sprite2D" parent="."]
-position = Vector2(3271, 462.25)
-scale = Vector2(12.7773, 0.555664)
-texture = ExtResource("2_alfl5")
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_top = 318.0
+offset_right = 6536.0
+offset_bottom = 600.0
+texture = ExtResource("14_yujnw")
+expand_mode = 1
+stretch_mode = 1
 
 [node name="Obstacles" type="Node" parent="."]
 

@@ -1,6 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://dg5mqjc8kv415"]
+[gd_scene load_steps=13 format=3 uid="uid://dg5mqjc8kv415"]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_obxbl"]
+[ext_resource type="AudioStream" uid="uid://bh2fo85qh517v" path="res://sounds/Hit_sound.wav" id="2_o8fjc"]
+[ext_resource type="AudioStream" uid="uid://gncbv8ambw7d" path="res://sounds/Shooting_sound.wav" id="3_g881a"]
+[ext_resource type="AudioStream" uid="uid://n0ndfak0y7t7" path="res://sounds/Jump_sound.wav" id="4_5lwms"]
 
 [sub_resource type="Curve" id="Curve_iho00"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.222603, 0.828947), 1.8499, 1.8499, 0, 0, Vector2(0.513699, 1), 0.0, 0.0, 0, 0, Vector2(0.828767, 0.801939), -1.68995, -1.68995, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -37,6 +40,7 @@ motion_mode = 1
 slide_on_ceiling = false
 script = ExtResource("1_obxbl")
 max_energy = 150.0
+energy_regen_speed = 1.0
 flying_energy_cost = 10.0
 fly_height = 100.0
 fly_duraction_sec = 0.4
@@ -76,10 +80,23 @@ color_ramp = SubResource("Gradient_e622s")
 
 [node name="EnergyLabel" type="Label" parent="EnergyBall"]
 unique_name_in_owner = true
+visible = false
 offset_left = -26.0
 offset_top = 24.0
 offset_right = 27.0
 offset_bottom = 47.0
 text = "energy"
+
+[node name="DamageSound" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("2_o8fjc")
+
+[node name="ShootSound" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("3_g881a")
+
+[node name="JumpSound" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("4_5lwms")
 
 [connection signal="energy_runout" from="." to="." method="_on_energy_runout" flags=3]

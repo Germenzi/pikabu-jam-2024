@@ -1,10 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://2s1je4np2g86"]
+[gd_scene load_steps=14 format=3 uid="uid://2s1je4np2g86"]
 
 [ext_resource type="PackedScene" uid="uid://b42q4ijugjonw" path="res://ui_scenes/main_menu_ui.tscn" id="1_tystq"]
 [ext_resource type="Script" path="res://addons/simple-gui-transitions/transition.gd" id="2_i371i"]
-[ext_resource type="PackedScene" uid="uid://13rysv2wruf6" path="res://ui_scenes/game_menu_ui.tscn" id="3_vmc2y"]
 [ext_resource type="PackedScene" uid="uid://bwomdo5fmsyeg" path="res://ui_scenes/about_team_ui.tscn" id="4_olqej"]
-[ext_resource type="Texture2D" uid="uid://cxv6jn31xkej0" path="res://icon.svg" id="5_usl3u"]
+[ext_resource type="Material" uid="uid://b5oj8xyesh52y" path="res://scenes/alpha_shader.tres" id="5_lchdp"]
+[ext_resource type="Texture2D" uid="uid://dhuxm6ydlxpik" path="res://cookie.jpg" id="6_ybk0x"]
 
 [sub_resource type="GDScript" id="GDScript_r53em"]
 script/source = "extends Node
@@ -16,20 +16,9 @@ func _on_main_menu_ui_about_team_button_pressed() -> void:
 		
 func _on_main_menu_ui_start_game_button_pressed() -> void:
 	if not GuiTransitions.in_transition():
-		GuiTransitions.go_to(\"GameMenuUI\")
-
-
-func _on_game_menu_main_menu_button_pressed() -> void:
-	if not GuiTransitions.in_transition():
-		GuiTransitions.go_to(\"MainMenuUI\")
-
-
-func _on_game_menu_new_game_button_pressed() -> void:
-	if not GuiTransitions.in_transition():
 		GuiTransitions.hide()
 		await GuiTransitions.hide_completed
 		get_tree().change_scene_to_file(\"res://scenes/start_comics.tscn\")
-
 
 func _on_about_team_ui_back_button_pressed() -> void:
 	if not GuiTransitions.in_transition():
@@ -41,9 +30,71 @@ script/source = "extends ParallaxBackground
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	scroll_offset.y += 100 * delta
-	scroll_offset.x += 50 * delta
+	scroll_offset.y += 50 * delta
+	scroll_offset.x += 25 * delta
 "
+
+[sub_resource type="Shader" id="Shader_mm4xm"]
+code = "shader_type canvas_item;
+
+uniform sampler2D chars;
+uniform sampler2D noise_tex; 
+
+void fragment() {
+	// Random character
+	vec2 uv = fract(UV * 32.0); // loop uv 32 times for the characters (as the noise resolution is 32x32)
+	float noise = texture(noise_tex, UV).g;
+	noise = round(noise * 10.0) / 10.0; // make sure the color value are snapped by 0.1 (so its only 0.0, 0.1, 0.2, and so on) for perfect offset
+	//uv.x = (uv.x / 10.0) - 0.005; // offset
+	//uv.x += noise; // offset every character by the noise value
+	//uv.x += round(TIME * 0.5 * 10.0)/10.0; // animate characters with TIME, then snapped by 0.1 so it doesnt slide. 0.5 is the speed, you might want to change that
+	
+	// distortion
+	float rain = UV.y; // this is a vertical gradient
+	float distortion = texture(noise_tex, UV / vec2(1.0, 32.0)).g; // this will be used for distortion, using previous noise but only horizontal
+	distortion = round(distortion * 10.0) / 10.0; // for precision reason, you need to round your distortion too, otherwise some character wouldnt be fully shown
+	rain -= round(TIME * 1.0 * 32.0) / 256.0; // the 'rain' shouldn't move smoothly right? also, 0.2 is the speed
+	rain += distortion; // distort this gradient, turning it into a rain
+	rain = fract(rain); // loop the rain
+	rain = round(rain * 16.0) / 16.0; // pixelate the rain. Rounding by 32.0 or 8.0 is optional
+	rain = pow(rain, 3.0); // this is not necessary, i just think that it looks good
+	rain *= 2.0; // this is also not important, just making the characters brighter
+	
+	COLOR.rgb = texture(chars, uv).rgb * rain * vec3(0.11, 0.30, 0.15); // finally multiply them together then multiply with green for the color
+}"
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_6pwaq"]
+noise_type = 4
+seed = 217
+frequency = 0.0001
+fractal_octaves = 10
+fractal_lacunarity = 2.25
+fractal_gain = 0.695
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1paer"]
+width = 32
+height = 32
+bump_strength = 0.0
+noise = SubResource("FastNoiseLite_6pwaq")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hxn48"]
+shader = SubResource("Shader_mm4xm")
+shader_parameter/noise_tex = SubResource("NoiseTexture2D_1paer")
+
+[sub_resource type="Shader" id="Shader_gl5xv"]
+code = "shader_type canvas_item;
+
+uniform sampler2D screen_texture : hint_screen_texture;
+uniform float value = 0.0;
+
+void fragment() {
+	COLOR = textureLod(screen_texture, SCREEN_UV, value);
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y6vrs"]
+shader = SubResource("Shader_gl5xv")
+shader_parameter/value = 0.92
 
 [node name="main_menu" type="Node"]
 script = SubResource("GDScript_r53em")
@@ -58,20 +109,6 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="GuiTransition" type="Node" parent="MainMenuUI"]
-script = ExtResource("2_i371i")
-layout = NodePath("..")
-
-[node name="GameMenuUI" parent="." instance=ExtResource("3_vmc2y")]
-visible = false
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = 0.0
-offset_bottom = 0.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="GuiTransition" type="Node" parent="GameMenuUI"]
 script = ExtResource("2_i371i")
 layout = NodePath("..")
 
@@ -92,134 +129,47 @@ layout = NodePath("..")
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 script = SubResource("GDScript_yk2gb")
 
+[node name="ColorRect3" type="ColorRect" parent="ParallaxBackground"]
+material = SubResource("ShaderMaterial_hxn48")
+offset_right = 1288.0
+offset_bottom = 720.0
+
 [node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(1308, 918)
+position = Vector2(-2, -185)
+motion_mirroring = Vector2(1290, 837)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
-position = Vector2(88, -112)
-texture = ExtResource("5_usl3u")
+material = ExtResource("5_lchdp")
+position = Vector2(2.00003, 201)
+scale = Vector2(5.875, 5.875)
+texture = ExtResource("6_ybk0x")
 
 [node name="ParallaxLayer2" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(1308, 918)
+position = Vector2(-2, -185)
+motion_mirroring = Vector2(1290, 837)
 
 [node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer2"]
-position = Vector2(288, -104)
-texture = ExtResource("5_usl3u")
+material = ExtResource("5_lchdp")
+position = Vector2(586, 481)
+scale = Vector2(5.0625, 5.0625)
+texture = ExtResource("6_ybk0x")
 
-[node name="ParallaxLayer3" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(1308, 918)
+[node name="ColorRect" type="ColorRect" parent="ParallaxBackground"]
+material = SubResource("ShaderMaterial_y6vrs")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer3"]
-position = Vector2(480, -120)
-texture = ExtResource("5_usl3u")
-
-[node name="ParallaxLayer4" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(1308, 918)
-
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer4"]
-position = Vector2(720, -112)
-texture = ExtResource("5_usl3u")
-
-[node name="ParallaxLayer5" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(1308, 918)
-
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer5"]
-position = Vector2(920, -96)
-texture = ExtResource("5_usl3u")
-
-[node name="ParallaxLayer6" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(1308, 918)
-
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer6"]
-position = Vector2(1200, -120)
-texture = ExtResource("5_usl3u")
-
-[node name="ParallaxLayer7" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(1308, 918)
-
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer7"]
-position = Vector2(80, 80)
-texture = ExtResource("5_usl3u")
-
-[node name="ParallaxLayer8" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(1308, 918)
-
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer8"]
-position = Vector2(328, 88)
-texture = ExtResource("5_usl3u")
-
-[node name="ParallaxLayer9" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(1308, 918)
-
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer9"]
-position = Vector2(552, 96)
-texture = ExtResource("5_usl3u")
-
-[node name="ParallaxLayer10" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(1308, 918)
-
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer10"]
-position = Vector2(744, 96)
-texture = ExtResource("5_usl3u")
-
-[node name="ParallaxLayer11" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(1308, 918)
-
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer11"]
-position = Vector2(976, 136)
-texture = ExtResource("5_usl3u")
-
-[node name="ParallaxLayer12" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(1308, 918)
-
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer12"]
-position = Vector2(1192, 136)
-texture = ExtResource("5_usl3u")
-
-[node name="ParallaxLayer13" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(1308, 918)
-
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer13"]
-position = Vector2(96, 288)
-texture = ExtResource("5_usl3u")
-
-[node name="ParallaxLayer14" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(1308, 918)
-
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer14"]
-position = Vector2(328, 304)
-texture = ExtResource("5_usl3u")
-
-[node name="ParallaxLayer15" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(1308, 918)
-
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer15"]
-position = Vector2(576, 320)
-texture = ExtResource("5_usl3u")
-
-[node name="ParallaxLayer16" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(1308, 918)
-
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer16"]
-position = Vector2(760, 304)
-texture = ExtResource("5_usl3u")
-
-[node name="ParallaxLayer17" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(1308, 918)
-
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer17"]
-position = Vector2(984, 328)
-texture = ExtResource("5_usl3u")
-
-[node name="ParallaxLayer18" type="ParallaxLayer" parent="ParallaxBackground"]
-motion_mirroring = Vector2(1308, 918)
-
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer18"]
-position = Vector2(1176, 336)
-texture = ExtResource("5_usl3u")
+[node name="ColorRect2" type="ColorRect" parent="ParallaxBackground"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.0784314)
 
 [connection signal="about_team_button_pressed" from="MainMenuUI" to="." method="_on_main_menu_ui_about_team_button_pressed"]
 [connection signal="start_game_button_pressed" from="MainMenuUI" to="." method="_on_main_menu_ui_start_game_button_pressed"]
-[connection signal="main_menu_button_pressed" from="GameMenuUI" to="." method="_on_game_menu_main_menu_button_pressed"]
-[connection signal="new_game_button_pressed" from="GameMenuUI" to="." method="_on_game_menu_new_game_button_pressed"]
 [connection signal="back_button_pressed" from="AboutTeamUI" to="." method="_on_about_team_ui_back_button_pressed"]

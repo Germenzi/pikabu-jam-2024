@@ -48,24 +48,27 @@ theme_override_font_sizes/font_size = 24
 text = "Утром вы просто не проснулись...."
 horizontal_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+[node name="HBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 0
+offset_left = 503.0
+offset_top = 520.0
+offset_right = 768.0
+offset_bottom = 608.0
+size_flags_horizontal = 4
+size_flags_vertical = 8
+alignment = 1
 
-[node name="MainMenuButton" type="Button" parent="MarginContainer/HBoxContainer"]
+[node name="RestartButton" type="Button" parent="HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 0
+size_flags_vertical = 4
 theme_override_font_sizes/font_size = 24
-text = "Main Menu"
+text = "Заново"
 
-[node name="RestartButton" type="Button" parent="MarginContainer/HBoxContainer"]
+[node name="MainMenuButton" type="Button" parent="HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 0
+size_flags_vertical = 4
 theme_override_font_sizes/font_size = 24
-text = "Restart"
+text = "Главное меню"
 
-[connection signal="pressed" from="MarginContainer/HBoxContainer/MainMenuButton" to="." method="_on_main_menu_button_pressed"]
-[connection signal="pressed" from="MarginContainer/HBoxContainer/RestartButton" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/RestartButton" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/MainMenuButton" to="." method="_on_main_menu_button_pressed"]

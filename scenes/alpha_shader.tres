@@ -1,0 +1,26 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://b5oj8xyesh52y"]
+
+[ext_resource type="Texture2D" uid="uid://x17sepex7fys" path="res://coockie.svg" id="1_pfli1"]
+
+[sub_resource type="Shader" id="Shader_on3rc"]
+code = "shader_type canvas_item;
+
+uniform sampler2D sprite_texture;
+uniform vec4 chroma_key : source_color;
+
+
+void fragment() {
+	// Called for every pixel the material is visible on.
+	COLOR = texture(sprite_texture, UV);
+	
+	if (COLOR == chroma_key) 
+	{
+		COLOR.a = 0.0;
+	}
+}
+"
+
+[resource]
+shader = SubResource("Shader_on3rc")
+shader_parameter/chroma_key = Color(1, 1, 1, 1)
+shader_parameter/sprite_texture = ExtResource("1_pfli1")

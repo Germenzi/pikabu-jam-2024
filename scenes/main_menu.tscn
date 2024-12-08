@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://2s1je4np2g86"]
+[gd_scene load_steps=11 format=3 uid="uid://2s1je4np2g86"]
 
 [ext_resource type="PackedScene" uid="uid://b42q4ijugjonw" path="res://ui_scenes/main_menu_ui.tscn" id="1_tystq"]
 [ext_resource type="Script" path="res://addons/simple-gui-transitions/transition.gd" id="2_i371i"]
@@ -45,6 +45,21 @@ func _process(delta: float) -> void:
 	scroll_offset.y += 50 * delta
 	scroll_offset.x += 25 * delta
 "
+
+[sub_resource type="Shader" id="Shader_3uymv"]
+code = "shader_type canvas_item;
+
+uniform sampler2D screen_texture : hint_screen_texture;
+uniform float value = 0.0;
+
+void fragment() {
+	COLOR = textureLod(screen_texture, SCREEN_UV, value);
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y6vrs"]
+shader = SubResource("Shader_3uymv")
+shader_parameter/value = 2.3
 
 [node name="main_menu" type="Node"]
 script = SubResource("GDScript_r53em")
@@ -1262,6 +1277,22 @@ motion_mirroring = Vector2(1290, 837)
 material = ExtResource("5_lchdp")
 position = Vector2(1210, 129)
 texture = ExtResource("6_ybk0x")
+
+[node name="ColorRect" type="ColorRect" parent="ParallaxBackground"]
+material = SubResource("ShaderMaterial_y6vrs")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect2" type="ColorRect" parent="ParallaxBackground"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.0784314)
 
 [connection signal="about_team_button_pressed" from="MainMenuUI" to="." method="_on_main_menu_ui_about_team_button_pressed"]
 [connection signal="start_game_button_pressed" from="MainMenuUI" to="." method="_on_main_menu_ui_start_game_button_pressed"]

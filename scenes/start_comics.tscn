@@ -8,7 +8,7 @@ script/source = "extends Control
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	var scene = preload(\"res://scenes/level_1.tscn\")
+	var scene : PackedScene = preload(\"res://scenes/level_1.tscn\")
 	await get_tree().create_timer(5).timeout
 	get_tree().change_scene_to_packed(scene)
 "

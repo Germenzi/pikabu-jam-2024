@@ -41,7 +41,8 @@ destructable="Objects that can be destroyed by dash"
 cockroach_target="Targets to be attacked by cockroach"
 cookie="Cookie that heals"
 damagable="Has method \"take_damage(int)\""
-hunted_by_fat=""
+hunted_by_fat="Cookie, already hunted by fat cockroach"
+dash_immunity="Impossible to dash through"
 
 [gui_transitions]
 

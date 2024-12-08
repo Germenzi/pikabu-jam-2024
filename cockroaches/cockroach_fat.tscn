@@ -1,6 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://c2h3kd7hpvrbn"]
+[gd_scene load_steps=23 format=3 uid="uid://c2h3kd7hpvrbn"]
 
+[ext_resource type="Texture2D" uid="uid://c2jo3uxdlbhva" path="res://assets/fat-attack.png" id="1_6skhr"]
 [ext_resource type="Texture2D" uid="uid://b84ggc06s6dbx" path="res://assets/fat-eating.png" id="1_r7g37"]
+[ext_resource type="Texture2D" uid="uid://cmrlxfadjnibq" path="res://assets/fat-idle.png" id="2_xk3s3"]
+[ext_resource type="Texture2D" uid="uid://cn7idc0vp3qgi" path="res://assets/fat-walk.png" id="3_s3lv0"]
 
 [sub_resource type="GDScript" id="GDScript_38a08"]
 resource_name = "main"
@@ -83,6 +86,8 @@ func _physics_process(delta: float) -> void:
 			return
 		
 		velocity = global_position.direction_to(%NavigationAgent.get_next_path_position())*running_speed
+		if sign(%AnimatedSprite.scale.x) == sign(velocity.x) and abs(velocity.x) >= 0.001:
+			%AnimatedSprite.scale = Vector2(%AnimatedSprite.scale.x*-1, %AnimatedSprite.scale.y)
 	
 	move_and_slide()
 
@@ -113,6 +118,10 @@ func _process_idle(delta:float) -> void:
 				_state_attacking_player(_target)
 			else:
 				velocity = -global_position.direction_to(_target.global_position).normalized()*running_speed
+				if sign(%AnimatedSprite.scale.x) == sign(velocity.x) and abs(velocity.x) >= 0.001:
+					%AnimatedSprite.scale = Vector2(%AnimatedSprite.scale.x*-1, %AnimatedSprite.scale.y)
+				if %AnimatedSprite.animation != \"walking\":
+					%AnimatedSprite.play(\"walking\")
 				%StateLabel.text = \"running away\"
 		elif _target.is_in_group(GroupsNamespace.COOKIE):
 			_state_hunting_cookie(_target)
@@ -125,21 +134,27 @@ func _process_idle(delta:float) -> void:
 				_chilling_time = 0.0
 				_is_chilling_walk = false
 				velocity = Vector2.ZERO
+				%AnimatedSprite.play(\"idle\")
 		else:
 			if _chilling_time >= chilling_stay_time_sec:
 				_chilling_time = 0.0
 				_is_chilling_walk = true
 				velocity = Vector2.RIGHT.rotated(2*PI*randf())*running_speed
+				if sign(%AnimatedSprite.scale.x) == sign(velocity.x) and abs(velocity.x) >= 0.001:
+					%AnimatedSprite.scale = Vector2(%AnimatedSprite.scale.x*-1, %AnimatedSprite.scale.y)
+				%AnimatedSprite.play(\"walking\")
 
 
 func _state_idle() -> void:
+	%AnimatedSprite.play(\"idle\")
 	velocity = Vector2.ZERO
 	_state = State.IDLE
 
 
 func _state_hunting_cookie(cookie:Node2D) -> void:
+	%AnimatedSprite.play(\"walking\")
 	velocity = Vector2.ZERO
-	cookie.tree_exited.connect(_on_target_cookie_removed)
+	cookie.tree_exited.connect(_on_target_cookie_removed, CONNECT_ONE_SHOT)
 	_state = State.HUNTING_COOKIE
 	_target_cookie = cookie
 	cookie.add_to_group(GroupsNamespace.HUNTED_BY_FAT)
@@ -148,6 +163,7 @@ func _state_hunting_cookie(cookie:Node2D) -> void:
 
 
 func _state_eating_cookie() -> void:
+	%AnimatedSprite.play(\"eating_cookie\")
 	_state = State.EATING_COOKIE
 	%StateLabel.text = \"eating cookie\"
 	velocity = Vector2.ZERO
@@ -162,7 +178,8 @@ func _state_eating_cookie() -> void:
 
 func _state_attacking_player(player:Node2D) -> void:
 	const BULLET_SCENE : PackedScene = preload(ScenesNamespace.COCKROACH_BULLET_FILEPATH)
-	
+	%AnimatedSprite.scale = Vector2(abs(%AnimatedSprite.scale.x)*sign(global_position.x-player.global_position.x), %AnimatedSprite.scale.y)
+	%AnimatedSprite.play(\"attacking\")
 	_state = State.ATTACKING_PLAYER
 	velocity = Vector2.ZERO
 	%StateLabel.text = \"attacking player\"
@@ -193,8 +210,20 @@ func _on_target_cookie_removed() -> void:
 "
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_7nbhp"]
-radius = 17.0
-height = 58.0
+radius = 22.0
+height = 44.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cqqlw"]
+atlas = ExtResource("1_6skhr")
+region = Rect2(0, 0, 333, 242)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wxx6v"]
+atlas = ExtResource("1_6skhr")
+region = Rect2(333, 0, 333, 242)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f47n3"]
+atlas = ExtResource("1_6skhr")
+region = Rect2(666, 0, 333, 242)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bmim3"]
 atlas = ExtResource("1_r7g37")
@@ -212,8 +241,54 @@ region = Rect2(402, 0, 201, 209)
 atlas = ExtResource("1_r7g37")
 region = Rect2(603, 0, 201, 209)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_arm8q"]
+atlas = ExtResource("2_xk3s3")
+region = Rect2(0, 0, 333, 242)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hd38b"]
+atlas = ExtResource("2_xk3s3")
+region = Rect2(333, 0, 333, 242)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m4yve"]
+atlas = ExtResource("2_xk3s3")
+region = Rect2(666, 0, 333, 242)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w3jqv"]
+atlas = ExtResource("2_xk3s3")
+region = Rect2(999, 0, 333, 242)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xgicb"]
+atlas = ExtResource("3_s3lv0")
+region = Rect2(0, 0, 333, 242)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7guc6"]
+atlas = ExtResource("3_s3lv0")
+region = Rect2(333, 0, 333, 242)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p6xn7"]
+atlas = ExtResource("3_s3lv0")
+region = Rect2(666, 0, 333, 242)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3bxmf"]
+atlas = ExtResource("3_s3lv0")
+region = Rect2(999, 0, 333, 242)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_o3eya"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cqqlw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wxx6v")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f47n3")
+}],
+"loop": true,
+"name": &"attacking",
+"speed": 3.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_bmim3")
@@ -230,6 +305,40 @@ animations = [{
 "loop": true,
 "name": &"eating_cookie",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_arm8q")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hd38b")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m4yve")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w3jqv")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xgicb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7guc6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p6xn7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3bxmf")
+}],
+"loop": true,
+"name": &"walking",
+"speed": 4.0
 }]
 
 [node name="CockroachFat" type="CharacterBody2D" groups=["damagable"]]
@@ -264,11 +373,12 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 one_shot = true
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(0, -12)
+[node name="AnimatedSprite" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(1, -7)
 scale = Vector2(0.3, 0.3)
 sprite_frames = SubResource("SpriteFrames_o3eya")
-animation = &"eating_cookie"
-frame_progress = 0.00273396
+animation = &"attacking"
+frame_progress = 0.427286
 
 [connection signal="timeout" from="AttackCooldownTimer" to="." method="_on_attack_cooldown_timer_timeout"]

@@ -1,15 +1,18 @@
-[gd_scene load_steps=22 format=3 uid="uid://dg8pv0nc3mu1m"]
+[gd_scene load_steps=31 format=3 uid="uid://dg8pv0nc3mu1m"]
 
 [ext_resource type="Texture2D" uid="uid://d1b6x5uxndoo4" path="res://test.png" id="2_alfl5"]
 [ext_resource type="PackedScene" uid="uid://dg5mqjc8kv415" path="res://player/Player.tscn" id="4_rvf3r"]
 [ext_resource type="Script" path="res://scenes/camera_2d.gd" id="5_4gi1x"]
 [ext_resource type="Shader" path="res://vignette.gdshader" id="6_rpb5q"]
 [ext_resource type="PackedScene" uid="uid://c2h3kd7hpvrbn" path="res://cockroaches/cockroach_fat.tscn" id="6_uhv55"]
-[ext_resource type="PackedScene" uid="uid://drou6gyyk1wv3" path="res://pickups/cookie.tscn" id="7_ryx4a"]
+[ext_resource type="PackedScene" uid="uid://b6acobdd1i8mc" path="res://scenes/phone.tscn" id="7_jh8l6"]
 [ext_resource type="PackedScene" uid="uid://dg8xtwwkkgcm4" path="res://pickups/cake.tscn" id="8_gx4r8"]
 
 [sub_resource type="GDScript" id="GDScript_rom7t"]
 script/source = "extends Node
+
+func _ready() -> void:
+	%Player.allow_walk = true
 
 func _on_player_energy_runout() -> void:
 	var scene : PackedScene = preload(\"res://scenes/game_over.tscn\")
@@ -75,13 +78,68 @@ normal = Vector2(-1, 0)
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_sg475"]
 normal = Vector2(1, 0)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ey78a"]
+size = Vector2(50, 2808)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_34wev"]
+normal = Vector2(1, 0)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7gbre"]
+size = Vector2(416, 4554)
+
 [sub_resource type="LabelSettings" id="LabelSettings_h4yrx"]
 font_color = Color(0, 0, 0, 1)
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_dnbpq"]
-vertices = PackedVector2Array(1836.07, 331, 1837.92, 592.008, 1277.47, 452.492, 1270.36, 438.469, 8.07031, 594.977, 9.92188, 331.992, 1153.24, 466.023, 1150.8, 545.203, 1162.55, 550.828)
-polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3), PackedInt32Array(4, 5, 0, 3), PackedInt32Array(4, 3, 6), PackedInt32Array(4, 6, 7), PackedInt32Array(8, 2, 1), PackedInt32Array(8, 1, 4), PackedInt32Array(8, 4, 7)])
-outlines = Array[PackedVector2Array]([PackedVector2Array(0, 322, -2, 605, 1848, 602, 1846, 321)])
+vertices = PackedVector2Array(6537.06, 595.992, 8.07031, 595, 9.92188, 331.992, 6538.93, 328)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(0, 322, -2, 605, 6547, 606, 6549, 318)])
+
+[sub_resource type="GDScript" id="GDScript_cois7"]
+resource_name = "tutorial_areas"
+script/source = "extends Node
+
+
+func _on_allow_jump_body_entered(body: Node2D) -> void:
+	if body.is_in_group(GroupsNamespace.PLAYER):
+		%Player.allow_jump = true
+		%AllowJump.set_deferred(\"monitoring\", false)
+		print(\"SHOW JUMP TUTORIAL\")
+
+
+func _on_cockroach_activate_body_entered(body: Node2D) -> void:
+	if body.is_in_group(GroupsNamespace.PLAYER):
+		%FirstCockroach.chilling_walk_time_sec = 0.5
+		%CockroachActivate.set_deferred(\"monitoring\", false)
+		%Player.allow_shoot = true
+		print(\"SHOW ATTACK TUTORIAL\")
+
+
+func _on_allow_dash_body_entered(body: Node2D) -> void:
+	if body.is_in_group(GroupsNamespace.PLAYER):
+		%AllowDash.set_deferred(\"monitoring\", false)
+		%Player.allow_dash = true
+		print(\"SHOW DASH TUTORIAL\")
+
+
+func _on_phone_area_body_entered(body: Node2D) -> void:
+	if body.is_in_group(GroupsNamespace.PLAYER):
+		%PhoneArea.set_deferred(\"monitoring\", false)
+		%PhoneArenaLimiter.set_deferred(\"disabled\", false)
+		print(\"SHOW PHONE TUTORIAL\")
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p7mxx"]
+size = Vector2(248, 342)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_a3x33"]
+size = Vector2(485, 342)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mr0vq"]
+size = Vector2(506, 426)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_iajsx"]
+size = Vector2(478, 348)
 
 [sub_resource type="GDScript" id="GDScript_73wuf"]
 resource_name = "level_hud"
@@ -120,6 +178,37 @@ func set_intensity(intencity:float) -> void:
 	material.set_shader_parameter(\"vignette_intensity\", intencity) 
 "
 
+[sub_resource type="GDScript" id="GDScript_mct8e"]
+resource_name = "phone_boss"
+script/source = "extends Node
+
+
+func _on_phone_stage_changed(stage_idx: int) -> void:
+	const GANG_5 : PackedScene = preload(ScenesNamespace.PHONE_GANG_STAGE_5)
+	const GANG_4 : PackedScene = preload(ScenesNamespace.PHONE_GANG_STAGE_4)
+	const GANG_3 : PackedScene = preload(ScenesNamespace.PHONE_GANG_STAGE_3)
+	const GANG_2 : PackedScene = preload(ScenesNamespace.PHONE_GANG_STAGE_2)
+	const GANG_1 : PackedScene = preload(ScenesNamespace.PHONE_GANG_STAGE_1)
+	const GANG_0 : PackedScene = preload(ScenesNamespace.PHONE_GANG_STAGE_0)
+	
+	const GANGS : Array[PackedScene] = [GANG_0, GANG_1, GANG_2, GANG_3, GANG_4, GANG_5]
+	
+	var gang : Node2D = GANGS[stage_idx].instantiate()
+	gang.global_position = %GangSpawner.global_position
+	gang.gang_cleared.connect(_on_gang_cleared, CONNECT_ONE_SHOT|CONNECT_DEFERRED)
+	gang.cookies = %Cookies
+	gang.bullets = %Cockroaches/Bullets
+	%Cockroaches.add_child(gang)
+
+
+func _on_gang_cleared() -> void:
+	%Phone.allow_new_stage()
+
+
+func _on_phone_destroyed() -> void:
+	print(\"---------------------------------YOU WIN!!!!!!!!!!----------------------------\")
+"
+
 [node name="Level1" type="Node"]
 script = SubResource("GDScript_rom7t")
 
@@ -134,31 +223,45 @@ offset_right = 1288.0
 offset_bottom = 720.0
 
 [node name="FloorSprite" type="Sprite2D" parent="."]
-position = Vector2(924, 462.25)
-scale = Vector2(3.60938, 0.555664)
+position = Vector2(3271, 462.25)
+scale = Vector2(12.7773, 0.555664)
 texture = ExtResource("2_alfl5")
 
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
+[node name="Obstacles" type="Node" parent="."]
 
-[node name="TopBoundary" type="CollisionShape2D" parent="StaticBody2D"]
+[node name="SolidObstacles" type="StaticBody2D" parent="Obstacles"]
+
+[node name="TopBoundary" type="CollisionShape2D" parent="Obstacles/SolidObstacles"]
 position = Vector2(1009, 321)
 shape = SubResource("WorldBoundaryShape2D_h6t75")
 
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D"]
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Obstacles/SolidObstacles"]
 position = Vector2(1040, 604)
 shape = SubResource("WorldBoundaryShape2D_lx53p")
 
-[node name="RightBoundary" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(1848, 460)
+[node name="RightBoundary" type="CollisionShape2D" parent="Obstacles/SolidObstacles"]
+position = Vector2(6536, 460)
 shape = SubResource("WorldBoundaryShape2D_ne8m6")
 
-[node name="LeftBoundary" type="CollisionShape2D" parent="StaticBody2D"]
+[node name="LeftBoundary" type="CollisionShape2D" parent="Obstacles/SolidObstacles"]
 position = Vector2(0, 459)
 shape = SubResource("WorldBoundaryShape2D_sg475")
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D"]
-position = Vector2(1193, 487)
-polygon = PackedVector2Array(-19, 33, -19, -6, 51, -27)
+[node name="JumpTutorialWall" type="CollisionShape2D" parent="Obstacles/SolidObstacles"]
+position = Vector2(1970, 466)
+shape = SubResource("RectangleShape2D_ey78a")
+
+[node name="PhoneArenaLimiter" type="CollisionShape2D" parent="Obstacles/SolidObstacles"]
+unique_name_in_owner = true
+position = Vector2(4534, 478)
+shape = SubResource("WorldBoundaryShape2D_34wev")
+disabled = true
+
+[node name="DashTutorial" type="StaticBody2D" parent="Obstacles" groups=["destructable"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Obstacles/DashTutorial"]
+position = Vector2(3612, 464)
+shape = SubResource("RectangleShape2D_7gbre")
 
 [node name="Player" parent="." node_paths=PackedStringArray("bullet_container") instance=ExtResource("4_rvf3r")]
 unique_name_in_owner = true
@@ -193,61 +296,53 @@ vertical_alignment = 1
 position = Vector2(104, 472)
 limit_left = 0
 limit_top = 0
-limit_right = 2000
 limit_bottom = 720
 script = ExtResource("5_4gi1x")
-
-[node name="CockroachFat" parent="." node_paths=PackedStringArray("cookie_container", "bullets_container") instance=ExtResource("6_uhv55")]
-position = Vector2(1168, 449)
-chilling_walk_time_sec = 1.5
-cookie_container = NodePath("..")
-bullets_container = NodePath("..")
-
-[node name="CockroachFat2" parent="." node_paths=PackedStringArray("cookie_container", "bullets_container") instance=ExtResource("6_uhv55")]
-position = Vector2(914, 395)
-chilling_walk_time_sec = 1.5
-cookie_container = NodePath("..")
-bullets_container = NodePath("..")
-
-[node name="CockroachFat3" parent="." node_paths=PackedStringArray("cookie_container", "bullets_container") instance=ExtResource("6_uhv55")]
-position = Vector2(1076, 376)
-chilling_walk_time_sec = 1.5
-cookie_container = NodePath("..")
-bullets_container = NodePath("..")
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
 navigation_polygon = SubResource("NavigationPolygon_dnbpq")
 
-[node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="NavigationRegion2D"]
-position = Vector2(3, 6)
-vertices = PackedVector2Array(1160, 468, 1158, 533, 1262, 444)
-affect_navigation_mesh = true
-
 [node name="Cookies" type="Node" parent="."]
-
-[node name="Cookie" parent="Cookies" instance=ExtResource("7_ryx4a")]
-position = Vector2(300, 432)
-
-[node name="Cookie2" parent="Cookies" instance=ExtResource("7_ryx4a")]
-position = Vector2(787, 524)
-
-[node name="Cookie3" parent="Cookies" instance=ExtResource("7_ryx4a")]
-position = Vector2(1436, 437)
-
-[node name="Cookie4" parent="Cookies" instance=ExtResource("7_ryx4a")]
-position = Vector2(1701, 534)
+unique_name_in_owner = true
 
 [node name="Cake" parent="Cookies" instance=ExtResource("8_gx4r8")]
-position = Vector2(602, 419)
+position = Vector2(4438, 448)
 
 [node name="Cake2" parent="Cookies" instance=ExtResource("8_gx4r8")]
-position = Vector2(1023, 383)
+position = Vector2(774, 478)
 
-[node name="Cake3" parent="Cookies" instance=ExtResource("8_gx4r8")]
-position = Vector2(1604, 417)
+[node name="TutorialAreas" type="Node" parent="."]
+script = SubResource("GDScript_cois7")
 
-[node name="Cake4" parent="Cookies" instance=ExtResource("8_gx4r8")]
-position = Vector2(449, 556)
+[node name="AllowJump" type="Area2D" parent="TutorialAreas"]
+unique_name_in_owner = true
+position = Vector2(1668, 471)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TutorialAreas/AllowJump"]
+shape = SubResource("RectangleShape2D_p7mxx")
+
+[node name="CockroachActivate" type="Area2D" parent="TutorialAreas"]
+unique_name_in_owner = true
+position = Vector2(2233, 466)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TutorialAreas/CockroachActivate"]
+position = Vector2(3.5, 0)
+shape = SubResource("RectangleShape2D_a3x33")
+
+[node name="AllowDash" type="Area2D" parent="TutorialAreas"]
+unique_name_in_owner = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TutorialAreas/AllowDash"]
+position = Vector2(3148, 473)
+shape = SubResource("RectangleShape2D_mr0vq")
+
+[node name="PhoneArea" type="Area2D" parent="TutorialAreas"]
+unique_name_in_owner = true
+position = Vector2(4861, 506)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TutorialAreas/PhoneArea"]
+position = Vector2(3, -39)
+shape = SubResource("RectangleShape2D_iajsx")
 
 [node name="LevelHUD" type="CanvasLayer" parent="."]
 script = SubResource("GDScript_73wuf")
@@ -263,5 +358,49 @@ grow_horizontal = 2
 grow_vertical = 2
 script = SubResource("GDScript_0sh1p")
 
+[node name="Cockroaches" type="Node" parent="."]
+unique_name_in_owner = true
+
+[node name="FirstCockroach" parent="Cockroaches" node_paths=PackedStringArray("cookie_container", "bullets_container") instance=ExtResource("6_uhv55")]
+unique_name_in_owner = true
+position = Vector2(2521, 466)
+hunt_distance = 300.0
+cookie_scan_distance = 1.0
+running_speed = 150.0
+chilling_walk_time_sec = 0.0
+cookie_drop_rate = 1.0
+cake_drop_rate = 0.0
+cookie_container = NodePath("../../Cookies")
+bullets_container = NodePath("../Bullets")
+
+[node name="FirstCockroach2" parent="Cockroaches" node_paths=PackedStringArray("cookie_container", "bullets_container") instance=ExtResource("6_uhv55")]
+unique_name_in_owner = true
+position = Vector2(520, 466)
+hunt_distance = 300.0
+running_speed = 150.0
+cookie_drop_rate = 1.0
+cake_drop_rate = 0.0
+cookie_container = NodePath("../../Cookies")
+bullets_container = NodePath("../Bullets")
+
+[node name="Bullets" type="Node" parent="Cockroaches"]
+
+[node name="PhoneBoss" type="Node" parent="."]
+script = SubResource("GDScript_mct8e")
+
+[node name="Phone" parent="PhoneBoss" instance=ExtResource("7_jh8l6")]
+unique_name_in_owner = true
+position = Vector2(5230, 471)
+
+[node name="GangSpawner" type="Marker2D" parent="PhoneBoss"]
+unique_name_in_owner = true
+position = Vector2(4861, 502)
+
 [connection signal="energy_level_changed" from="Player" to="LevelHUD" method="_on_player_energy_level_changed"]
 [connection signal="energy_runout" from="Player" to="." method="_on_player_energy_runout"]
+[connection signal="body_entered" from="TutorialAreas/AllowJump" to="TutorialAreas" method="_on_allow_jump_body_entered"]
+[connection signal="body_entered" from="TutorialAreas/CockroachActivate" to="TutorialAreas" method="_on_cockroach_activate_body_entered"]
+[connection signal="body_entered" from="TutorialAreas/AllowDash" to="TutorialAreas" method="_on_allow_dash_body_entered"]
+[connection signal="body_entered" from="TutorialAreas/PhoneArea" to="TutorialAreas" method="_on_phone_area_body_entered"]
+[connection signal="destroyed" from="PhoneBoss/Phone" to="PhoneBoss" method="_on_phone_destroyed"]
+[connection signal="stage_changed" from="PhoneBoss/Phone" to="PhoneBoss" method="_on_phone_stage_changed"]

@@ -3,14 +3,14 @@
 [ext_resource type="PackedScene" uid="uid://dg5mqjc8kv415" path="res://player/Player.tscn" id="4_rvf3r"]
 [ext_resource type="Script" path="res://scenes/camera_2d.gd" id="5_4gi1x"]
 [ext_resource type="Script" path="res://scenes/rotating.gd" id="5_8t18p"]
-[ext_resource type="PackedScene" path="res://scenes/heap_objstacle.tscn" id="6_ohe81"]
+[ext_resource type="PackedScene" uid="uid://bbmol3s4xc4e7" path="res://scenes/heap_objstacle.tscn" id="6_ohe81"]
 [ext_resource type="Shader" path="res://vignette.gdshader" id="6_rpb5q"]
 [ext_resource type="PackedScene" uid="uid://c2h3kd7hpvrbn" path="res://cockroaches/cockroach_fat.tscn" id="6_uhv55"]
 [ext_resource type="PackedScene" uid="uid://b6acobdd1i8mc" path="res://scenes/phone.tscn" id="7_jh8l6"]
 [ext_resource type="PackedScene" uid="uid://dg8xtwwkkgcm4" path="res://pickups/cake.tscn" id="8_gx4r8"]
-[ext_resource type="PackedScene" path="res://scenes/can_objstacle.tscn" id="8_urq80"]
-[ext_resource type="PackedScene" path="res://scenes/pc_obstacle.tscn" id="9_ql67c"]
-[ext_resource type="PackedScene" path="res://scenes/mug_objstacle.tscn" id="10_ndagk"]
+[ext_resource type="PackedScene" uid="uid://bwpmlrwjjjxny" path="res://scenes/can_objstacle.tscn" id="8_urq80"]
+[ext_resource type="PackedScene" uid="uid://bo36t0nl5y850" path="res://scenes/pc_obstacle.tscn" id="9_ql67c"]
+[ext_resource type="PackedScene" uid="uid://crb667dgdds3y" path="res://scenes/mug_objstacle.tscn" id="10_ndagk"]
 [ext_resource type="Texture2D" uid="uid://cqh7t0hjcn8jg" path="res://assets/gold-plus.png" id="10_y0aco"]
 [ext_resource type="PackedScene" uid="uid://cu1opk84g5j3u" path="res://cockroaches/cockroach_shovel.tscn" id="13_24vki"]
 [ext_resource type="AudioStream" uid="uid://bfiykfpvdxbg2" path="res://sounds/Background_music.wav" id="14_vjdx6"]
@@ -194,7 +194,7 @@ func _on_phone_area_body_entered(body: Node2D) -> void:
 
 func _on_plus_area_body_entered(body: Node2D) -> void:
 	if body.is_in_group(GroupsNamespace.PLAYER):
-		get_tree().change_scene_to_packed(scene)
+		get_tree().change_scene_to_packed.call_deferred(scene)
 "
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_p7mxx"]
@@ -585,7 +585,7 @@ position = Vector2(4861, 502)
 
 [node name="BgMusic" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("14_vjdx6")
-volume_db = -19.712
+volume_db = -20.0
 autoplay = true
 script = SubResource("GDScript_7uyt3")
 

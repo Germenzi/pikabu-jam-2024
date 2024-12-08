@@ -72,8 +72,9 @@ size_flags_vertical = 4
 theme_override_font_sizes/font_size = 24
 text = "Главное меню"
 
-[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("1_f71bn")
+volume_db = -20.0
 autoplay = true
 
 [connection signal="pressed" from="HBoxContainer/RestartButton" to="." method="_on_restart_button_pressed"]

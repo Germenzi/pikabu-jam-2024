@@ -1,0 +1,54 @@
+[gd_scene load_steps=2 format=3 uid="uid://bbluogrdtmjy3"]
+
+[sub_resource type="GDScript" id="GDScript_r4vab"]
+script/source = "extends Control
+
+signal main_menu_button_pressed
+
+var scene : PackedScene = preload(\"res://scenes/main_menu.tscn\")
+
+func _on_button_pressed() -> void:
+	get_tree().change_scene_to_packed(scene)
+"
+
+[node name="Win" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = SubResource("GDScript_r4vab")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1280.0
+offset_bottom = 720.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="CenterContainer/VBoxContainer"]
+scale = Vector2(0.791901, 0.791901)
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 560.0
+offset_top = 8.0
+offset_right = 728.0
+offset_bottom = 66.0
+theme_override_font_sizes/font_size = 42
+text = "Победа!"
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 2
+offset_left = 504.0
+offset_top = 632.0
+offset_right = 775.0
+offset_bottom = 690.0
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 36
+text = "Главное меню"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

@@ -1,6 +1,5 @@
-[gd_scene load_steps=18 format=3 uid="uid://dg8pv0nc3mu1m"]
+[gd_scene load_steps=21 format=3 uid="uid://dg8pv0nc3mu1m"]
 
-[ext_resource type="Texture2D" uid="uid://dma5yiu162184" path="res://Background.png" id="1_5ir7b"]
 [ext_resource type="Texture2D" uid="uid://d1b6x5uxndoo4" path="res://test.png" id="2_alfl5"]
 [ext_resource type="PackedScene" uid="uid://dg5mqjc8kv415" path="res://player/Player.tscn" id="4_rvf3r"]
 [ext_resource type="Script" path="res://scenes/camera_2d.gd" id="5_4gi1x"]
@@ -8,9 +7,6 @@
 [ext_resource type="PackedScene" uid="uid://c2h3kd7hpvrbn" path="res://cockroaches/cockroach_fat.tscn" id="6_uhv55"]
 [ext_resource type="PackedScene" uid="uid://drou6gyyk1wv3" path="res://pickups/cookie.tscn" id="7_ryx4a"]
 [ext_resource type="PackedScene" uid="uid://dg8xtwwkkgcm4" path="res://pickups/cake.tscn" id="8_gx4r8"]
-
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_h6t75"]
-normal = Vector2(0, 1)
 
 [sub_resource type="Shader" id="Shader_mm4xm"]
 code = "shader_type canvas_item;
@@ -59,9 +55,8 @@ noise = SubResource("FastNoiseLite_gvfqf")
 shader = SubResource("Shader_mm4xm")
 shader_parameter/noise_tex = SubResource("NoiseTexture2D_1paer")
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_dc0w1"]
-size = Vector2(152, 720)
-
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_h6t75"]
+normal = Vector2(0, 1)
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_lx53p"]
 
@@ -127,12 +122,6 @@ motion_mirroring = Vector2(1279, 0)
 material = SubResource("ShaderMaterial_ico8b")
 offset_right = 1288.0
 offset_bottom = 720.0
-
-[node name="Background" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
-visible = false
-position = Vector2(640, 360)
-scale = Vector2(2.66667, 2.64706)
-texture = ExtResource("1_5ir7b")
 
 [node name="FloorSprite" type="Sprite2D" parent="."]
 position = Vector2(924, 462.25)

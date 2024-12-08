@@ -1,0 +1,227 @@
+[gd_scene load_steps=10 format=3 uid="uid://iruqhsj5os8u"]
+
+[ext_resource type="Texture2D" uid="uid://dx343o14jfyul" path="res://assets/comics/comics1.png" id="1_oxt3b"]
+[ext_resource type="Texture2D" uid="uid://dwlr4loopaghc" path="res://assets/comics/comics2.2.png" id="2_kuehn"]
+[ext_resource type="Texture2D" uid="uid://cq6mgi5pa007i" path="res://assets/comics/comics3.png" id="3_ph2cu"]
+[ext_resource type="AudioStream" uid="uid://bsi4gwcxytxrg" path="res://sounds/Keyboard_comic_sound.wav" id="4_ct6fw"]
+
+[sub_resource type="GDScript" id="GDScript_cllnk"]
+resource_name = "main"
+script/source = "extends Control
+
+
+
+func _on_animation_player_animation_finished(anim_name: StringName) -> void:
+	get_tree().change_scene_to_file.call_deferred(\"res://scenes/start_comics.tscn\")
+"
+
+[sub_resource type="Animation" id="Animation_gv5bg"]
+resource_name = "main"
+length = 8.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CenterContainer2:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CenterContainer3/TextureRect:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Camera:zoom")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(6, 8),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(10, 10)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("ColorRect2:self_modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(6, 8),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_8d1tm"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CenterContainer2:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CenterContainer3/TextureRect:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Camera:zoom")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(10, 10)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("ColorRect2:self_modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_oyva5"]
+_data = {
+"RESET": SubResource("Animation_8d1tm"),
+"main": SubResource("Animation_gv5bg")
+}
+
+[sub_resource type="GDScript" id="GDScript_r34gy"]
+resource_name = "dfgeqg"
+script/source = "extends AudioStreamPlayer
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+
+
+func _on_finished() -> void:
+	play()
+"
+
+[node name="BeginComics" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_cllnk")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.1292, 0.111, 0.15, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="CenterContainer"]
+layout_mode = 2
+texture = ExtResource("1_oxt3b")
+
+[node name="CenterContainer2" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="CenterContainer2"]
+layout_mode = 2
+texture = ExtResource("2_kuehn")
+
+[node name="CenterContainer3" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="CenterContainer3"]
+visible = false
+layout_mode = 2
+texture = ExtResource("3_ph2cu")
+
+[node name="Camera" type="Camera2D" parent="."]
+position = Vector2(640, 360)
+zoom = Vector2(10, 10)
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_oyva5")
+}
+autoplay = "main"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_ct6fw")
+volume_db = -13.57
+autoplay = true
+script = SubResource("GDScript_r34gy")
+
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
+[connection signal="finished" from="AudioStreamPlayer" to="AudioStreamPlayer" method="_on_finished"]

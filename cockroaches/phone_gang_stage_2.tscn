@@ -1,0 +1,36 @@
+[gd_scene load_steps=3 format=3 uid="uid://cww0g5ilnpeka"]
+
+[ext_resource type="PackedScene" uid="uid://c2h3kd7hpvrbn" path="res://cockroaches/cockroach_fat.tscn" id="2_4pxij"]
+
+[sub_resource type="GDScript" id="GDScript_lb4lx"]
+resource_name = "main"
+script/source = "extends Node2D
+
+signal gang_cleared
+
+@export var cookies : Node
+@export var bullets : Node
+
+func _ready() -> void:
+	for i in get_children():
+		i.cookie_container = cookies
+		i.bullets_container = bullets
+
+
+func _process(delta: float) -> void:
+	if get_child_count() == 0:
+		gang_cleared.emit()
+		set_process(false)
+"
+
+[node name="PhoneGangStage4" type="Node2D"]
+script = SubResource("GDScript_lb4lx")
+
+[node name="CockroachFat" parent="." instance=ExtResource("2_4pxij")]
+position = Vector2(94, -3)
+
+[node name="CockroachFat2" parent="." instance=ExtResource("2_4pxij")]
+position = Vector2(-53, -76)
+
+[node name="CockroachFat3" parent="." instance=ExtResource("2_4pxij")]
+position = Vector2(-60, 79)

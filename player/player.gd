@@ -45,6 +45,11 @@ var energy : float :
 	get:
 		return _energy
 
+var allow_walk : bool = false
+var allow_jump : bool = false
+var allow_dash : bool = false
+var allow_shoot : bool = false
+
 var _state : State = State.MOVING
 
 var _ghost : bool = false # no damage and ignore obsctacles
@@ -108,46 +113,51 @@ func _process_moving(delta:float) -> void:
 	const BULLET_SCENE : PackedScene = preload(ScenesNamespace.PLAYER_BULLET_FILEPATH)
 	
 	_moving_direction = Input.get_vector("A", "D", "W", "S")
-	velocity = _moving_direction * speed
+	if allow_walk:
+		velocity = _moving_direction * speed
+	else:
+		velocity = Vector2.ZERO
 	
 	if Input.is_action_just_pressed("player_fly_ability"):
-		_state_flying(_moving_direction)
+		if allow_jump:
+			_state_flying(_moving_direction)
 	
 	if Input.is_action_just_pressed("player_dash_ability"):
-		if _moving_direction.length() >= 0.01:
+		if _moving_direction.length() >= 0.01 and allow_dash:
 			_state_dashing(_moving_direction)
 	
-	if Input.is_action_just_pressed("shoot_down"):
-		_change_energy(-shoot_energy_cost)
-		var bullet : Node2D = BULLET_SCENE.instantiate()
-		bullet.flying_direction = Vector2.DOWN
-		bullet.global_position = global_position
-		bullet.excludes.append(get_rid())
-		bullet_container.add_child(bullet)
-	
-	if Input.is_action_just_pressed("shoot_left"):
-		_change_energy(-shoot_energy_cost)
-		var bullet : Node2D = BULLET_SCENE.instantiate()
-		bullet.flying_direction = Vector2.LEFT
-		bullet.global_position = global_position
-		bullet.excludes.append(get_rid())
-		bullet_container.add_child(bullet)
-	
-	if Input.is_action_just_pressed("shoot_right"):
-		_change_energy(-shoot_energy_cost)
-		var bullet : Node2D = BULLET_SCENE.instantiate()
-		bullet.flying_direction = Vector2.RIGHT
-		bullet.global_position = global_position
-		bullet.excludes.append(get_rid())
-		bullet_container.add_child(bullet)
-	
-	if Input.is_action_just_pressed("shoot_up"):
-		_change_energy(-shoot_energy_cost)
-		var bullet : Node2D = BULLET_SCENE.instantiate()
-		bullet.flying_direction = Vector2.UP
-		bullet.global_position = global_position
-		bullet.excludes.append(get_rid())
-		bullet_container.add_child(bullet)
+	if allow_shoot:
+		if Input.is_action_just_pressed("shoot_down"):
+			_change_energy(-shoot_energy_cost)
+			var bullet : Node2D = BULLET_SCENE.instantiate()
+			bullet.flying_direction = Vector2.DOWN
+			bullet.global_position = global_position
+			bullet.excludes.append(get_rid())
+			bullet_container.add_child(bullet)
+		
+		if Input.is_action_just_pressed("shoot_left"):
+			_change_energy(-shoot_energy_cost)
+			var bullet : Node2D = BULLET_SCENE.instantiate()
+			bullet.flying_direction = Vector2.LEFT
+			bullet.global_position = global_position
+			bullet.excludes.append(get_rid())
+			bullet_container.add_child(bullet)
+		
+		if Input.is_action_just_pressed("shoot_right"):
+			_change_energy(-shoot_energy_cost)
+			var bullet : Node2D = BULLET_SCENE.instantiate()
+			bullet.flying_direction = Vector2.RIGHT
+			bullet.global_position = global_position
+			bullet.excludes.append(get_rid())
+			bullet_container.add_child(bullet)
+		
+		if Input.is_action_just_pressed("shoot_up"):
+			_change_energy(-shoot_energy_cost)
+			var bullet : Node2D = BULLET_SCENE.instantiate()
+			bullet.flying_direction = Vector2.UP
+			bullet.global_position = global_position
+			bullet.excludes.append(get_rid())
+			bullet_container.add_child(bullet)
 
 
 func _process_flying(delta:float) -> void:
@@ -159,13 +169,14 @@ func _process_flying(delta:float) -> void:
 		_state_moving()
 		return
 	
-	if Input.is_action_just_pressed("player_bomb_action"):
-		_change_energy(shoot_energy_cost)
-		var bullet : Node2D = BOMB_SCENE.instantiate()
-		bullet.height = _height
-		bullet.global_position = Vector2(global_position.x, global_position.y-_height)
-		bullet.excludes.append(get_rid())
-		bullet_container.add_child(bullet)
+	if allow_shoot:
+		if Input.is_action_just_pressed("player_bomb_action"):
+			_change_energy(shoot_energy_cost)
+			var bullet : Node2D = BOMB_SCENE.instantiate()
+			bullet.height = _height
+			bullet.global_position = Vector2(global_position.x, global_position.y-_height)
+			bullet.excludes.append(get_rid())
+			bullet_container.add_child(bullet)
 	
 	var flying_progress : float = _flying_time / fly_duraction_sec
 	
@@ -262,7 +273,8 @@ func _slice_between_points(start:Vector2, end:Vector2) -> bool: # returns true i
 
 func _process_dash_sliced_object(object:Object) -> bool:
 	if object is CollisionObject2D:
-		print(object.name) 
+		if object.is_in_group(GroupsNamespace.DASH_IMMUNITY):
+			return false
 		
 		if object.is_in_group(GroupsNamespace.DESTRUCTABLE_OBJECT):
 			object.queue_free()
@@ -292,3 +304,4 @@ func _calc_energy_level() -> PlayerNamespace.EnergyLevel:
 
 func _on_energy_runout() -> void:
 	_state = State.NONE
+	velocity = Vector2.ZERO

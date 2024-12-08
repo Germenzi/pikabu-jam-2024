@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dma5yiu162184"
-path="res://.godot/imported/Background.png-d346e9ce37c7294bb8a0c89de5d380cd.ctex"
+uid="uid://uekifjw23jgu"
+path="res://.godot/imported/noise_texture.png-18191f3190cc84ceca06f1360cd20fe2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Background.png"
-dest_files=["res://.godot/imported/Background.png-d346e9ce37c7294bb8a0c89de5d380cd.ctex"]
+source_file="res://noise_texture.png"
+dest_files=["res://.godot/imported/noise_texture.png-18191f3190cc84ceca06f1360cd20fe2.ctex"]
 
 [params]
 

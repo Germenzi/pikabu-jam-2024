@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c72x2gtw1peqg"
-path="res://.godot/imported/okr.jpg-b1fad3400143d0d6697377c09c542475.ctex"
+uid="uid://cggk7sq3gkgou"
+path="res://.godot/imported/chars.png-65482fa5bdb265bbb763321c310b476b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://okr.jpg"
-dest_files=["res://.godot/imported/okr.jpg-b1fad3400143d0d6697377c09c542475.ctex"]
+source_file="res://chars.png"
+dest_files=["res://.godot/imported/chars.png-65482fa5bdb265bbb763321c310b476b.ctex"]
 
 [params]
 

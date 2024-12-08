@@ -43,7 +43,7 @@ void fragment() {
 	rain = pow(rain, 3.0); // this is not necessary, i just think that it looks good
 	rain *= 2.0; // this is also not important, just making the characters brighter
 	
-	COLOR.rgb = texture(chars, uv).rgb * rain * vec3(1.6, 0.3, 0.3); // finally multiply them together then multiply with green for the color
+	COLOR.rgb = texture(chars, uv).rgb * rain * vec3(0.11, 0.30, 0.15); // finally multiply them together then multiply with green for the color
 }"
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_gvfqf"]

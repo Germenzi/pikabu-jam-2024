@@ -25,7 +25,7 @@ func _on_player_energy_runout() -> void:
 	get_tree().change_scene_to_packed(scene)
 "
 
-[sub_resource type="Shader" id="Shader_fa6vq"]
+[sub_resource type="Shader" id="Shader_b0fej"]
 code = "shader_type canvas_item;
 
 uniform sampler2D chars;
@@ -62,17 +62,17 @@ fractal_octaves = 10
 fractal_lacunarity = 2.25
 fractal_gain = 0.695
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_l75j0"]
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_py4mx"]
 width = 32
 height = 32
 bump_strength = 0.0
 noise = SubResource("FastNoiseLite_gvfqf")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ico8b"]
-shader = SubResource("Shader_fa6vq")
-shader_parameter/noise_tex = SubResource("NoiseTexture2D_l75j0")
+shader = SubResource("Shader_b0fej")
+shader_parameter/noise_tex = SubResource("NoiseTexture2D_py4mx")
 
-[sub_resource type="Shader" id="Shader_3uymv"]
+[sub_resource type="Shader" id="Shader_lm2bl"]
 code = "shader_type canvas_item;
 
 uniform sampler2D screen_texture : hint_screen_texture;
@@ -84,7 +84,7 @@ void fragment() {
 "
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_oakln"]
-shader = SubResource("Shader_3uymv")
+shader = SubResource("Shader_lm2bl")
 shader_parameter/value = 2.53
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_h6t75"]

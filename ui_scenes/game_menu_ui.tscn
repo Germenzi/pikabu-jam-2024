@@ -1,4 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://13rysv2wruf6"]
+[gd_scene load_steps=3 format=3 uid="uid://13rysv2wruf6"]
+
+[ext_resource type="Theme" uid="uid://ldq0a0axolm7" path="res://theme.tres" id="1_hh83c"]
 
 [sub_resource type="GDScript" id="GDScript_l6ldh"]
 script/source = "extends Control
@@ -19,6 +21,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 1280.0
 offset_bottom = 720.0
+theme = ExtResource("1_hh83c")
 script = SubResource("GDScript_l6ldh")
 
 [node name="CenterContainer" type="CenterContainer" parent="."]

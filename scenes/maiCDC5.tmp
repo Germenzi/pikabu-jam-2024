@@ -12,8 +12,6 @@
 [sub_resource type="GDScript" id="GDScript_r53em"]
 script/source = "extends Node
 
-var sound_on_icon = preload(\"res://assets/UI/sound_btn.png\")
-var sound_off_icon = preload(\"res://assets/UI/sound_off.png\")
 
 func _on_main_menu_ui_about_team_button_pressed() -> void:
 	if not GuiTransitions.in_transition():
@@ -44,15 +42,15 @@ func _on_audio_stream_player_2d_finished() -> void:
 
 
 func _on_audio_button_pressed() -> void:
-	if AudioServer.is_bus_mute(0):
+	if not AudioServer.is_bus_mute(0):
 		print(\"EN\")
-		%AudioButton.icon = sound_on_icon
+		%AudioButton.icon = ResourceLoader.load(\"res://assets/UI/sound_btn.png\")
 	else:
 		print(\"DI\")
-		%AudioButton.icon = sound_off_icon
+		%AudioButton.icon = ResourceLoader.load(\"res://assets/UI/sound_off.png\")
 	print(\"WFWEF\")
 	$SoundButtonHit.play()
-	AudioServer.set_bus_mute(0, not AudioServer.is_bus_mute(0))
+	AudioServer.set_bus_mute(0, AudioServer.is_bus_mute(0))
 "
 
 [sub_resource type="GDScript" id="GDScript_yk2gb"]

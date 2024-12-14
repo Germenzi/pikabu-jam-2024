@@ -1,5 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://bsj87w44h1jhp"]
+[gd_scene load_steps=5 format=3 uid="uid://bsj87w44h1jhp"]
 
+[ext_resource type="Theme" uid="uid://ldq0a0axolm7" path="res://theme.tres" id="1_erlbk"]
 [ext_resource type="Texture2D" uid="uid://xqnnns3w8p86" path="res://tutorial.jpg" id="1_jc3cr"]
 [ext_resource type="AudioStream" uid="uid://bsi4gwcxytxrg" path="res://sounds/Keyboard_comic_sound.wav" id="2_oewyb"]
 
@@ -23,6 +24,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_erlbk")
 script = SubResource("GDScript_8ni01")
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
@@ -42,9 +44,9 @@ texture = ExtResource("1_jc3cr")
 
 [node name="Button" type="Button" parent="."]
 layout_mode = 2
-offset_left = 1144.0
-offset_top = 648.0
-offset_right = 1262.0
+offset_left = 1142.0
+offset_top = 612.0
+offset_right = 1258.0
 offset_bottom = 706.0
 theme_override_font_sizes/font_size = 36
 text = "Далее"

@@ -1,4 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://bwomdo5fmsyeg"]
+[gd_scene load_steps=4 format=3 uid="uid://bwomdo5fmsyeg"]
+
+[ext_resource type="Theme" uid="uid://ldq0a0axolm7" path="res://theme.tres" id="1_2jfjk"]
 
 [sub_resource type="GDScript" id="GDScript_msimd"]
 script/source = "extends Control
@@ -17,6 +19,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 1280.0
 offset_bottom = 720.0
+theme = ExtResource("1_2jfjk")
 script = SubResource("GDScript_msimd")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -26,9 +29,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 10
+theme_override_constants/margin_left = 28
 theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
+theme_override_constants/margin_right = 28
 theme_override_constants/margin_bottom = 10
 script = SubResource("GDScript_h70fo")
 
@@ -39,82 +42,83 @@ alignment = 1
 
 [node name="TeamLabel" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 36
-text = "Команда: Ludum Dare"
+theme_override_font_sizes/font_size = 100
+text = "Ludum Dare"
 horizontal_alignment = 1
 
 [node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-theme_override_constants/h_separation = 240
+theme_override_constants/h_separation = 54
 columns = 2
 
 [node name="RoleLabel1" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 36
 text = "Программист"
 
 [node name="NameLabel1" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 36
 text = "Никита"
 
 [node name="RoleLabel2" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 36
 text = "Программист"
 
 [node name="NameLabel2" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 36
 text = "Владимир"
 
 [node name="RoleLabel3" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 36
 text = "Нарративный дизайнер"
 
 [node name="NameLabel3" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 36
 text = "Егор"
 
 [node name="RoleLabel4" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 36
 text = "Нарративный дизайнер"
 
 [node name="NameLabel4" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 36
 text = "Лана"
 
 [node name="RoleLabel5" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 36
 text = "Художник"
 
 [node name="NameLabel5" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 36
 text = "Дмитрий"
 
 [node name="RoleLabel6" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 36
 text = "Геймдизайнер, представитель"
 
 [node name="NameLabel6" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 36
 text = "Ксения"
 
 [node name="BackButton" type="Button" parent="MarginContainer"]
 layout_mode = 2
-size_flags_horizontal = 8
+size_flags_horizontal = 0
 size_flags_vertical = 0
 theme_override_font_sizes/font_size = 36
 text = "Назад"
+icon_alignment = 1
 
 [connection signal="pressed" from="MarginContainer/BackButton" to="." method="_on_back_button_pressed"]

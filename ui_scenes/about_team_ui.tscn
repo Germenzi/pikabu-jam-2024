@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://bwomdo5fmsyeg"]
+[gd_scene load_steps=5 format=3 uid="uid://bwomdo5fmsyeg"]
 
 [ext_resource type="Theme" uid="uid://ldq0a0axolm7" path="res://theme.tres" id="1_2jfjk"]
+[ext_resource type="Texture2D" uid="uid://wgswcxn85mg3" path="res://assets/UI/arrow.png" id="2_vljgc"]
 
 [sub_resource type="GDScript" id="GDScript_msimd"]
 script/source = "extends Control
@@ -113,12 +114,23 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "Ксения"
 
-[node name="BackButton" type="Button" parent="MarginContainer"]
+[node name="BackButton" type="Button" parent="."]
 layout_mode = 2
+offset_left = 64.0
+offset_top = 64.0
+offset_right = 128.0
+offset_bottom = 128.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
+focus_mode = 0
 theme_override_font_sizes/font_size = 36
-text = "Назад"
+flat = true
 icon_alignment = 1
 
-[connection signal="pressed" from="MarginContainer/BackButton" to="." method="_on_back_button_pressed"]
+[node name="Arrow" type="Sprite2D" parent="BackButton"]
+position = Vector2(32, 32)
+rotation = -3.14159
+scale = Vector2(0.160377, 0.158768)
+texture = ExtResource("2_vljgc")
+
+[connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]

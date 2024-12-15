@@ -1,0 +1,46 @@
+[gd_scene load_steps=3 format=3 uid="uid://hyrag57yencd"]
+
+[ext_resource type="Texture2D" uid="uid://d0d8v1euhs5o2" path="res://assets/UI/sound_btn.png" id="1_b2xji"]
+
+[sub_resource type="GDScript" id="GDScript_e0fgt"]
+script/source = "extends Button
+
+
+var sound_on_icon = preload(\"res://assets/UI/sound_btn.png\")
+var sound_off_icon = preload(\"res://assets/UI/sound_off.png\")
+
+func _ready() -> void:
+	if not AudioServer.is_bus_mute(0):
+		$AudioIcon.texture = sound_on_icon
+	else:
+		$AudioIcon.texture = sound_off_icon
+
+func _on_pressed() -> void:
+	if AudioServer.is_bus_mute(0):
+		$AudioIcon.texture = sound_on_icon
+	else:
+		$AudioIcon.texture = sound_off_icon
+	AudioServer.set_bus_mute(0, not AudioServer.is_bus_mute(0))
+"
+
+[node name="AudioButton" type="Button"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1216.0
+offset_bottom = -656.0
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 26
+flat = true
+icon_alignment = 1
+expand_icon = true
+script = SubResource("GDScript_e0fgt")
+
+[node name="AudioIcon" type="Sprite2D" parent="."]
+position = Vector2(32, 32)
+scale = Vector2(0.150943, 0.151659)
+texture = ExtResource("1_b2xji")
+
+[connection signal="pressed" from="." to="." method="_on_pressed"]

@@ -4,9 +4,9 @@
 [ext_resource type="Script" path="res://addons/simple-gui-transitions/transition.gd" id="2_i371i"]
 [ext_resource type="PackedScene" uid="uid://bwomdo5fmsyeg" path="res://ui_scenes/about_team_ui.tscn" id="4_olqej"]
 [ext_resource type="Material" uid="uid://b5oj8xyesh52y" path="res://scenes/alpha_shader.tres" id="5_lchdp"]
-[ext_resource type="PackedScene" uid="uid://hyrag57yencd" path="res://scenes/audio_button.tscn" id="6_nf3sh"]
 [ext_resource type="AudioStream" uid="uid://bfiykfpvdxbg2" path="res://sounds/Background_music.wav" id="6_obbi2"]
 [ext_resource type="Texture2D" uid="uid://dhuxm6ydlxpik" path="res://cookie.jpg" id="6_ybk0x"]
+[ext_resource type="AudioStream" uid="uid://gncbv8ambw7d" path="res://sounds/Shooting_sound.wav" id="7_u7y0w"]
 
 [sub_resource type="GDScript" id="GDScript_r53em"]
 script/source = "extends Node
@@ -14,11 +14,9 @@ script/source = "extends Node
 
 func _on_main_menu_ui_about_team_button_pressed() -> void:
 	if not GuiTransitions.in_transition():
+		$ParallaxBackground/ParallaxLayer.hide()
+		$ParallaxBackground/ParallaxLayer2.hide()
 		GuiTransitions.go_to(\"AboutTeamUI\")
-		await GuiTransitions.show_completed
-		
-		$ParallaxBackground/Pikabu1.hide()
-		$ParallaxBackground/Pikabu2.hide()
 		
 func _on_main_menu_ui_start_game_button_pressed() -> void:
 	if not GuiTransitions.in_transition():
@@ -32,11 +30,9 @@ func _on_main_menu_ui_start_game_button_pressed() -> void:
 
 func _on_about_team_ui_back_button_pressed() -> void:
 	if not GuiTransitions.in_transition():
-		
+		$ParallaxBackground/ParallaxLayer.show()
+		$ParallaxBackground/ParallaxLayer2.show()
 		GuiTransitions.go_to(\"MainMenuUI\")
-		await GuiTransitions.show_completed
-		$ParallaxBackground/Pikabu1.show()
-		$ParallaxBackground/Pikabu2.show()
 
 
 
@@ -155,21 +151,21 @@ material = SubResource("ShaderMaterial_hxn48")
 offset_right = 1288.0
 offset_bottom = 720.0
 
-[node name="Pikabu1" type="ParallaxLayer" parent="ParallaxBackground"]
-position = Vector2(-2, -184)
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+position = Vector2(-2, -185)
 motion_mirroring = Vector2(1290, 837)
 
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Pikabu1"]
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
 material = ExtResource("5_lchdp")
 position = Vector2(2.00003, 201)
 scale = Vector2(5.875, 5.875)
 texture = ExtResource("6_ybk0x")
 
-[node name="Pikabu2" type="ParallaxLayer" parent="ParallaxBackground"]
+[node name="ParallaxLayer2" type="ParallaxLayer" parent="ParallaxBackground"]
 position = Vector2(-2, -185)
 motion_mirroring = Vector2(1290, 837)
 
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Pikabu2"]
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer2"]
 material = ExtResource("5_lchdp")
 position = Vector2(586, 481)
 scale = Vector2(5.0625, 5.0625)
@@ -191,16 +187,13 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.0784314)
 
-[node name="AudioButton" parent="." instance=ExtResource("6_nf3sh")]
-offset_left = 1152.0
-offset_top = 64.0
-offset_right = -64.0
-offset_bottom = -592.0
-
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_obbi2")
 volume_db = -20.0
 autoplay = true
+
+[node name="SoundButtonHit" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("7_u7y0w")
 
 [connection signal="about_team_button_pressed" from="MainMenuUI" to="." method="_on_main_menu_ui_about_team_button_pressed"]
 [connection signal="start_game_button_pressed" from="MainMenuUI" to="." method="_on_main_menu_ui_start_game_button_pressed"]

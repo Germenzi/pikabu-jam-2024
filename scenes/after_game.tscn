@@ -1,0 +1,186 @@
+[gd_scene load_steps=13 format=3 uid="uid://dcuj1tvnkh7hj"]
+
+[ext_resource type="Theme" uid="uid://ldq0a0axolm7" path="res://theme.tres" id="1_v33jc"]
+[ext_resource type="Material" uid="uid://b5oj8xyesh52y" path="res://scenes/alpha_shader.tres" id="2_km86y"]
+[ext_resource type="Texture2D" uid="uid://dhuxm6ydlxpik" path="res://cookie.jpg" id="3_r7lc8"]
+[ext_resource type="AudioStream" uid="uid://bfiykfpvdxbg2" path="res://sounds/Background_music.wav" id="4_f76d0"]
+
+[sub_resource type="GDScript" id="GDScript_l6ldh"]
+script/source = "extends Control
+
+
+func _on_main_menu_button_pressed() -> void:
+	get_tree().change_scene_to_file(\"res://scenes/main_menu.tscn\")
+
+
+func _on_again_button_pressed() -> void:
+	get_tree().change_scene_to_file(\"res://scenes/level_1.tscn\")
+"
+
+[sub_resource type="GDScript" id="GDScript_jjiby"]
+script/source = "extends ParallaxBackground
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	scroll_offset.y += 50 * delta
+	scroll_offset.x += 25 * delta
+"
+
+[sub_resource type="Shader" id="Shader_mm4xm"]
+code = "shader_type canvas_item;
+
+uniform sampler2D chars;
+uniform sampler2D noise_tex; 
+
+void fragment() {
+	// Random character
+	vec2 uv = fract(UV * 32.0); // loop uv 32 times for the characters (as the noise resolution is 32x32)
+	float noise = texture(noise_tex, UV).g;
+	noise = round(noise * 10.0) / 10.0; // make sure the color value are snapped by 0.1 (so its only 0.0, 0.1, 0.2, and so on) for perfect offset
+	//uv.x = (uv.x / 10.0) - 0.005; // offset
+	//uv.x += noise; // offset every character by the noise value
+	//uv.x += round(TIME * 0.5 * 10.0)/10.0; // animate characters with TIME, then snapped by 0.1 so it doesnt slide. 0.5 is the speed, you might want to change that
+	
+	// distortion
+	float rain = UV.y; // this is a vertical gradient
+	float distortion = texture(noise_tex, UV / vec2(1.0, 32.0)).g; // this will be used for distortion, using previous noise but only horizontal
+	distortion = round(distortion * 10.0) / 10.0; // for precision reason, you need to round your distortion too, otherwise some character wouldnt be fully shown
+	rain -= round(TIME * 1.0 * 32.0) / 256.0; // the 'rain' shouldn't move smoothly right? also, 0.2 is the speed
+	rain += distortion; // distort this gradient, turning it into a rain
+	rain = fract(rain); // loop the rain
+	rain = round(rain * 16.0) / 16.0; // pixelate the rain. Rounding by 32.0 or 8.0 is optional
+	rain = pow(rain, 3.0); // this is not necessary, i just think that it looks good
+	rain *= 2.0; // this is also not important, just making the characters brighter
+	
+	COLOR.rgb = texture(chars, uv).rgb * rain * vec3(0.11, 0.30, 0.15); // finally multiply them together then multiply with green for the color
+}"
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_twada"]
+noise_type = 4
+seed = 217
+frequency = 0.0001
+fractal_octaves = 10
+fractal_lacunarity = 2.25
+fractal_gain = 0.695
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1paer"]
+width = 32
+height = 32
+bump_strength = 0.0
+noise = SubResource("FastNoiseLite_twada")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_476nc"]
+shader = SubResource("Shader_mm4xm")
+shader_parameter/noise_tex = SubResource("NoiseTexture2D_1paer")
+
+[sub_resource type="Shader" id="Shader_gl5xv"]
+code = "shader_type canvas_item;
+
+uniform sampler2D screen_texture : hint_screen_texture;
+uniform float value = 0.0;
+
+void fragment() {
+	COLOR = textureLod(screen_texture, SCREEN_UV, value);
+}
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_w46fu"]
+shader = SubResource("Shader_gl5xv")
+shader_parameter/value = 0.92
+
+[node name="GameMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+theme = ExtResource("1_v33jc")
+script = SubResource("GDScript_l6ldh")
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+script = SubResource("GDScript_jjiby")
+
+[node name="ColorRect3" type="ColorRect" parent="ParallaxBackground"]
+material = SubResource("ShaderMaterial_476nc")
+offset_right = 1288.0
+offset_bottom = 720.0
+
+[node name="Pikabu1" type="ParallaxLayer" parent="ParallaxBackground"]
+position = Vector2(-2, -184)
+motion_mirroring = Vector2(1292.49, 837)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Pikabu1"]
+material = ExtResource("2_km86y")
+position = Vector2(2.00003, 201)
+scale = Vector2(5.875, 5.875)
+texture = ExtResource("3_r7lc8")
+
+[node name="Pikabu2" type="ParallaxLayer" parent="ParallaxBackground"]
+position = Vector2(-2, -185)
+motion_mirroring = Vector2(1290, 837)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Pikabu2"]
+material = ExtResource("2_km86y")
+position = Vector2(586, 481)
+scale = Vector2(5.0625, 5.0625)
+texture = ExtResource("3_r7lc8")
+
+[node name="ColorRect" type="ColorRect" parent="ParallaxBackground"]
+material = SubResource("ShaderMaterial_w46fu")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect2" type="ColorRect" parent="ParallaxBackground"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.0784314)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+offset_left = 485.0
+offset_top = 384.0
+offset_right = 795.0
+offset_bottom = 606.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="AgainButton" type="Button" parent="VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Ещё раз"
+
+[node name="MainMenuButton" type="Button" parent="VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Главное меню"
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="."]
+offset_left = 368.0
+offset_top = 100.0
+offset_right = 911.0
+offset_bottom = 354.0
+theme = ExtResource("1_v33jc")
+theme_override_font_sizes/font_size = 203
+text = "BUGS"
+horizontal_alignment = 1
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_f76d0")
+volume_db = -20.0
+autoplay = true
+
+[connection signal="pressed" from="VBoxContainer/VBoxContainer/AgainButton" to="." method="_on_again_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/VBoxContainer/MainMenuButton" to="." method="_on_main_menu_button_pressed"]

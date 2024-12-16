@@ -1,22 +1,17 @@
-[gd_scene load_steps=4 format=3 uid="uid://b01m8jpwgisf0"]
+[gd_scene load_steps=5 format=3 uid="uid://b01m8jpwgisf0"]
 
 [ext_resource type="Theme" uid="uid://ldq0a0axolm7" path="res://theme.tres" id="1_0npn8"]
 [ext_resource type="AudioStream" uid="uid://bfiykfpvdxbg2" path="res://sounds/Background_music.wav" id="1_f71bn"]
+[ext_resource type="Texture2D" uid="uid://dk5ubeu7r3so4" path="res://start_comics.jpg" id="2_bikax"]
 
 [sub_resource type="GDScript" id="GDScript_3u7pb"]
 script/source = "extends Control
 
-signal main_menu_button_pressed
-signal restart_button_pressed
+var scene : PackedScene = preload(\"res://scenes/after_game.tscn\")
 
-func _on_main_menu_button_pressed() -> void:
-	#main_menu_button_pressed.emit()
-	get_tree().change_scene_to_file(\"res://scenes/main_menu.tscn\")
-
-
-func _on_restart_button_pressed() -> void:
-	#restart_button_pressed.emit()
-	get_tree().change_scene_to_file(\"res://scenes/level_1.tscn\")
+func _ready() -> void:
+	await get_tree().create_timer(4).timeout
+	get_tree().change_scene_to_packed(scene)
 "
 
 [node name="GameOverUi" type="Control"]
@@ -29,53 +24,18 @@ grow_vertical = 2
 theme = ExtResource("1_0npn8")
 script = SubResource("GDScript_3u7pb")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+[node name="CenterContainer" type="CenterContainer" parent="."]
+offset_right = 1280.0
+offset_bottom = 720.0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="TextureRect" type="TextureRect" parent="CenterContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(1280, 720)
 layout_mode = 2
-alignment = 1
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 54
-text = "Утром вы просто не проснулись...."
-horizontal_alignment = 1
-
-[node name="HBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 2
-offset_left = 503.0
-offset_top = 472.0
-offset_right = 813.0
-offset_bottom = 694.0
-size_flags_horizontal = 4
-size_flags_vertical = 8
-alignment = 1
-
-[node name="RestartButton" type="Button" parent="HBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 4
-text = "Заново"
-
-[node name="MainMenuButton" type="Button" parent="HBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 4
-text = "Главное меню"
+texture = ExtResource("2_bikax")
+expand_mode = 3
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("1_f71bn")
 volume_db = -20.0
 autoplay = true
-
-[connection signal="pressed" from="HBoxContainer/RestartButton" to="." method="_on_restart_button_pressed"]
-[connection signal="pressed" from="HBoxContainer/MainMenuButton" to="." method="_on_main_menu_button_pressed"]

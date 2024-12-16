@@ -1,16 +1,16 @@
-[gd_scene load_steps=4 format=3 uid="uid://bbluogrdtmjy3"]
+[gd_scene load_steps=5 format=3 uid="uid://bbluogrdtmjy3"]
 
 [ext_resource type="Theme" uid="uid://ldq0a0axolm7" path="res://theme.tres" id="1_7y6qx"]
 [ext_resource type="AudioStream" uid="uid://bfiykfpvdxbg2" path="res://sounds/Background_music.wav" id="1_j26mt"]
+[ext_resource type="Texture2D" uid="uid://dk5ubeu7r3so4" path="res://start_comics.jpg" id="2_uqtxa"]
 
 [sub_resource type="GDScript" id="GDScript_r4vab"]
 script/source = "extends Control
 
-signal main_menu_button_pressed
+var scene : PackedScene = preload(\"res://scenes/after_game.tscn\")
 
-var scene : PackedScene = preload(\"res://scenes/main_menu.tscn\")
-
-func _on_button_pressed() -> void:
+func _ready() -> void:
+	await get_tree().create_timer(4).timeout
 	get_tree().change_scene_to_packed(scene)
 "
 
@@ -21,34 +21,18 @@ theme = ExtResource("1_7y6qx")
 script = SubResource("GDScript_r4vab")
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+layout_mode = 0
 offset_right = 1280.0
 offset_bottom = 720.0
-grow_horizontal = 2
-grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+[node name="TextureRect" type="TextureRect" parent="CenterContainer"]
+clip_contents = true
+custom_minimum_size = Vector2(1280, 720)
 layout_mode = 2
-theme_override_constants/separation = 30
-
-[node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 42
-text = "Победа!"
-horizontal_alignment = 1
-
-[node name="Button" type="Button" parent="CenterContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 36
-text = "Главное меню"
+texture = ExtResource("2_uqtxa")
+expand_mode = 3
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("1_j26mt")
 volume_db = -20.0
 autoplay = true
-
-[connection signal="pressed" from="CenterContainer/VBoxContainer/Button" to="." method="_on_button_pressed"]

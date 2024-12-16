@@ -11,6 +11,7 @@
 [sub_resource type="GDScript" id="GDScript_r53em"]
 script/source = "extends Node
 
+var start_comics = preload(\"res://scenes/EnterComics.tscn\")
 
 func _on_main_menu_ui_about_team_button_pressed() -> void:
 	if not GuiTransitions.in_transition():
@@ -24,11 +25,21 @@ func _on_main_menu_ui_start_game_button_pressed() -> void:
 	if not GuiTransitions.in_transition():
 		GuiTransitions.hide()
 		await GuiTransitions.hide_completed
+		
+		if not get_tree().has_meta(\"start_comics_readed\"):
+			get_tree().set_meta(\"start_comics_readed\", true)
+			get_tree().change_scene_to_packed(start_comics)
+		else:
+			get_tree().change_scene_to_file(\"res://scenes/level_1.tscn\")
+		
+		
+		'''
 		if not get_tree().has_meta(\"ab\"):
 			get_tree().set_meta(\"ab\", 1654)
 			get_tree().change_scene_to_file(\"res://scenes/begin_comics.tscn\")
 		else:
 			get_tree().change_scene_to_file(\"res://scenes/start_comics.tscn\")
+		'''
 
 func _on_about_team_ui_back_button_pressed() -> void:
 	if not GuiTransitions.in_transition():
@@ -55,7 +66,7 @@ func _process(delta: float) -> void:
 	scroll_offset.x += 25 * delta
 "
 
-[sub_resource type="Shader" id="Shader_mm4xm"]
+[sub_resource type="Shader" id="Shader_rvcag"]
 code = "shader_type canvas_item;
 
 uniform sampler2D chars;
@@ -92,17 +103,17 @@ fractal_octaves = 10
 fractal_lacunarity = 2.25
 fractal_gain = 0.695
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1paer"]
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_kcnbn"]
 width = 32
 height = 32
 bump_strength = 0.0
 noise = SubResource("FastNoiseLite_6pwaq")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hxn48"]
-shader = SubResource("Shader_mm4xm")
-shader_parameter/noise_tex = SubResource("NoiseTexture2D_1paer")
+shader = SubResource("Shader_rvcag")
+shader_parameter/noise_tex = SubResource("NoiseTexture2D_kcnbn")
 
-[sub_resource type="Shader" id="Shader_gl5xv"]
+[sub_resource type="Shader" id="Shader_g4ksj"]
 code = "shader_type canvas_item;
 
 uniform sampler2D screen_texture : hint_screen_texture;
@@ -114,7 +125,7 @@ void fragment() {
 "
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_y6vrs"]
-shader = SubResource("Shader_gl5xv")
+shader = SubResource("Shader_g4ksj")
 shader_parameter/value = 0.92
 
 [node name="main_menu" type="Node"]

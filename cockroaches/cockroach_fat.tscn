@@ -432,9 +432,8 @@ unique_name_in_owner = true
 position = Vector2(1, -7)
 scale = Vector2(0.3, 0.3)
 sprite_frames = SubResource("SpriteFrames_o3eya")
-animation = &"death"
-frame = 3
-frame_progress = 1.0
+animation = &"eating_cookie"
+frame_progress = 0.53504
 
 [node name="DeathSound" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true

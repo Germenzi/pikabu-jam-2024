@@ -1,9 +1,14 @@
-[gd_scene load_steps=17 format=3 uid="uid://cu1opk84g5j3u"]
+[gd_scene load_steps=13 format=3 uid="uid://cnjx64oc6p7x5"]
 
-[ext_resource type="Texture2D" uid="uid://ds317wjep3rlx" path="res://assets/shovel-attack.png" id="1_qon1v"]
-[ext_resource type="Texture2D" uid="uid://dfe0re316871a" path="res://assets/shovel-idle.png" id="1_uynmc"]
-[ext_resource type="Texture2D" uid="uid://cnx3nt5whsnmi" path="res://assets/shovel-walk.png" id="3_78hep"]
-[ext_resource type="AudioStream" uid="uid://bwji1ss5d85ll" path="res://sounds/Enemy_death_sound.wav" id="4_760nm"]
+[ext_resource type="Texture2D" uid="uid://c462b8mako4mp" path="res://anim_temp/fighter/бой 1.png" id="1_6cjgc"]
+[ext_resource type="Texture2D" uid="uid://xkgmajcnpxot" path="res://anim_temp/fighter/бой 2.png" id="2_lmuyt"]
+[ext_resource type="Texture2D" uid="uid://hibrx0u5v20x" path="res://anim_temp/fighter/стоим 1.png" id="3_7vj0w"]
+[ext_resource type="Texture2D" uid="uid://qy2kqigs1hvm" path="res://anim_temp/fighter/стоим 2.png" id="4_2np4b"]
+[ext_resource type="AudioStream" uid="uid://bwji1ss5d85ll" path="res://sounds/Enemy_death_sound.wav" id="4_wo181"]
+[ext_resource type="Texture2D" uid="uid://ini2ffws0kaj" path="res://anim_temp/fighter/стоим 3.png" id="5_7820t"]
+[ext_resource type="Texture2D" uid="uid://dmg5fmegepbk7" path="res://anim_temp/fighter/стоим 4.png" id="6_3ux35"]
+[ext_resource type="Texture2D" uid="uid://rgsauk4is08" path="res://anim_temp/fighter/идем 1.png" id="7_ks2jl"]
+[ext_resource type="Texture2D" uid="uid://bhdi0le8ei7ex" path="res://anim_temp/fighter/идем 2.png" id="8_jgkyx"]
 
 [sub_resource type="GDScript" id="GDScript_38a08"]
 resource_name = "main"
@@ -174,53 +179,14 @@ func _on_attack_cooldown_timer_timeout() -> void:
 radius = 14.5
 height = 74.0
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_rxgnu"]
-atlas = ExtResource("1_qon1v")
-region = Rect2(0, 0, 237, 386)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_6emsb"]
-atlas = ExtResource("1_qon1v")
-region = Rect2(237, 0, 237, 386)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_lqrxq"]
-atlas = ExtResource("1_qon1v")
-region = Rect2(474, 0, 237, 386)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_mi216"]
-atlas = ExtResource("1_uynmc")
-region = Rect2(0, 0, 237, 386)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_l127c"]
-atlas = ExtResource("1_uynmc")
-region = Rect2(237, 0, 237, 386)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_nbx2l"]
-atlas = ExtResource("1_uynmc")
-region = Rect2(474, 0, 237, 386)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_rufsa"]
-atlas = ExtResource("1_uynmc")
-region = Rect2(711, 0, 237, 386)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_6webt"]
-atlas = ExtResource("3_78hep")
-region = Rect2(0, 0, 237, 386)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_6v4sc"]
-atlas = ExtResource("3_78hep")
-region = Rect2(237, 0, 237, 386)
-
 [sub_resource type="SpriteFrames" id="SpriteFrames_x41un"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_rxgnu")
+"texture": ExtResource("1_6cjgc")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_6emsb")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_lqrxq")
+"texture": ExtResource("2_lmuyt")
 }],
 "loop": true,
 "name": &"attack",
@@ -228,16 +194,16 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_mi216")
+"texture": ExtResource("3_7vj0w")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_l127c")
+"texture": ExtResource("4_2np4b")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_nbx2l")
+"texture": ExtResource("5_7820t")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_rufsa")
+"texture": ExtResource("6_3ux35")
 }],
 "loop": true,
 "name": &"idle",
@@ -245,10 +211,10 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_6webt")
+"texture": ExtResource("7_ks2jl")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_6v4sc")
+"texture": ExtResource("8_jgkyx")
 }],
 "loop": true,
 "name": &"walk",
@@ -293,13 +259,14 @@ one_shot = true
 
 [node name="AnimatedSprite" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true
-position = Vector2(-1, -8)
+position = Vector2(3, -5)
 scale = Vector2(0.3, 0.3)
 sprite_frames = SubResource("SpriteFrames_x41un")
-animation = &"idle"
+animation = &"attack"
+flip_h = true
 
 [node name="DeathSound" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
-stream = ExtResource("4_760nm")
+stream = ExtResource("4_wo181")
 
 [connection signal="timeout" from="AttackCooldownTimer" to="." method="_on_attack_cooldown_timer_timeout"]

@@ -1,0 +1,17 @@
+[gd_scene load_steps=2 format=3 uid="uid://4udda8dgdbi8"]
+
+[sub_resource type="GDScript" id="GDScript_ud5yp"]
+script/source = "extends Camera2D
+
+func _process(delta: float) -> void:
+	global_position = %Player.global_position
+"
+
+[node name="Node2D" type="Node2D"]
+
+[node name="MainCamera" type="Camera2D" parent="."]
+position = Vector2(104, 472)
+limit_left = 0
+limit_top = 0
+limit_bottom = 720
+script = SubResource("GDScript_ud5yp")

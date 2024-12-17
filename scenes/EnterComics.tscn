@@ -12,7 +12,7 @@ var images = [
 	preload(\"res://assets/UI/name.png\")
 ]
 
-var next_scene = preload(\"res://scenes/level_1.tscn\")
+var next_scene = preload(\"res://scenes/tutorial/tutorial_1.tscn\")
 
 var index = 0
 
@@ -52,10 +52,10 @@ texture = ExtResource("1_f7ygp")
 
 [node name="ButtonNext" type="Button" parent="."]
 layout_mode = 0
-offset_left = 1083.0
-offset_top = 576.0
+offset_left = 1152.0
+offset_top = 640.0
 offset_right = 1216.0
-offset_bottom = 705.0
+offset_bottom = 697.0
 rotation = 6.28319
 focus_mode = 0
 flat = true
@@ -63,8 +63,8 @@ icon_alignment = 1
 expand_icon = true
 
 [node name="Arrow" type="Sprite2D" parent="ButtonNext"]
-position = Vector2(69, 63.375)
-scale = Vector2(0.300355, 0.300355)
+position = Vector2(32.826, 31.7482)
+scale = Vector2(0.147047, 0.150465)
 texture = ExtResource("2_tm1o5")
 
 [connection signal="pressed" from="ButtonNext" to="." method="_on_button_next_pressed"]

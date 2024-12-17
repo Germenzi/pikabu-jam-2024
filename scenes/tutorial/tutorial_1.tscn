@@ -1,0 +1,265 @@
+[gd_scene load_steps=16 format=3 uid="uid://bbuveh3led4t2"]
+
+[ext_resource type="Texture2D" uid="uid://vqwdmjre4cka" path="res://assets/UI/wasd.png" id="1_inprc"]
+[ext_resource type="PackedScene" uid="uid://dg5mqjc8kv415" path="res://player/Player.tscn" id="2_f1mg1"]
+[ext_resource type="PackedScene" uid="uid://bbng4pyivsq7" path="res://scenes/pc_obstacle.tscn" id="3_mr2aw"]
+[ext_resource type="Texture2D" uid="uid://cd5r44rf0xji2" path="res://assets/UI/space.png" id="4_4tgou"]
+[ext_resource type="Texture2D" uid="uid://8m5844ck3s62" path="res://assets/UI/arrows.png" id="4_wwmqn"]
+[ext_resource type="PackedScene" uid="uid://dm3ptitah4ul3" path="res://scenes/heap_objstacle.tscn" id="6_vo3en"]
+[ext_resource type="PackedScene" uid="uid://drou6gyyk1wv3" path="res://pickups/cookie.tscn" id="7_gmkc2"]
+
+[sub_resource type="GDScript" id="GDScript_mdp3x"]
+script/source = "extends Node
+
+var next_scene = preload(\"res://scenes/level_1.tscn\")
+
+func _ready() -> void:
+	%PlayerMessageBG.show_message(\"Эх....\")
+	%Player.allow_jump = true
+	%Player.allow_shoot = true
+	%Player.energy = 5000
+
+
+func _on_cookie_tree_exited() -> void:
+	get_tree().change_scene_to_packed(next_scene)
+"
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_y7yyu"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_5eacj"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_7pbp5"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_eyqtn"]
+
+[sub_resource type="GDScript" id="GDScript_g6gb5"]
+resource_name = "player_messages"
+script/source = "extends Control
+
+
+func show_message(msg:String) -> void:
+	%PlayerMessageLabel.text = msg
+	$HideTimer.stop()
+	$HideTimer.start()
+	show()
+
+
+func _on_hide_timer_timeout() -> void:
+	hide()
+"
+
+[sub_resource type="LabelSettings" id="LabelSettings_43tgc"]
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="GDScript" id="GDScript_5mgue"]
+script/source = "extends Camera2D
+
+func _process(delta: float) -> void:
+	global_position = %Player.global_position
+"
+
+[node name="Titorial1" type="Node"]
+script = SubResource("GDScript_mdp3x")
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+offset_left = 32.0
+offset_top = 546.0
+offset_right = 5952.0
+offset_bottom = 704.0
+color = Color(0.377921, 0.377918, 0.377919, 1)
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_left = 32.0
+offset_top = 192.0
+offset_right = 5936.0
+offset_bottom = 642.0
+color = Color(0.695503, 0.695503, 0.695503, 1)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="TopBoundary" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(392, 184)
+rotation = 3.14159
+shape = SubResource("WorldBoundaryShape2D_y7yyu")
+
+[node name="LeftBoundary" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(32, 416)
+rotation = 1.5708
+shape = SubResource("WorldBoundaryShape2D_5eacj")
+
+[node name="RightBoundary" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(4928, 424)
+rotation = 4.71239
+shape = SubResource("WorldBoundaryShape2D_7pbp5")
+
+[node name="BottomBoundary" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(392, 642)
+shape = SubResource("WorldBoundaryShape2D_eyqtn")
+
+[node name="Obstacles" type="Node" parent="."]
+
+[node name="PcObstacle" parent="Obstacles" instance=ExtResource("3_mr2aw")]
+position = Vector2(2000, 176)
+rotation = -3.14159
+scale = Vector2(0.687774, -0.627933)
+
+[node name="PcObstacle3" parent="Obstacles" instance=ExtResource("3_mr2aw")]
+position = Vector2(2024, 288)
+scale = Vector2(0.80451, 0.721186)
+
+[node name="PcObstacle2" parent="Obstacles" instance=ExtResource("3_mr2aw")]
+position = Vector2(2000, 416)
+rotation = -3.14159
+scale = Vector2(0.986291, -0.908719)
+
+[node name="PcObstacle4" parent="Obstacles" instance=ExtResource("3_mr2aw")]
+position = Vector2(2032, 560)
+scale = Vector2(0.924505, 0.828753)
+
+[node name="TutorialMessages" type="Node" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="TutorialMessages"]
+offset_left = 280.0
+offset_top = 200.0
+offset_right = 599.0
+offset_bottom = 448.0
+color = Color(0.548963, 0.548963, 0.548963, 1)
+
+[node name="Wasd" type="Sprite2D" parent="TutorialMessages"]
+position = Vector2(536.046, 403.625)
+scale = Vector2(0.179471, 0.179471)
+texture = ExtResource("1_inprc")
+
+[node name="Label" type="Label" parent="TutorialMessages"]
+offset_left = 295.0
+offset_top = 216.0
+offset_right = 583.0
+offset_bottom = 398.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Нужно найти решение как можно быстрее!
+
+Не стой на месте!
+Вперёд!"
+autowrap_mode = 2
+
+[node name="ColorRect2" type="ColorRect" parent="TutorialMessages"]
+offset_left = 1310.0
+offset_top = 200.0
+offset_right = 1629.0
+offset_bottom = 448.0
+color = Color(0.548963, 0.548963, 0.548963, 1)
+
+[node name="Label2" type="Label" parent="TutorialMessages"]
+offset_left = 1325.0
+offset_top = 216.0
+offset_right = 1613.0
+offset_bottom = 398.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Это можно перепрыгнуть"
+autowrap_mode = 2
+
+[node name="Space" type="Sprite2D" parent="TutorialMessages"]
+position = Vector2(1528, 424)
+scale = Vector2(0.164894, 0.164894)
+texture = ExtResource("4_4tgou")
+
+[node name="ColorRect3" type="ColorRect" parent="TutorialMessages"]
+offset_left = 2560.0
+offset_top = 200.0
+offset_right = 2879.0
+offset_bottom = 448.0
+color = Color(0.548963, 0.548963, 0.548963, 1)
+
+[node name="Label3" type="Label" parent="TutorialMessages"]
+offset_left = 2575.0
+offset_top = 216.0
+offset_right = 2863.0
+offset_bottom = 398.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Уничтожай препятствия на своём пути"
+autowrap_mode = 2
+
+[node name="Arrows" type="Sprite2D" parent="TutorialMessages"]
+position = Vector2(2791.3, 385.625)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("4_wwmqn")
+
+[node name="ColorRect4" type="ColorRect" parent="TutorialMessages"]
+offset_left = 4088.0
+offset_top = 200.0
+offset_right = 4407.0
+offset_bottom = 448.0
+color = Color(0.548963, 0.548963, 0.548963, 1)
+
+[node name="Label4" type="Label" parent="TutorialMessages"]
+offset_left = 4103.0
+offset_top = 216.0
+offset_right = 4391.0
+offset_bottom = 398.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Уу, печенька!
+Ты потратил много энергии на стрельбу и прыжки.
+Съешь печеньку и энергия восстановится."
+autowrap_mode = 2
+
+[node name="Player" parent="." node_paths=PackedStringArray("bullet_container") instance=ExtResource("2_f1mg1")]
+unique_name_in_owner = true
+position = Vector2(144, 440)
+bullet_container = NodePath("../PlayerBullets")
+
+[node name="PlayerMessageBG" type="Control" parent="Player"]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = -49.0
+offset_top = -48.0
+offset_right = 49.0
+offset_bottom = -24.0
+script = SubResource("GDScript_g6gb5")
+metadata/_edit_group_ = true
+
+[node name="PlayerMessageLabel" type="Label" parent="Player/PlayerMessageBG"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/line_spacing = 0
+label_settings = SubResource("LabelSettings_43tgc")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ColorRect" type="ColorRect" parent="Player/PlayerMessageBG/PlayerMessageLabel"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HideTimer" type="Timer" parent="Player/PlayerMessageBG"]
+wait_time = 2.5
+
+[node name="Camera2D" type="Camera2D" parent="."]
+limit_left = 0
+limit_top = 0
+limit_bottom = 720
+script = SubResource("GDScript_5mgue")
+
+[node name="MugObjstacle" parent="." instance=ExtResource("6_vo3en")]
+position = Vector2(3456, 400)
+
+[node name="Cookie" parent="." instance=ExtResource("7_gmkc2")]
+position = Vector2(4240, 528)
+
+[node name="PlayerBullets" type="Node" parent="."]
+
+[connection signal="timeout" from="Player/PlayerMessageBG/HideTimer" to="Player/PlayerMessageBG" method="_on_hide_timer_timeout"]
+[connection signal="tree_exited" from="Cookie" to="." method="_on_cookie_tree_exited"]

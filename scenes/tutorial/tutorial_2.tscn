@@ -1,22 +1,18 @@
-[gd_scene load_steps=27 format=3 uid="uid://bbuveh3led4t2"]
+[gd_scene load_steps=25 format=3 uid="uid://doq56m3x47kdb"]
 
-[ext_resource type="Texture2D" uid="uid://vqwdmjre4cka" path="res://assets/UI/wasd.png" id="1_inprc"]
-[ext_resource type="PackedScene" uid="uid://dg5mqjc8kv415" path="res://player/Player.tscn" id="2_f1mg1"]
-[ext_resource type="PackedScene" uid="uid://bbng4pyivsq7" path="res://scenes/pc_obstacle.tscn" id="3_mr2aw"]
-[ext_resource type="Texture2D" uid="uid://cd5r44rf0xji2" path="res://assets/UI/space.png" id="4_4tgou"]
-[ext_resource type="Texture2D" uid="uid://8m5844ck3s62" path="res://assets/UI/arrows.png" id="4_wwmqn"]
-[ext_resource type="Texture2D" uid="uid://wgswcxn85mg3" path="res://assets/UI/arrow.png" id="7_383ps"]
-[ext_resource type="PackedScene" uid="uid://d5uoj081drc2" path="res://scenes/trash_barricade.tscn" id="7_dfjnt"]
-[ext_resource type="PackedScene" uid="uid://drou6gyyk1wv3" path="res://pickups/cookie.tscn" id="7_gmkc2"]
-[ext_resource type="PackedScene" uid="uid://hyrag57yencd" path="res://scenes/audio_button.tscn" id="8_fy63r"]
-[ext_resource type="PackedScene" uid="uid://dg8xtwwkkgcm4" path="res://pickups/cake.tscn" id="8_pv05k"]
-[ext_resource type="PackedScene" uid="uid://dm3ptitah4ul3" path="res://scenes/heap_objstacle.tscn" id="10_ev32f"]
-[ext_resource type="AudioStream" uid="uid://bfiykfpvdxbg2" path="res://sounds/Background_music.wav" id="11_21h7d"]
+[ext_resource type="PackedScene" uid="uid://dg8xtwwkkgcm4" path="res://pickups/cake.tscn" id="3_fgmts"]
+[ext_resource type="PackedScene" uid="uid://cnjx64oc6p7x5" path="res://cockroaches/cockroach_fighter.tscn" id="4_a464h"]
+[ext_resource type="PackedScene" uid="uid://drou6gyyk1wv3" path="res://pickups/cookie.tscn" id="5_bui4f"]
+[ext_resource type="PackedScene" uid="uid://dg5mqjc8kv415" path="res://player/Player.tscn" id="5_v4gus"]
+[ext_resource type="Texture2D" uid="uid://wgswcxn85mg3" path="res://assets/UI/arrow.png" id="6_uyf2k"]
+[ext_resource type="PackedScene" uid="uid://hyrag57yencd" path="res://scenes/audio_button.tscn" id="7_6usrk"]
+[ext_resource type="PackedScene" uid="uid://d5uoj081drc2" path="res://scenes/trash_barricade.tscn" id="7_12cbc"]
+[ext_resource type="AudioStream" uid="uid://bfiykfpvdxbg2" path="res://sounds/Background_music.wav" id="8_425gg"]
 
 [sub_resource type="GDScript" id="GDScript_mdp3x"]
 script/source = "extends Node
 
-var next_scene = preload(\"res://scenes/tutorial/tutorial_2.tscn\")
+var next_scene = preload(\"res://scenes/tutorial/tutorial_3.tscn\")
 
 func _ready() -> void:
 	%PlayerMessageBG.show_message(\"Эх....\")
@@ -64,48 +60,29 @@ func _process(delta: float) -> void:
 	global_position = %Player.global_position
 "
 
-[sub_resource type="GDScript" id="GDScript_djqrq"]
-resource_name = "level_hud"
-script/source = "extends CanvasLayer
+[sub_resource type="GDScript" id="GDScript_6d6g1"]
+script/source = "extends Node2D
 
+@export var health : float = 10000000000.0
 
-func _on_player_energy_level_changed(new_level:PlayerNamespace.EnergyLevel) -> void:
-	match new_level:
-		PlayerNamespace.EnergyLevel.HIGH, PlayerNamespace.EnergyLevel.NORMAL:
-			%PlayerMessageBG.hide()
-			%ScreenVignette.hide()
-		PlayerNamespace.EnergyLevel.LOW:
-			%PlayerMessageBG.show_message(\"  Эх, печеньку бы...  \")
-			%ScreenVignette.set_intensity(0.4)
-			%ScreenVignette.show()
-		PlayerNamespace.EnergyLevel.LOWLOW:
-			%PlayerMessageBG.show_message(\"  Кажется без кекса уже не обойтись!  \")
-			%ScreenVignette.set_intensity(0.6)
-			%ScreenVignette.show()
+func _ready() -> void:
+	print(\"CREATED!\")
+
+func take_damage(amount:float) -> void:
+	print(\"DAMAGE TAKEN!\")
+	health -= amount
+	
+	if health <= 0:
+		queue_free()
+	elif health < 30:
+		$AnimatedSprite2D.set_frame_and_progress(2, 0)
+	elif health < 60:
+		$AnimatedSprite2D.set_frame_and_progress(1, 0)
+	else:
+		$AnimatedSprite2D.set_frame_and_progress(0, 0)
 "
 
-[sub_resource type="Gradient" id="Gradient_gs80o"]
-offsets = PackedFloat32Array(0, 0.436975, 1)
-colors = PackedColorArray(1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_0jrop"]
-gradient = SubResource("Gradient_gs80o")
-width = 256
-height = 256
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(1, 1)
-
-[sub_resource type="GDScript" id="GDScript_0m7ht"]
-resource_name = "vignette"
-script/source = "extends TextureRect
-
-
-func set_intensity(intencity:float) -> void:
-	self_modulate.a = intencity+0.4
-"
-
-[sub_resource type="GDScript" id="GDScript_6egyv"]
+[sub_resource type="GDScript" id="GDScript_s0ph8"]
 resource_name = "cookie_spawner"
 script/source = "extends Node
 
@@ -133,7 +110,64 @@ func _on_spawn_timer_timeout() -> void:
 		print(\"Cookie dropped\")
 "
 
-[sub_resource type="GDScript" id="GDScript_s6jom"]
+[sub_resource type="GDScript" id="GDScript_rt0vd"]
+script/source = "extends Node
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	if get_child_count() == 0:
+		$\"../TrashBarricade\".queue_free()
+		queue_free()
+"
+
+[sub_resource type="GDScript" id="GDScript_504nw"]
+resource_name = "level_hud"
+script/source = "extends CanvasLayer
+
+
+func _on_player_energy_level_changed(new_level:PlayerNamespace.EnergyLevel) -> void:
+	match new_level:
+		PlayerNamespace.EnergyLevel.HIGH, PlayerNamespace.EnergyLevel.NORMAL:
+			%PlayerMessageBG.hide()
+			%ScreenVignette.hide()
+		PlayerNamespace.EnergyLevel.LOW:
+			%PlayerMessageBG.show_message(\"  Эх, печеньку бы...  \")
+			%ScreenVignette.set_intensity(0.4)
+			%ScreenVignette.show()
+		PlayerNamespace.EnergyLevel.LOWLOW:
+			%PlayerMessageBG.show_message(\"  Кажется без кекса уже не обойтись!  \")
+			%ScreenVignette.set_intensity(0.6)
+			%ScreenVignette.show()
+"
+
+[sub_resource type="Gradient" id="Gradient_vaoma"]
+offsets = PackedFloat32Array(0, 0.436975, 1)
+colors = PackedColorArray(1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ooemb"]
+gradient = SubResource("Gradient_vaoma")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 1)
+
+[sub_resource type="GDScript" id="GDScript_fsju4"]
+resource_name = "vignette"
+script/source = "extends TextureRect
+
+
+func set_intensity(intencity:float) -> void:
+	self_modulate.a = intencity+0.4
+"
+
+[sub_resource type="GDScript" id="GDScript_su5li"]
 resource_name = "bg_sound"
 script/source = "extends AudioStreamPlayer
 
@@ -141,20 +175,20 @@ func _on_finished() -> void:
 	play()
 "
 
-[node name="Titorial1" type="Node"]
+[node name="Titorial2" type="Node"]
 script = SubResource("GDScript_mdp3x")
 
 [node name="ColorRect2" type="ColorRect" parent="."]
 offset_left = 32.0
 offset_top = 546.0
-offset_right = 5952.0
+offset_right = 4296.0
 offset_bottom = 704.0
 color = Color(0.377921, 0.377918, 0.377919, 1)
 
 [node name="ColorRect" type="ColorRect" parent="."]
 offset_left = 32.0
 offset_top = 192.0
-offset_right = 5936.0
+offset_right = 4296.0
 offset_bottom = 642.0
 color = Color(0.695503, 0.695503, 0.695503, 1)
 
@@ -171,33 +205,13 @@ rotation = 1.5708
 shape = SubResource("WorldBoundaryShape2D_5eacj")
 
 [node name="RightBoundary" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(4928, 424)
+position = Vector2(3960, 424)
 rotation = 4.71239
 shape = SubResource("WorldBoundaryShape2D_7pbp5")
 
 [node name="BottomBoundary" type="CollisionShape2D" parent="StaticBody2D"]
 position = Vector2(392, 642)
 shape = SubResource("WorldBoundaryShape2D_eyqtn")
-
-[node name="Obstacles" type="Node" parent="."]
-
-[node name="PcObstacle" parent="Obstacles" instance=ExtResource("3_mr2aw")]
-position = Vector2(2000, 176)
-rotation = -3.14159
-scale = Vector2(0.687774, -0.627933)
-
-[node name="PcObstacle3" parent="Obstacles" instance=ExtResource("3_mr2aw")]
-position = Vector2(2024, 288)
-scale = Vector2(0.80451, 0.721186)
-
-[node name="PcObstacle2" parent="Obstacles" instance=ExtResource("3_mr2aw")]
-position = Vector2(2000, 416)
-rotation = -3.14159
-scale = Vector2(0.986291, -0.908719)
-
-[node name="PcObstacle4" parent="Obstacles" instance=ExtResource("3_mr2aw")]
-position = Vector2(2032, 560)
-scale = Vector2(0.924505, 0.828753)
 
 [node name="TutorialMessages" type="Node" parent="."]
 
@@ -208,11 +222,6 @@ offset_right = 599.0
 offset_bottom = 448.0
 color = Color(0.548963, 0.548963, 0.548963, 1)
 
-[node name="Wasd" type="Sprite2D" parent="TutorialMessages"]
-position = Vector2(536.046, 403.625)
-scale = Vector2(0.179471, 0.179471)
-texture = ExtResource("1_inprc")
-
 [node name="Label" type="Label" parent="TutorialMessages"]
 offset_left = 295.0
 offset_top = 216.0
@@ -220,76 +229,49 @@ offset_right = 583.0
 offset_bottom = 398.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
-text = "Нужно найти решение как можно быстрее!
-
-Не стой на месте!
-Вперёд!"
+text = "Сколько тараканов!
+Не хорошо, когда тараканы мешают мыслить.
+Уничтожь их!"
 autowrap_mode = 2
 
 [node name="ColorRect2" type="ColorRect" parent="TutorialMessages"]
-offset_left = 1310.0
+offset_left = 1240.0
 offset_top = 200.0
-offset_right = 1629.0
+offset_right = 1696.0
 offset_bottom = 448.0
 color = Color(0.548963, 0.548963, 0.548963, 1)
 
 [node name="Label2" type="Label" parent="TutorialMessages"]
-offset_left = 1325.0
+offset_left = 1255.0
 offset_top = 216.0
-offset_right = 1613.0
+offset_right = 1656.0
 offset_bottom = 398.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
-text = "Это можно перепрыгнуть"
+text = "О! Тебе повезло!
+Кекс очень пригодится в битве!
+Съешь его и нажми Е, ты нанесёшь огромный урон тараканам. Им не понравится!"
 autowrap_mode = 2
 
-[node name="Space" type="Sprite2D" parent="TutorialMessages"]
-position = Vector2(1528, 424)
-scale = Vector2(0.164894, 0.164894)
-texture = ExtResource("4_4tgou")
-
 [node name="ColorRect3" type="ColorRect" parent="TutorialMessages"]
-offset_left = 2560.0
+offset_left = 3128.0
 offset_top = 200.0
-offset_right = 2879.0
+offset_right = 3584.0
 offset_bottom = 448.0
 color = Color(0.548963, 0.548963, 0.548963, 1)
 
 [node name="Label3" type="Label" parent="TutorialMessages"]
-offset_left = 2575.0
+offset_left = 3143.0
 offset_top = 216.0
-offset_right = 2863.0
+offset_right = 3544.0
 offset_bottom = 398.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
-text = "Уничтожай препятствия на своём пути"
+text = "Это было трудно, но ты справился!
+Будь осторожен, впереди много опасности..."
 autowrap_mode = 2
 
-[node name="Arrows" type="Sprite2D" parent="TutorialMessages"]
-position = Vector2(2791.3, 385.625)
-scale = Vector2(0.25, 0.25)
-texture = ExtResource("4_wwmqn")
-
-[node name="ColorRect4" type="ColorRect" parent="TutorialMessages"]
-offset_left = 3928.0
-offset_top = 232.0
-offset_right = 4247.0
-offset_bottom = 520.0
-color = Color(0.548963, 0.548963, 0.548963, 1)
-
-[node name="Label4" type="Label" parent="TutorialMessages"]
-offset_left = 3943.0
-offset_top = 248.0
-offset_right = 4231.0
-offset_bottom = 467.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 24
-text = "Уу, печенька!
-Ты потратил много энергии на стрельбу и прыжки.
-Съешь печеньку и энергия восстановится."
-autowrap_mode = 2
-
-[node name="Player" parent="." node_paths=PackedStringArray("bullet_container") instance=ExtResource("2_f1mg1")]
+[node name="Player" parent="." node_paths=PackedStringArray("bullet_container") instance=ExtResource("5_v4gus")]
 unique_name_in_owner = true
 position = Vector2(144, 440)
 bullet_container = NodePath("../PlayerBullets")
@@ -336,72 +318,24 @@ limit_top = 0
 limit_bottom = 720
 script = SubResource("GDScript_5mgue")
 
-[node name="LevelHUD" type="CanvasLayer" parent="."]
-script = SubResource("GDScript_djqrq")
-
-[node name="ScreenVignette" type="TextureRect" parent="LevelHUD"]
-unique_name_in_owner = true
-visible = false
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = SubResource("GradientTexture2D_0jrop")
-script = SubResource("GDScript_0m7ht")
-
-[node name="MenuButton" type="Button" parent="LevelHUD"]
-offset_left = 64.0
-offset_top = 64.0
-offset_right = 128.0
-offset_bottom = 128.0
-focus_mode = 0
-
-[node name="MenuIcon" type="Sprite2D" parent="LevelHUD/MenuButton"]
-position = Vector2(32.2503, 31)
-rotation = -3.14159
-scale = Vector2(0.1529, 0.151723)
-texture = ExtResource("7_383ps")
-
-[node name="AudioButton" parent="LevelHUD" instance=ExtResource("8_fy63r")]
-offset_left = 1152.0
-offset_top = 64.0
-offset_right = -64.0
-offset_bottom = -592.0
-
-[node name="Cookie" parent="." instance=ExtResource("7_gmkc2")]
-position = Vector2(4080, 560)
-
 [node name="PlayerBullets" type="Node" parent="."]
 
-[node name="MugObjstacle" parent="." instance=ExtResource("10_ev32f")]
-position = Vector2(3416, 224)
-rotation = -0.431203
-scale = Vector2(0.705809, 0.705809)
+[node name="TrashBarricade" parent="." instance=ExtResource("7_12cbc")]
+position = Vector2(2480, 176)
+scale = Vector2(0.81, 0.81)
+script = SubResource("GDScript_6d6g1")
+health = 1e+10
 
-[node name="MugObjstacle2" parent="." instance=ExtResource("10_ev32f")]
-position = Vector2(3488, 440)
-rotation = 0.320491
-scale = Vector2(0.844744, 0.844744)
-
-[node name="MugObjstacle3" parent="." instance=ExtResource("10_ev32f")]
-position = Vector2(3432, 328)
-rotation = 2.87979
-scale = Vector2(0.593828, -0.593828)
-
-[node name="TrashBarricade" parent="." instance=ExtResource("7_dfjnt")]
-position = Vector2(3360, 192)
-scale = Vector2(0.77941, 0.77941)
+[node name="Cake" parent="." instance=ExtResource("3_fgmts")]
+position = Vector2(1469, 504)
+scale = Vector2(1.076, 1.076)
 
 [node name="Cookies" type="Node" parent="."]
 unique_name_in_owner = true
 
-[node name="Cake" parent="Cookies" instance=ExtResource("8_pv05k")]
-position = Vector2(3042, 466)
-
 [node name="CookieSpawner" type="Node" parent="Cookies"]
 unique_name_in_owner = true
-script = SubResource("GDScript_6egyv")
+script = SubResource("GDScript_s0ph8")
 
 [node name="CookieSpawnerLefTop" type="Marker2D" parent="Cookies/CookieSpawner"]
 unique_name_in_owner = true
@@ -414,13 +348,64 @@ position = Vector2(5125, 584)
 [node name="SpawnTimer" type="Timer" parent="Cookies/CookieSpawner"]
 wait_time = 5.0
 
+[node name="Node" type="Node" parent="."]
+script = SubResource("GDScript_rt0vd")
+
+[node name="CockroachShovel" parent="Node" node_paths=PackedStringArray("cookie_container") instance=ExtResource("4_a464h")]
+position = Vector2(2264, 328)
+cookie_container = NodePath("../../Cookies")
+
+[node name="CockroachShovel2" parent="Node" node_paths=PackedStringArray("cookie_container") instance=ExtResource("4_a464h")]
+position = Vector2(2336, 448)
+cookie_container = NodePath("../../Cookies")
+
+[node name="CockroachShovel3" parent="Node" node_paths=PackedStringArray("cookie_container") instance=ExtResource("4_a464h")]
+position = Vector2(2200, 449)
+cookie_container = NodePath("../../Cookies")
+
+[node name="LevelHUD" type="CanvasLayer" parent="."]
+script = SubResource("GDScript_504nw")
+
+[node name="ScreenVignette" type="TextureRect" parent="LevelHUD"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_ooemb")
+script = SubResource("GDScript_fsju4")
+
+[node name="MenuButton" type="Button" parent="LevelHUD"]
+offset_left = 64.0
+offset_top = 64.0
+offset_right = 128.0
+offset_bottom = 128.0
+focus_mode = 0
+
+[node name="MenuIcon" type="Sprite2D" parent="LevelHUD/MenuButton"]
+position = Vector2(32.2503, 31)
+rotation = -3.14159
+scale = Vector2(0.1529, 0.151723)
+texture = ExtResource("6_uyf2k")
+
+[node name="AudioButton" parent="LevelHUD" instance=ExtResource("7_6usrk")]
+offset_left = 1152.0
+offset_top = 64.0
+offset_right = -64.0
+offset_bottom = -592.0
+
+[node name="Cookie" parent="." instance=ExtResource("5_bui4f")]
+position = Vector2(3344, 552)
+
 [node name="BgMusic" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("11_21h7d")
+stream = ExtResource("8_425gg")
 volume_db = -20.0
 autoplay = true
-script = SubResource("GDScript_s6jom")
+script = SubResource("GDScript_su5li")
 
 [connection signal="timeout" from="Player/PlayerMessageBG/HideTimer" to="Player/PlayerMessageBG" method="_on_hide_timer_timeout"]
-[connection signal="tree_exited" from="Cookie" to="." method="_on_cookie_tree_exited"]
 [connection signal="timeout" from="Cookies/CookieSpawner/SpawnTimer" to="Cookies/CookieSpawner" method="_on_spawn_timer_timeout"]
+[connection signal="tree_exited" from="Cookie" to="." method="_on_cookie_tree_exited"]
 [connection signal="finished" from="BgMusic" to="BgMusic" method="_on_finished"]

@@ -1,12 +1,16 @@
-[gd_scene load_steps=13 format=3 uid="uid://cnjx64oc6p7x5"]
+[gd_scene load_steps=17 format=3 uid="uid://cnjx64oc6p7x5"]
 
 [ext_resource type="Texture2D" uid="uid://c462b8mako4mp" path="res://anim_temp/fighter/бой 1.png" id="1_6cjgc"]
 [ext_resource type="Texture2D" uid="uid://xkgmajcnpxot" path="res://anim_temp/fighter/бой 2.png" id="2_lmuyt"]
 [ext_resource type="Texture2D" uid="uid://hibrx0u5v20x" path="res://anim_temp/fighter/стоим 1.png" id="3_7vj0w"]
+[ext_resource type="Texture2D" uid="uid://h5puqyl323hr" path="res://anim_temp/fighter/смерть 1.png" id="3_md3y8"]
 [ext_resource type="Texture2D" uid="uid://qy2kqigs1hvm" path="res://anim_temp/fighter/стоим 2.png" id="4_2np4b"]
+[ext_resource type="Texture2D" uid="uid://dfivduujbjib1" path="res://anim_temp/fighter/смерть 2.png" id="4_uvk0u"]
 [ext_resource type="AudioStream" uid="uid://bwji1ss5d85ll" path="res://sounds/Enemy_death_sound.wav" id="4_wo181"]
+[ext_resource type="Texture2D" uid="uid://3nmvjvgbx8g" path="res://anim_temp/fighter/смерть 3.png" id="5_08qcv"]
 [ext_resource type="Texture2D" uid="uid://ini2ffws0kaj" path="res://anim_temp/fighter/стоим 3.png" id="5_7820t"]
 [ext_resource type="Texture2D" uid="uid://dmg5fmegepbk7" path="res://anim_temp/fighter/стоим 4.png" id="6_3ux35"]
+[ext_resource type="Texture2D" uid="uid://d0qqh3x6nt0xi" path="res://anim_temp/fighter/смерть 4.png" id="6_myh1k"]
 [ext_resource type="Texture2D" uid="uid://rgsauk4is08" path="res://anim_temp/fighter/идем 1.png" id="7_ks2jl"]
 [ext_resource type="Texture2D" uid="uid://bhdi0le8ei7ex" path="res://anim_temp/fighter/идем 2.png" id="8_jgkyx"]
 
@@ -49,6 +53,9 @@ var _is_chilling_walk : bool = false
 func take_damage(damage:int) -> void:
 	_health -= damage
 	if _health <= 0.0:
+		print(\"DEAD MAYBE\")
+		print(\"DEAD MAYBE\")
+		print(\"DEAD MAYBE\")
 		_state = State.NONE
 		
 		var dropvalue : float = randf()
@@ -60,8 +67,25 @@ func take_damage(damage:int) -> void:
 			var cookie : Node2D = preload(ScenesNamespace.COOKIE_FILEPATH).instantiate()
 			cookie.global_position = global_position
 			cookie_container.add_child.call_deferred(cookie)
-		%DeathSound.play(0.3)
+			
+		print(\"BEFORE DELETE\")
+		print(\"BEFORE DELETE\")
+		print(\"BEFORE DELETE\")
+			
+		$CollisionShape2D.disabled = true
+		%AnimatedSprite.play(\"death\")
+		set_process(false)
+		set_physics_process(false)
+		velocity = Vector2.ZERO
+		print(\"BEFORE ANIMATION FINISHED\")
+		print(\"BEFORE ANIMATION FINISHED\")
+		print(\"BEFORE ANIMATION FINISHED\")
+		await %AnimatedSprite.animation_finished
+		print(\"DELETED\")
+		print(\"DELETED\")
+		print(\"DELETED\")
 		queue_free()
+		
 
 
 func _ready() -> void:
@@ -194,6 +218,23 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": ExtResource("3_md3y8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_uvk0u")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_08qcv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_myh1k")
+}],
+"loop": false,
+"name": &"death",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": ExtResource("3_7vj0w")
 }, {
 "duration": 1.0,
@@ -259,10 +300,10 @@ one_shot = true
 
 [node name="AnimatedSprite" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true
-position = Vector2(3, -5)
+position = Vector2(6, -1)
 scale = Vector2(0.3, 0.3)
 sprite_frames = SubResource("SpriteFrames_x41un")
-animation = &"attack"
+animation = &"death"
 flip_h = true
 
 [node name="DeathSound" type="AudioStreamPlayer" parent="."]

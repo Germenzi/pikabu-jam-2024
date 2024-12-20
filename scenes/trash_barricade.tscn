@@ -1,0 +1,61 @@
+[gd_scene load_steps=7 format=3 uid="uid://d5uoj081drc2"]
+
+[ext_resource type="Texture2D" uid="uid://bhsutddf8n3va" path="res://anim_temp/мусор 1.png" id="1_7r3h5"]
+[ext_resource type="Texture2D" uid="uid://cmvyxjjdw1eso" path="res://anim_temp/мусор 2.png" id="2_00lar"]
+[ext_resource type="Texture2D" uid="uid://5kg03p3uwe7u" path="res://anim_temp/мусор 3.png" id="3_q6fu0"]
+
+[sub_resource type="GDScript" id="GDScript_1l2vb"]
+script/source = "extends Node2D
+
+@export var health : float = 150.0
+
+func _ready() -> void:
+	print(\"CREATED!\")
+
+func take_damage(amount:float) -> void:
+	print(\"DAMAGE TAKEN!\")
+	health -= amount
+	
+	if health <= 0:
+		$\"../MugObjstacle\".queue_free()
+		$\"../MugObjstacle2\".queue_free()
+		$\"../MugObjstacle3\".queue_free()
+		queue_free()
+	elif health < 30:
+		$AnimatedSprite2D.set_frame_and_progress(2, 0)
+	elif health < 60:
+		$AnimatedSprite2D.set_frame_and_progress(1, 0)
+	else:
+		$AnimatedSprite2D.set_frame_and_progress(0, 0)
+"
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_sj3ah"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_7r3h5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_00lar")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_q6fu0")
+}],
+"loop": false,
+"name": &"default",
+"speed": 1.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_n6o0c"]
+size = Vector2(264, 576)
+
+[node name="StaticBody2D" type="StaticBody2D" groups=["damagable"]]
+script = SubResource("GDScript_1l2vb")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(136, 288)
+sprite_frames = SubResource("SpriteFrames_sj3ah")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(136, 288)
+shape = SubResource("RectangleShape2D_n6o0c")

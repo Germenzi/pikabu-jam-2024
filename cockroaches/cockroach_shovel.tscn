@@ -46,11 +46,13 @@ var _chilling_time : float
 var _is_chilling_walk : bool = false
 
 
+var DEEEEEEEEEEEAD : bool = false
+
 func take_damage(damage:int) -> void:
 	_health -= damage
 	if _health <= 0.0:
 		_state = State.NONE
-		
+		DEEEEEEEEEEEAD = true
 		var dropvalue : float = randf()
 		if dropvalue <= cake_drop_rate:
 			var cake : Node2D = preload(ScenesNamespace.CAKE_FILEPATH).instantiate()
@@ -147,17 +149,26 @@ func _process_following_player(delta:float) -> void:
 
 
 func _state_idle() -> void:
+	if DEEEEEEEEEEEAD:
+		return
+	
 	%AnimatedSprite.play(\"idle\")
 	velocity = Vector2.ZERO
 	_state = State.IDLE
 
 
 func _state_attacking_player(player:Node2D) -> void:
+	if DEEEEEEEEEEEAD:
+		return
+	
 	%AnimatedSprite.play(\"attack\")
 	_state = State.ATTACKING_PLAYER
 	velocity = Vector2.ZERO
 	%StateLabel.text = \"attacking player\"
 	await get_tree().create_timer(0.5).timeout
+	
+	if DEEEEEEEEEEEAD:
+		return
 	
 	if global_position.distance_to(player.global_position) < attack_distance:
 		player.take_damage(attack_damage)
@@ -170,6 +181,9 @@ func _state_attacking_player(player:Node2D) -> void:
 
 
 func _state_following_player(player:Node2D) -> void:
+	if DEEEEEEEEEEEAD:
+		return
+	
 	%AnimatedSprite.play(\"walk\")
 	_state = State.FOLLOWING_PLAYER
 	_target_player = player
@@ -177,6 +191,9 @@ func _state_following_player(player:Node2D) -> void:
 
 
 func _on_attack_cooldown_timer_timeout() -> void:
+	if DEEEEEEEEEEEAD:
+		return
+	
 	_attack_ready = true
 
 

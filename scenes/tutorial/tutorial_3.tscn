@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://c2ssqhdn1vayo"]
+[gd_scene load_steps=25 format=3 uid="uid://c2ssqhdn1vayo"]
 
 [ext_resource type="PackedScene" uid="uid://dg5mqjc8kv415" path="res://player/Player.tscn" id="1_ijlxg"]
 [ext_resource type="PackedScene" uid="uid://d5uoj081drc2" path="res://scenes/trash_barricade.tscn" id="2_5yivs"]
@@ -19,8 +19,12 @@ func _ready() -> void:
 	%Player.allow_jump = true
 	%Player.allow_shoot = true
 	%Player.energy = 150.0
-	
-func _on_cookie_2_tree_exited() -> void:
+
+func _on_menu_button_pressed() -> void:
+	get_tree().change_scene_to_packed(next_scene)
+
+
+func _on_coockie_trigger_body_entered(body: Node2D) -> void:
 	get_tree().change_scene_to_packed(next_scene)
 "
 
@@ -172,6 +176,9 @@ func _process(delta: float) -> void:
 		$\"../TrashBarricade\".queue_free()
 		queue_free()
 "
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p7ewm"]
+size = Vector2(56, 48)
 
 [node name="Titorial3" type="Node"]
 script = SubResource("GDScript_mdp3x")
@@ -345,11 +352,18 @@ cookie_container = NodePath("../../Cookies")
 position = Vector2(1168, 272)
 cookie_container = NodePath("../../Cookies")
 
+[node name="CoockieTrigger" type="Area2D" parent="."]
+position = Vector2(1800, 432)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CoockieTrigger"]
+shape = SubResource("RectangleShape2D_p7ewm")
+
 [node name="Cookie2" parent="." instance=ExtResource("7_doi7p")]
 position = Vector2(1800, 428)
 
 [connection signal="timeout" from="Player/PlayerMessageBG/HideTimer" to="Player/PlayerMessageBG" method="_on_hide_timer_timeout"]
 [connection signal="timeout" from="Cookies/CookieSpawner/SpawnTimer" to="Cookies/CookieSpawner" method="_on_spawn_timer_timeout"]
+[connection signal="pressed" from="LevelHUD/MenuButton" to="." method="_on_menu_button_pressed"]
 [connection signal="tree_exited" from="Cookie" to="." method="_on_cookie_tree_exited"]
 [connection signal="finished" from="BgMusic" to="BgMusic" method="_on_finished"]
-[connection signal="tree_exited" from="Cookie2" to="." method="_on_cookie_2_tree_exited"]
+[connection signal="body_entered" from="CoockieTrigger" to="." method="_on_coockie_trigger_body_entered"]

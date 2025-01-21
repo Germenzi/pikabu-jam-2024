@@ -1,10 +1,11 @@
-[gd_scene load_steps=27 format=3 uid="uid://bbuveh3led4t2"]
+[gd_scene load_steps=34 format=3 uid="uid://bbuveh3led4t2"]
 
 [ext_resource type="Texture2D" uid="uid://vqwdmjre4cka" path="res://assets/UI/wasd.png" id="1_inprc"]
 [ext_resource type="PackedScene" uid="uid://dg5mqjc8kv415" path="res://player/Player.tscn" id="2_f1mg1"]
 [ext_resource type="PackedScene" uid="uid://bbng4pyivsq7" path="res://scenes/pc_obstacle.tscn" id="3_mr2aw"]
 [ext_resource type="Texture2D" uid="uid://cd5r44rf0xji2" path="res://assets/UI/space.png" id="4_4tgou"]
 [ext_resource type="Texture2D" uid="uid://8m5844ck3s62" path="res://assets/UI/arrows.png" id="4_wwmqn"]
+[ext_resource type="Texture2D" uid="uid://d1vix46mblli4" path="res://assets/UI/tutorial_back.png" id="5_0xnfw"]
 [ext_resource type="Texture2D" uid="uid://wgswcxn85mg3" path="res://assets/UI/arrow.png" id="7_383ps"]
 [ext_resource type="PackedScene" uid="uid://d5uoj081drc2" path="res://scenes/trash_barricade.tscn" id="7_dfjnt"]
 [ext_resource type="PackedScene" uid="uid://drou6gyyk1wv3" path="res://pickups/cookie.tscn" id="7_gmkc2"]
@@ -25,8 +26,12 @@ func _ready() -> void:
 	%Player.allow_shoot = true
 	%Player.energy = 150.0
 
+func _on_menu_button_pressed() -> void:
+	get_tree().change_scene_to_file(\"res://scenes/main_menu.tscn\")
 
-func _on_cookie_tree_exited() -> void:
+
+func _on_coockie_trigger_body_entered(body: Node2D) -> void:
+	print(\"CLICK AAAAAAAAAAA\")
 	get_tree().change_scene_to_packed(next_scene)
 "
 
@@ -37,6 +42,40 @@ func _on_cookie_tree_exited() -> void:
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_7pbp5"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_eyqtn"]
+
+[sub_resource type="GDScript" id="GDScript_mfcdm"]
+script/source = "extends Node2D
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+
+
+func _on_area_2d_body_entered(body: Node2D) -> void:
+	$Background.show()
+	$Text.show()
+	$Icon.show()
+	await get_tree().create_timer(3).timeout
+	queue_free()
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_l2fwo"]
+size = Vector2(477, 449)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pveim"]
+size = Vector2(339, 449)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kj74v"]
+size = Vector2(339, 449)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_t857h"]
+size = Vector2(568, 448)
 
 [sub_resource type="GDScript" id="GDScript_g6gb5"]
 resource_name = "player_messages"
@@ -141,6 +180,9 @@ func _on_finished() -> void:
 	play()
 "
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kilpa"]
+size = Vector2(56, 48)
+
 [node name="Titorial1" type="Node"]
 script = SubResource("GDScript_mdp3x")
 
@@ -201,93 +243,144 @@ scale = Vector2(0.924505, 0.828753)
 
 [node name="TutorialMessages" type="Node" parent="."]
 
-[node name="ColorRect" type="ColorRect" parent="TutorialMessages"]
-offset_left = 280.0
-offset_top = 200.0
-offset_right = 599.0
-offset_bottom = 448.0
-color = Color(0.548963, 0.548963, 0.548963, 1)
+[node name="TutotialMessage" type="Node2D" parent="TutorialMessages"]
+position = Vector2(728, 280)
+script = SubResource("GDScript_mfcdm")
 
-[node name="Wasd" type="Sprite2D" parent="TutorialMessages"]
-position = Vector2(536.046, 403.625)
-scale = Vector2(0.179471, 0.179471)
-texture = ExtResource("1_inprc")
+[node name="Background" type="Sprite2D" parent="TutorialMessages/TutotialMessage"]
+visible = false
+position = Vector2(56.125, 49)
+scale = Vector2(0.580109, 0.557018)
+texture = ExtResource("5_0xnfw")
 
-[node name="Label" type="Label" parent="TutorialMessages"]
-offset_left = 295.0
-offset_top = 216.0
-offset_right = 583.0
-offset_bottom = 398.0
+[node name="Text" type="Label" parent="TutorialMessages/TutotialMessage"]
+visible = false
+offset_left = -192.0
+offset_top = -64.0
+offset_right = 304.0
+offset_bottom = 118.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
 text = "Нужно найти решение как можно быстрее!
-
 Не стой на месте!
 Вперёд!"
+horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="ColorRect2" type="ColorRect" parent="TutorialMessages"]
-offset_left = 1310.0
-offset_top = 200.0
-offset_right = 1629.0
-offset_bottom = 448.0
-color = Color(0.548963, 0.548963, 0.548963, 1)
+[node name="Icon" type="Sprite2D" parent="TutorialMessages/TutotialMessage"]
+visible = false
+position = Vector2(56, 128)
+scale = Vector2(0.201512, 0.201512)
+texture = ExtResource("1_inprc")
 
-[node name="Label2" type="Label" parent="TutorialMessages"]
-offset_left = 1325.0
-offset_top = 216.0
-offset_right = 1613.0
-offset_bottom = 398.0
+[node name="Area2D" type="Area2D" parent="TutorialMessages/TutotialMessage"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TutorialMessages/TutotialMessage/Area2D"]
+position = Vector2(57.5, 136.5)
+shape = SubResource("RectangleShape2D_l2fwo")
+
+[node name="TutotialMessage2" type="Node2D" parent="TutorialMessages"]
+position = Vector2(1552, 272)
+script = SubResource("GDScript_mfcdm")
+
+[node name="Background" type="Sprite2D" parent="TutorialMessages/TutotialMessage2"]
+visible = false
+position = Vector2(56.125, 3.00001)
+scale = Vector2(0.413845, 0.355263)
+texture = ExtResource("5_0xnfw")
+
+[node name="Text" type="Label" parent="TutorialMessages/TutotialMessage2"]
+visible = false
+offset_left = -104.0
+offset_top = -48.0
+offset_right = 216.0
+offset_bottom = 32.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
 text = "Это можно перепрыгнуть"
+horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="Space" type="Sprite2D" parent="TutorialMessages"]
-position = Vector2(1528, 424)
+[node name="Icon" type="Sprite2D" parent="TutorialMessages/TutotialMessage2"]
+visible = false
+position = Vector2(56, 24)
 scale = Vector2(0.164894, 0.164894)
 texture = ExtResource("4_4tgou")
 
-[node name="ColorRect3" type="ColorRect" parent="TutorialMessages"]
-offset_left = 2560.0
-offset_top = 200.0
-offset_right = 2879.0
-offset_bottom = 448.0
-color = Color(0.548963, 0.548963, 0.548963, 1)
+[node name="Area2D" type="Area2D" parent="TutorialMessages/TutotialMessage2"]
 
-[node name="Label3" type="Label" parent="TutorialMessages"]
-offset_left = 2575.0
-offset_top = 216.0
-offset_right = 2863.0
-offset_bottom = 398.0
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TutorialMessages/TutotialMessage2/Area2D"]
+position = Vector2(56, 144)
+shape = SubResource("RectangleShape2D_pveim")
+
+[node name="TutotialMessage3" type="Node2D" parent="TutorialMessages"]
+position = Vector2(2672, 272)
+script = SubResource("GDScript_mfcdm")
+
+[node name="Background" type="Sprite2D" parent="TutorialMessages/TutotialMessage3"]
+visible = false
+position = Vector2(58.5, 49)
+scale = Vector2(0.419589, 0.557018)
+texture = ExtResource("5_0xnfw")
+
+[node name="Text" type="Label" parent="TutorialMessages/TutotialMessage3"]
+visible = false
+offset_left = -104.0
+offset_top = -40.0
+offset_right = 216.0
+offset_bottom = 40.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
 text = "Уничтожай препятствия на своём пути"
+horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="Arrows" type="Sprite2D" parent="TutorialMessages"]
-position = Vector2(2791.3, 385.625)
-scale = Vector2(0.25, 0.25)
+[node name="Icon" type="Sprite2D" parent="TutorialMessages/TutotialMessage3"]
+visible = false
+position = Vector2(56, 98)
+scale = Vector2(0.282116, 0.282116)
 texture = ExtResource("4_wwmqn")
 
-[node name="ColorRect4" type="ColorRect" parent="TutorialMessages"]
-offset_left = 3928.0
-offset_top = 232.0
-offset_right = 4247.0
-offset_bottom = 520.0
-color = Color(0.548963, 0.548963, 0.548963, 1)
+[node name="Area2D" type="Area2D" parent="TutorialMessages/TutotialMessage3"]
 
-[node name="Label4" type="Label" parent="TutorialMessages"]
-offset_left = 3943.0
-offset_top = 248.0
-offset_right = 4231.0
-offset_bottom = 467.0
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TutorialMessages/TutotialMessage3/Area2D"]
+position = Vector2(56, 144)
+shape = SubResource("RectangleShape2D_kj74v")
+
+[node name="TutotialMessage4" type="Node2D" parent="TutorialMessages"]
+position = Vector2(3976, 288)
+script = SubResource("GDScript_mfcdm")
+
+[node name="Background" type="Sprite2D" parent="TutorialMessages/TutotialMessage4"]
+visible = false
+position = Vector2(106.5, 44)
+scale = Vector2(0.535672, 0.535088)
+texture = ExtResource("5_0xnfw")
+
+[node name="Text" type="Label" parent="TutorialMessages/TutotialMessage4"]
+visible = false
+offset_left = -104.0
+offset_top = -42.0
+offset_right = 312.0
+offset_bottom = 140.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
 text = "Уу, печенька!
 Ты потратил много энергии на стрельбу и прыжки.
 Съешь печеньку и энергия восстановится."
+horizontal_alignment = 1
 autowrap_mode = 2
+
+[node name="Icon" type="Sprite2D" parent="TutorialMessages/TutotialMessage4"]
+visible = false
+position = Vector2(107, 144)
+scale = Vector2(0.282116, 0.282116)
+
+[node name="Area2D" type="Area2D" parent="TutorialMessages/TutotialMessage4"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TutorialMessages/TutotialMessage4/Area2D"]
+position = Vector2(44, 128)
+shape = SubResource("RectangleShape2D_t857h")
 
 [node name="Player" parent="." node_paths=PackedStringArray("bullet_container") instance=ExtResource("2_f1mg1")]
 unique_name_in_owner = true
@@ -420,7 +513,18 @@ volume_db = -20.0
 autoplay = true
 script = SubResource("GDScript_s6jom")
 
+[node name="CoockieTrigger" type="Area2D" parent="."]
+position = Vector2(4080, 560)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CoockieTrigger"]
+shape = SubResource("RectangleShape2D_kilpa")
+
+[connection signal="body_entered" from="TutorialMessages/TutotialMessage/Area2D" to="TutorialMessages/TutotialMessage" method="_on_area_2d_body_entered"]
+[connection signal="body_entered" from="TutorialMessages/TutotialMessage2/Area2D" to="TutorialMessages/TutotialMessage2" method="_on_area_2d_body_entered"]
+[connection signal="body_entered" from="TutorialMessages/TutotialMessage3/Area2D" to="TutorialMessages/TutotialMessage3" method="_on_area_2d_body_entered"]
+[connection signal="body_entered" from="TutorialMessages/TutotialMessage4/Area2D" to="TutorialMessages/TutotialMessage4" method="_on_area_2d_body_entered"]
 [connection signal="timeout" from="Player/PlayerMessageBG/HideTimer" to="Player/PlayerMessageBG" method="_on_hide_timer_timeout"]
-[connection signal="tree_exited" from="Cookie" to="." method="_on_cookie_tree_exited"]
+[connection signal="pressed" from="LevelHUD/MenuButton" to="." method="_on_menu_button_pressed"]
 [connection signal="timeout" from="Cookies/CookieSpawner/SpawnTimer" to="Cookies/CookieSpawner" method="_on_spawn_timer_timeout"]
 [connection signal="finished" from="BgMusic" to="BgMusic" method="_on_finished"]
+[connection signal="body_entered" from="CoockieTrigger" to="." method="_on_coockie_trigger_body_entered"]

@@ -1,5 +1,6 @@
-[gd_scene load_steps=25 format=3 uid="uid://doq56m3x47kdb"]
+[gd_scene load_steps=31 format=3 uid="uid://doq56m3x47kdb"]
 
+[ext_resource type="Texture2D" uid="uid://d1vix46mblli4" path="res://assets/UI/tutorial_back.png" id="1_sqwsb"]
 [ext_resource type="PackedScene" uid="uid://dg8xtwwkkgcm4" path="res://pickups/cake.tscn" id="3_fgmts"]
 [ext_resource type="PackedScene" uid="uid://cnjx64oc6p7x5" path="res://cockroaches/cockroach_fighter.tscn" id="4_a464h"]
 [ext_resource type="PackedScene" uid="uid://drou6gyyk1wv3" path="res://pickups/cookie.tscn" id="5_bui4f"]
@@ -22,9 +23,44 @@ func _ready() -> void:
 	%Player.energy = 150.0
 
 
-func _on_cookie_tree_exited() -> void:
+func _on_menu_button_pressed() -> void:
+	get_tree().change_scene_to_packed(next_scene)
+
+
+func _on_coockie_trigger_body_entered(body: Node2D) -> void:
 	get_tree().change_scene_to_packed(next_scene)
 "
+
+[sub_resource type="GDScript" id="GDScript_v02n5"]
+script/source = "extends Node2D
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+
+
+func _on_area_2d_body_entered(body: Node2D) -> void:
+	$Background.show()
+	$Text.show()
+	$Icon.show()
+	await get_tree().create_timer(3).timeout
+	queue_free()
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_reslj"]
+size = Vector2(477, 449)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_baa0g"]
+size = Vector2(480, 448)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bb3wn"]
+size = Vector2(552, 448)
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_y7yyu"]
 
@@ -167,6 +203,9 @@ func set_intensity(intencity:float) -> void:
 	self_modulate.a = intencity+0.4
 "
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yxpiq"]
+size = Vector2(56, 48)
+
 [sub_resource type="GDScript" id="GDScript_su5li"]
 resource_name = "bg_sound"
 script/source = "extends AudioStreamPlayer
@@ -192,6 +231,104 @@ offset_right = 4296.0
 offset_bottom = 642.0
 color = Color(0.695503, 0.695503, 0.695503, 1)
 
+[node name="TutotialMessage" type="Node2D" parent="."]
+position = Vector2(448, 282)
+script = SubResource("GDScript_v02n5")
+
+[node name="Background" type="Sprite2D" parent="TutotialMessage"]
+position = Vector2(56.125, 13)
+scale = Vector2(0.580109, 0.399123)
+texture = ExtResource("1_sqwsb")
+
+[node name="Text" type="Label" parent="TutotialMessage"]
+offset_left = -192.0
+offset_top = -58.0
+offset_right = 304.0
+offset_bottom = 124.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Сколько тараканов!
+Не хорошо, когда тараканы мешают мыслить.
+Уничтожь их!"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Icon" type="Sprite2D" parent="TutotialMessage"]
+visible = false
+position = Vector2(56, 128)
+scale = Vector2(0.201512, 0.201512)
+
+[node name="Area2D" type="Area2D" parent="TutotialMessage"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TutotialMessage/Area2D"]
+position = Vector2(57.5, 136.5)
+shape = SubResource("RectangleShape2D_reslj")
+
+[node name="TutotialMessage2" type="Node2D" parent="."]
+position = Vector2(1432, 280)
+script = SubResource("GDScript_v02n5")
+
+[node name="Background" type="Sprite2D" parent="TutotialMessage2"]
+position = Vector2(56.125, 36)
+scale = Vector2(0.580109, 0.5)
+texture = ExtResource("1_sqwsb")
+
+[node name="Text" type="Label" parent="TutotialMessage2"]
+offset_left = -192.0
+offset_top = -58.0
+offset_right = 304.0
+offset_bottom = 124.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "О! Тебе повезло!
+Кекс очень пригодится в битве!
+Съешь его и нажми Е, ты нанесёшь огромный урон тараканам. Им не понравится!"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Icon" type="Sprite2D" parent="TutotialMessage2"]
+visible = false
+position = Vector2(56, 128)
+scale = Vector2(0.201512, 0.201512)
+
+[node name="Area2D" type="Area2D" parent="TutotialMessage2"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TutotialMessage2/Area2D"]
+position = Vector2(57.5, 136.5)
+shape = SubResource("RectangleShape2D_baa0g")
+
+[node name="TutotialMessage3" type="Node2D" parent="."]
+position = Vector2(3288, 392)
+script = SubResource("GDScript_v02n5")
+
+[node name="Background" type="Sprite2D" parent="TutotialMessage3"]
+position = Vector2(56.125, -7)
+scale = Vector2(0.580109, 0.311403)
+texture = ExtResource("1_sqwsb")
+
+[node name="Text" type="Label" parent="TutotialMessage3"]
+offset_left = -192.0
+offset_top = -58.0
+offset_right = 304.0
+offset_bottom = 124.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Это было трудно, но ты справился!
+Будь осторожен, впереди много опасности..."
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Icon" type="Sprite2D" parent="TutotialMessage3"]
+visible = false
+position = Vector2(56, 128)
+scale = Vector2(0.201512, 0.201512)
+
+[node name="Area2D" type="Area2D" parent="TutotialMessage3"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TutotialMessage3/Area2D"]
+position = Vector2(20, 24)
+shape = SubResource("RectangleShape2D_bb3wn")
+
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 
 [node name="TopBoundary" type="CollisionShape2D" parent="StaticBody2D"]
@@ -214,62 +351,6 @@ position = Vector2(392, 642)
 shape = SubResource("WorldBoundaryShape2D_eyqtn")
 
 [node name="TutorialMessages" type="Node" parent="."]
-
-[node name="ColorRect" type="ColorRect" parent="TutorialMessages"]
-offset_left = 280.0
-offset_top = 200.0
-offset_right = 599.0
-offset_bottom = 448.0
-color = Color(0.548963, 0.548963, 0.548963, 1)
-
-[node name="Label" type="Label" parent="TutorialMessages"]
-offset_left = 295.0
-offset_top = 216.0
-offset_right = 583.0
-offset_bottom = 398.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 24
-text = "Сколько тараканов!
-Не хорошо, когда тараканы мешают мыслить.
-Уничтожь их!"
-autowrap_mode = 2
-
-[node name="ColorRect2" type="ColorRect" parent="TutorialMessages"]
-offset_left = 1240.0
-offset_top = 200.0
-offset_right = 1696.0
-offset_bottom = 448.0
-color = Color(0.548963, 0.548963, 0.548963, 1)
-
-[node name="Label2" type="Label" parent="TutorialMessages"]
-offset_left = 1255.0
-offset_top = 216.0
-offset_right = 1656.0
-offset_bottom = 398.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 24
-text = "О! Тебе повезло!
-Кекс очень пригодится в битве!
-Съешь его и нажми Е, ты нанесёшь огромный урон тараканам. Им не понравится!"
-autowrap_mode = 2
-
-[node name="ColorRect3" type="ColorRect" parent="TutorialMessages"]
-offset_left = 3128.0
-offset_top = 200.0
-offset_right = 3584.0
-offset_bottom = 448.0
-color = Color(0.548963, 0.548963, 0.548963, 1)
-
-[node name="Label3" type="Label" parent="TutorialMessages"]
-offset_left = 3143.0
-offset_top = 216.0
-offset_right = 3544.0
-offset_bottom = 398.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 24
-text = "Это было трудно, но ты справился!
-Будь осторожен, впереди много опасности..."
-autowrap_mode = 2
 
 [node name="Player" parent="." node_paths=PackedStringArray("bullet_container") instance=ExtResource("5_v4gus")]
 unique_name_in_owner = true
@@ -396,6 +477,12 @@ offset_top = 64.0
 offset_right = -64.0
 offset_bottom = -592.0
 
+[node name="CoockieTrigger" type="Area2D" parent="."]
+position = Vector2(3344, 552)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CoockieTrigger"]
+shape = SubResource("RectangleShape2D_yxpiq")
+
 [node name="Cookie" parent="." instance=ExtResource("5_bui4f")]
 position = Vector2(3344, 552)
 
@@ -405,7 +492,11 @@ volume_db = -20.0
 autoplay = true
 script = SubResource("GDScript_su5li")
 
+[connection signal="body_entered" from="TutotialMessage/Area2D" to="TutotialMessage" method="_on_area_2d_body_entered"]
+[connection signal="body_entered" from="TutotialMessage2/Area2D" to="TutotialMessage2" method="_on_area_2d_body_entered"]
+[connection signal="body_entered" from="TutotialMessage3/Area2D" to="TutotialMessage3" method="_on_area_2d_body_entered"]
 [connection signal="timeout" from="Player/PlayerMessageBG/HideTimer" to="Player/PlayerMessageBG" method="_on_hide_timer_timeout"]
 [connection signal="timeout" from="Cookies/CookieSpawner/SpawnTimer" to="Cookies/CookieSpawner" method="_on_spawn_timer_timeout"]
-[connection signal="tree_exited" from="Cookie" to="." method="_on_cookie_tree_exited"]
+[connection signal="pressed" from="LevelHUD/MenuButton" to="." method="_on_menu_button_pressed"]
+[connection signal="body_entered" from="CoockieTrigger" to="." method="_on_coockie_trigger_body_entered"]
 [connection signal="finished" from="BgMusic" to="BgMusic" method="_on_finished"]

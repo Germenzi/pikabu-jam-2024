@@ -1,6 +1,6 @@
-[gd_scene load_steps=34 format=3 uid="uid://bbuveh3led4t2"]
+[gd_scene load_steps=33 format=3 uid="uid://bbuveh3led4t2"]
 
-[ext_resource type="Texture2D" uid="uid://vqwdmjre4cka" path="res://assets/UI/wasd.png" id="1_inprc"]
+[ext_resource type="PackedScene" uid="uid://c65nvtgisccih" path="res://tutotial_message.tscn" id="2_dg56s"]
 [ext_resource type="PackedScene" uid="uid://dg5mqjc8kv415" path="res://player/Player.tscn" id="2_f1mg1"]
 [ext_resource type="PackedScene" uid="uid://bbng4pyivsq7" path="res://scenes/pc_obstacle.tscn" id="3_mr2aw"]
 [ext_resource type="Texture2D" uid="uid://cd5r44rf0xji2" path="res://assets/UI/space.png" id="4_4tgou"]
@@ -64,9 +64,6 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 	await get_tree().create_timer(3).timeout
 	queue_free()
 "
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_l2fwo"]
-size = Vector2(477, 449)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pveim"]
 size = Vector2(339, 449)
@@ -243,41 +240,7 @@ scale = Vector2(0.924505, 0.828753)
 
 [node name="TutorialMessages" type="Node" parent="."]
 
-[node name="TutotialMessage" type="Node2D" parent="TutorialMessages"]
-position = Vector2(728, 280)
-script = SubResource("GDScript_mfcdm")
-
-[node name="Background" type="Sprite2D" parent="TutorialMessages/TutotialMessage"]
-visible = false
-position = Vector2(56.125, 49)
-scale = Vector2(0.580109, 0.557018)
-texture = ExtResource("5_0xnfw")
-
-[node name="Text" type="Label" parent="TutorialMessages/TutotialMessage"]
-visible = false
-offset_left = -192.0
-offset_top = -64.0
-offset_right = 304.0
-offset_bottom = 118.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 24
-text = "Нужно найти решение как можно быстрее!
-Не стой на месте!
-Вперёд!"
-horizontal_alignment = 1
-autowrap_mode = 2
-
-[node name="Icon" type="Sprite2D" parent="TutorialMessages/TutotialMessage"]
-visible = false
-position = Vector2(56, 128)
-scale = Vector2(0.201512, 0.201512)
-texture = ExtResource("1_inprc")
-
-[node name="Area2D" type="Area2D" parent="TutorialMessages/TutotialMessage"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TutorialMessages/TutotialMessage/Area2D"]
-position = Vector2(57.5, 136.5)
-shape = SubResource("RectangleShape2D_l2fwo")
+[node name="TutotialMessage" parent="TutorialMessages" instance=ExtResource("2_dg56s")]
 
 [node name="TutotialMessage2" type="Node2D" parent="TutorialMessages"]
 position = Vector2(1552, 272)
@@ -519,7 +482,6 @@ position = Vector2(4080, 560)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CoockieTrigger"]
 shape = SubResource("RectangleShape2D_kilpa")
 
-[connection signal="body_entered" from="TutorialMessages/TutotialMessage/Area2D" to="TutorialMessages/TutotialMessage" method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="TutorialMessages/TutotialMessage2/Area2D" to="TutorialMessages/TutotialMessage2" method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="TutorialMessages/TutotialMessage3/Area2D" to="TutorialMessages/TutotialMessage3" method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="TutorialMessages/TutotialMessage4/Area2D" to="TutorialMessages/TutotialMessage4" method="_on_area_2d_body_entered"]

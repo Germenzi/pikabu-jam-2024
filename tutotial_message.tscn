@@ -1,0 +1,64 @@
+[gd_scene load_steps=5 format=3 uid="uid://c65nvtgisccih"]
+
+[ext_resource type="Texture2D" uid="uid://d1vix46mblli4" path="res://assets/UI/tutorial_back.png" id="1_nfuic"]
+[ext_resource type="Texture2D" uid="uid://vqwdmjre4cka" path="res://assets/UI/wasd.png" id="2_xlkwc"]
+
+[sub_resource type="GDScript" id="GDScript_mfcdm"]
+script/source = "extends Node2D
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	await get_tree().create_timer(1).timeout
+	$Background.show()
+	$Text.show()
+	$Icon.show()
+	await get_tree().create_timer(3).timeout
+	queue_free()
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_l2fwo"]
+size = Vector2(477, 449)
+
+[node name="TutotialMessage" type="Node2D"]
+position = Vector2(728, 280)
+script = SubResource("GDScript_mfcdm")
+
+[node name="Background" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(56.125, 49)
+scale = Vector2(0.580109, 0.557018)
+texture = ExtResource("1_nfuic")
+
+[node name="Text" type="Label" parent="."]
+visible = false
+offset_left = -192.0
+offset_top = -64.0
+offset_right = 304.0
+offset_bottom = 118.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Нужно найти решение как можно быстрее!
+Не стой на месте!
+Вперёд!"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Icon" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(56, 128)
+scale = Vector2(0.201512, 0.201512)
+texture = ExtResource("2_xlkwc")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(57.5, 136.5)
+shape = SubResource("RectangleShape2D_l2fwo")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

@@ -14,7 +14,7 @@ script/source = "extends Node
 var next_scene = preload(\"res://scenes/level_1.tscn\")
 
 func _ready() -> void:
-	%PlayerMessageBG.show_message(\"Эх....\")
+	%PlayerMessageBG.hide()
 	%Player.max_energy = 150.0
 	%Player.allow_jump = true
 	%Player.allow_shoot = true

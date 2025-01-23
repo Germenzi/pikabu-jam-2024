@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://bbuveh3led4t2"]
+[gd_scene load_steps=31 format=3 uid="uid://bbuveh3led4t2"]
 
 [ext_resource type="PackedScene" uid="uid://c65nvtgisccih" path="res://tutotial_message.tscn" id="2_dg56s"]
 [ext_resource type="PackedScene" uid="uid://dg5mqjc8kv415" path="res://player/Player.tscn" id="2_f1mg1"]
@@ -10,7 +10,6 @@
 [ext_resource type="PackedScene" uid="uid://d5uoj081drc2" path="res://scenes/trash_barricade.tscn" id="7_dfjnt"]
 [ext_resource type="PackedScene" uid="uid://drou6gyyk1wv3" path="res://pickups/cookie.tscn" id="7_gmkc2"]
 [ext_resource type="PackedScene" uid="uid://hyrag57yencd" path="res://scenes/audio_button.tscn" id="8_fy63r"]
-[ext_resource type="PackedScene" uid="uid://dg8xtwwkkgcm4" path="res://pickups/cake.tscn" id="8_pv05k"]
 [ext_resource type="PackedScene" uid="uid://dm3ptitah4ul3" path="res://scenes/heap_objstacle.tscn" id="10_ev32f"]
 [ext_resource type="AudioStream" uid="uid://bfiykfpvdxbg2" path="res://sounds/Background_music.wav" id="11_21h7d"]
 
@@ -20,7 +19,8 @@ script/source = "extends Node
 var next_scene = preload(\"res://scenes/tutorial/tutorial_2.tscn\")
 
 func _ready() -> void:
-	%PlayerMessageBG.show_message(\"Эх....\")
+	#%PlayerMessageBG.show_message()
+	%PlayerMessageBG.hide()
 	%Player.max_energy = 150.0
 	%Player.allow_jump = true
 	%Player.allow_shoot = true
@@ -139,34 +139,6 @@ script/source = "extends TextureRect
 
 func set_intensity(intencity:float) -> void:
 	self_modulate.a = intencity+0.4
-"
-
-[sub_resource type="GDScript" id="GDScript_6egyv"]
-resource_name = "cookie_spawner"
-script/source = "extends Node
-
-func activate() -> void:
-	$SpawnTimer.start()
-
-
-func _on_spawn_timer_timeout() -> void:
-	if %Cookies.get_child_count() > 6:
-		return
-	
-	var dropvalue : float = randf()
-	var spawn_point : Vector2 = %CookieSpawnerLefTop.global_position + (%CookieSpawnerBottomRight.global_position-
-		%CookieSpawnerLefTop.global_position)*Vector2(randf(), randf())
-	
-	if dropvalue < 0.03:
-		var cake : Node2D = preload(ScenesNamespace.CAKE_FILEPATH).instantiate()
-		cake.global_position = spawn_point
-		%Cookies.add_child.call_deferred(cake)
-		print(\"Cake dropped\")
-	elif dropvalue < 0.1:
-		var cookie : Node2D = preload(ScenesNamespace.COOKIE_FILEPATH).instantiate()
-		cookie.global_position = spawn_point
-		%Cookies.add_child.call_deferred(cookie)
-		print(\"Cookie dropped\")
 "
 
 [sub_resource type="GDScript" id="GDScript_s6jom"]
@@ -452,24 +424,6 @@ scale = Vector2(0.77941, 0.77941)
 [node name="Cookies" type="Node" parent="."]
 unique_name_in_owner = true
 
-[node name="Cake" parent="Cookies" instance=ExtResource("8_pv05k")]
-position = Vector2(3042, 466)
-
-[node name="CookieSpawner" type="Node" parent="Cookies"]
-unique_name_in_owner = true
-script = SubResource("GDScript_6egyv")
-
-[node name="CookieSpawnerLefTop" type="Marker2D" parent="Cookies/CookieSpawner"]
-unique_name_in_owner = true
-position = Vector2(4569, 350)
-
-[node name="CookieSpawnerBottomRight" type="Marker2D" parent="Cookies/CookieSpawner"]
-unique_name_in_owner = true
-position = Vector2(5125, 584)
-
-[node name="SpawnTimer" type="Timer" parent="Cookies/CookieSpawner"]
-wait_time = 5.0
-
 [node name="BgMusic" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("11_21h7d")
 volume_db = -20.0
@@ -487,6 +441,5 @@ shape = SubResource("RectangleShape2D_kilpa")
 [connection signal="body_entered" from="TutorialMessages/TutotialMessage4/Area2D" to="TutorialMessages/TutotialMessage4" method="_on_area_2d_body_entered"]
 [connection signal="timeout" from="Player/PlayerMessageBG/HideTimer" to="Player/PlayerMessageBG" method="_on_hide_timer_timeout"]
 [connection signal="pressed" from="LevelHUD/MenuButton" to="." method="_on_menu_button_pressed"]
-[connection signal="timeout" from="Cookies/CookieSpawner/SpawnTimer" to="Cookies/CookieSpawner" method="_on_spawn_timer_timeout"]
 [connection signal="finished" from="BgMusic" to="BgMusic" method="_on_finished"]
 [connection signal="body_entered" from="CoockieTrigger" to="." method="_on_coockie_trigger_body_entered"]

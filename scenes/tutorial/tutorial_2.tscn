@@ -16,11 +16,13 @@ script/source = "extends Node
 var next_scene = preload(\"res://scenes/tutorial/tutorial_3.tscn\")
 
 func _ready() -> void:
-	%PlayerMessageBG.show_message(\"Эх....\")
+	%PlayerMessageBG.hide()
 	%Player.max_energy = 150.0
 	%Player.allow_jump = true
 	%Player.allow_shoot = true
 	%Player.energy = 150.0
+	await get_tree().create_timer(1).timeout
+	$TutotialMessage.show()
 
 
 func _on_menu_button_pressed() -> void:
@@ -49,7 +51,7 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 	$Background.show()
 	$Text.show()
 	$Icon.show()
-	await get_tree().create_timer(3).timeout
+	await get_tree().create_timer(5).timeout
 	queue_free()
 "
 
@@ -232,17 +234,16 @@ offset_bottom = 642.0
 color = Color(0.695503, 0.695503, 0.695503, 1)
 
 [node name="TutotialMessage" type="Node2D" parent="."]
+visible = false
 position = Vector2(448, 282)
 script = SubResource("GDScript_v02n5")
 
 [node name="Background" type="Sprite2D" parent="TutotialMessage"]
-visible = false
 position = Vector2(56.125, 13)
 scale = Vector2(0.580109, 0.399123)
 texture = ExtResource("1_sqwsb")
 
 [node name="Text" type="Label" parent="TutotialMessage"]
-visible = false
 offset_left = -192.0
 offset_top = -58.0
 offset_right = 304.0
@@ -256,7 +257,6 @@ horizontal_alignment = 1
 autowrap_mode = 2
 
 [node name="Icon" type="Sprite2D" parent="TutotialMessage"]
-visible = false
 position = Vector2(56, 128)
 scale = Vector2(0.201512, 0.201512)
 

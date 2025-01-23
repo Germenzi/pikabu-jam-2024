@@ -7,9 +7,9 @@
 script/source = "extends Control
 
 var images = [
-	preload(\"res://assets/UI/arrow.png\"),
-	preload(\"res://assets/UI/commics.png\"),
-	preload(\"res://assets/UI/name.png\")
+	preload(\"res://assets/comics/comics1.png\"),
+	preload(\"res://assets/comics/comics2.png\"),
+	preload(\"res://assets/comics/comics3.png\")
 ]
 
 var next_scene = preload(\"res://scenes/tutorial/tutorial_1.tscn\")

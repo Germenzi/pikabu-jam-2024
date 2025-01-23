@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://bbuveh3led4t2"]
+[gd_scene load_steps=33 format=3 uid="uid://bbuveh3led4t2"]
 
 [ext_resource type="PackedScene" uid="uid://c65nvtgisccih" path="res://tutotial_message.tscn" id="2_dg56s"]
 [ext_resource type="PackedScene" uid="uid://dg5mqjc8kv415" path="res://player/Player.tscn" id="2_f1mg1"]
@@ -9,8 +9,10 @@
 [ext_resource type="Texture2D" uid="uid://wgswcxn85mg3" path="res://assets/UI/arrow.png" id="7_383ps"]
 [ext_resource type="PackedScene" uid="uid://d5uoj081drc2" path="res://scenes/trash_barricade.tscn" id="7_dfjnt"]
 [ext_resource type="PackedScene" uid="uid://drou6gyyk1wv3" path="res://pickups/cookie.tscn" id="7_gmkc2"]
+[ext_resource type="PackedScene" uid="uid://dr7tpll5oie1u" path="res://scenes/scene_transition.tscn" id="7_jgw8a"]
 [ext_resource type="PackedScene" uid="uid://hyrag57yencd" path="res://scenes/audio_button.tscn" id="8_fy63r"]
 [ext_resource type="PackedScene" uid="uid://dm3ptitah4ul3" path="res://scenes/heap_objstacle.tscn" id="10_ev32f"]
+[ext_resource type="PackedScene" uid="uid://doq56m3x47kdb" path="res://scenes/tutorial/tutorial_2.tscn" id="10_gjq8y"]
 [ext_resource type="AudioStream" uid="uid://bfiykfpvdxbg2" path="res://sounds/Background_music.wav" id="11_21h7d"]
 
 [sub_resource type="GDScript" id="GDScript_mdp3x"]
@@ -25,6 +27,7 @@ func _ready() -> void:
 	%Player.allow_jump = true
 	%Player.allow_shoot = true
 	%Player.energy = 150.0
+	$LevelHUD/SceneTransition.transition_from()
 
 func _on_menu_button_pressed() -> void:
 	get_tree().change_scene_to_file(\"res://scenes/main_menu.tscn\")
@@ -32,7 +35,8 @@ func _on_menu_button_pressed() -> void:
 
 func _on_coockie_trigger_body_entered(body: Node2D) -> void:
 	print(\"CLICK AAAAAAAAAAA\")
-	get_tree().change_scene_to_packed(next_scene)
+	$LevelHUD/SceneTransition.transition_to()
+	#get_tree().change_scene_to_packed(next_scene)
 "
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_y7yyu"]
@@ -49,7 +53,8 @@ script/source = "extends Node2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass
+	modulate.a = 0
+
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -58,10 +63,20 @@ func _process(delta: float) -> void:
 
 
 func _on_area_2d_body_entered(body: Node2D) -> void:
-	$Background.show()
-	$Text.show()
-	$Icon.show()
+	$Area2D.queue_free()
+	
+	var tween_in = get_tree().create_tween().set_parallel()
+	tween_in.tween_property(self, \"modulate:a\", 1, 0.5)
+	tween_in.tween_property(self, \"position\", Vector2(0, 25) + position, 0.5).set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_IN_OUT)
+	await tween_in.finished
+	
 	await get_tree().create_timer(3).timeout
+	
+	var tween_out = get_tree().create_tween().set_parallel()
+	tween_out.parallel().tween_property(self, \"modulate:a\", 0, 0.4)
+	tween_out.parallel().tween_property(self, \"position\", position - Vector2(0, 25), 0.5).set_trans(Tween.TRANS_LINEAR).set_ease(Tween.EASE_IN_OUT)
+	await tween_out.finished
+	
 	queue_free()
 "
 
@@ -219,13 +234,11 @@ position = Vector2(1552, 272)
 script = SubResource("GDScript_mfcdm")
 
 [node name="Background" type="Sprite2D" parent="TutorialMessages/TutotialMessage2"]
-visible = false
 position = Vector2(56.125, 3.00001)
 scale = Vector2(0.413845, 0.355263)
 texture = ExtResource("5_0xnfw")
 
 [node name="Text" type="Label" parent="TutorialMessages/TutotialMessage2"]
-visible = false
 offset_left = -104.0
 offset_top = -48.0
 offset_right = 216.0
@@ -237,7 +250,6 @@ horizontal_alignment = 1
 autowrap_mode = 2
 
 [node name="Icon" type="Sprite2D" parent="TutorialMessages/TutotialMessage2"]
-visible = false
 position = Vector2(56, 24)
 scale = Vector2(0.164894, 0.164894)
 texture = ExtResource("4_4tgou")
@@ -253,13 +265,11 @@ position = Vector2(2672, 272)
 script = SubResource("GDScript_mfcdm")
 
 [node name="Background" type="Sprite2D" parent="TutorialMessages/TutotialMessage3"]
-visible = false
 position = Vector2(58.5, 49)
 scale = Vector2(0.419589, 0.557018)
 texture = ExtResource("5_0xnfw")
 
 [node name="Text" type="Label" parent="TutorialMessages/TutotialMessage3"]
-visible = false
 offset_left = -104.0
 offset_top = -40.0
 offset_right = 216.0
@@ -271,7 +281,6 @@ horizontal_alignment = 1
 autowrap_mode = 2
 
 [node name="Icon" type="Sprite2D" parent="TutorialMessages/TutotialMessage3"]
-visible = false
 position = Vector2(56, 98)
 scale = Vector2(0.282116, 0.282116)
 texture = ExtResource("4_wwmqn")
@@ -287,13 +296,11 @@ position = Vector2(3976, 288)
 script = SubResource("GDScript_mfcdm")
 
 [node name="Background" type="Sprite2D" parent="TutorialMessages/TutotialMessage4"]
-visible = false
 position = Vector2(106.5, 44)
 scale = Vector2(0.535672, 0.535088)
 texture = ExtResource("5_0xnfw")
 
 [node name="Text" type="Label" parent="TutorialMessages/TutotialMessage4"]
-visible = false
 offset_left = -104.0
 offset_top = -42.0
 offset_right = 312.0
@@ -307,7 +314,6 @@ horizontal_alignment = 1
 autowrap_mode = 2
 
 [node name="Icon" type="Sprite2D" parent="TutorialMessages/TutotialMessage4"]
-visible = false
 position = Vector2(107, 144)
 scale = Vector2(0.282116, 0.282116)
 
@@ -396,6 +402,9 @@ offset_left = 1152.0
 offset_top = 64.0
 offset_right = -64.0
 offset_bottom = -592.0
+
+[node name="SceneTransition" parent="LevelHUD" instance=ExtResource("7_jgw8a")]
+next_scene = ExtResource("10_gjq8y")
 
 [node name="Cookie" parent="." instance=ExtResource("7_gmkc2")]
 position = Vector2(4080, 560)

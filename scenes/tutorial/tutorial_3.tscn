@@ -1,10 +1,12 @@
-[gd_scene load_steps=25 format=3 uid="uid://c2ssqhdn1vayo"]
+[gd_scene load_steps=27 format=3 uid="uid://c2ssqhdn1vayo"]
 
 [ext_resource type="PackedScene" uid="uid://dg5mqjc8kv415" path="res://player/Player.tscn" id="1_ijlxg"]
 [ext_resource type="PackedScene" uid="uid://d5uoj081drc2" path="res://scenes/trash_barricade.tscn" id="2_5yivs"]
 [ext_resource type="PackedScene" uid="uid://cu1opk84g5j3u" path="res://cockroaches/cockroach_shovel.tscn" id="4_bkglt"]
+[ext_resource type="PackedScene" uid="uid://dr7tpll5oie1u" path="res://scenes/scene_transition.tscn" id="5_8o70t"]
 [ext_resource type="Texture2D" uid="uid://wgswcxn85mg3" path="res://assets/UI/arrow.png" id="5_wwagg"]
 [ext_resource type="PackedScene" uid="uid://hyrag57yencd" path="res://scenes/audio_button.tscn" id="6_bcw3w"]
+[ext_resource type="PackedScene" uid="uid://dg8pv0nc3mu1m" path="res://scenes/level_1.tscn" id="6_sgnyx"]
 [ext_resource type="PackedScene" uid="uid://drou6gyyk1wv3" path="res://pickups/cookie.tscn" id="7_doi7p"]
 [ext_resource type="AudioStream" uid="uid://bfiykfpvdxbg2" path="res://sounds/Background_music.wav" id="8_jtebk"]
 
@@ -19,13 +21,15 @@ func _ready() -> void:
 	%Player.allow_jump = true
 	%Player.allow_shoot = true
 	%Player.energy = 150.0
+	$LevelHUD/SceneTransition.transition_from()
 
 func _on_menu_button_pressed() -> void:
 	get_tree().change_scene_to_packed(next_scene)
 
 
 func _on_coockie_trigger_body_entered(body: Node2D) -> void:
-	get_tree().change_scene_to_packed(next_scene)
+	$LevelHUD/SceneTransition.transition_to()
+	#get_tree().change_scene_to_packed(next_scene)
 "
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_y7yyu"]
@@ -323,6 +327,9 @@ offset_left = 1152.0
 offset_top = 64.0
 offset_right = -64.0
 offset_bottom = -592.0
+
+[node name="SceneTransition" parent="LevelHUD" instance=ExtResource("5_8o70t")]
+next_scene = ExtResource("6_sgnyx")
 
 [node name="Cookie" parent="." instance=ExtResource("7_doi7p")]
 position = Vector2(3400, 32)

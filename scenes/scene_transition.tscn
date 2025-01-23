@@ -1,0 +1,44 @@
+[gd_scene load_steps=2 format=3 uid="uid://dr7tpll5oie1u"]
+
+[sub_resource type="GDScript" id="GDScript_wg72q"]
+script/source = "extends Node2D
+
+@export_enum(\"transition\", \"untransition\") var mode = \"transiton\"
+@export var next_scene : PackedScene = load(\"res://scenes/main_menu.tscn\")
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass
+	#print(\"OHOHO\")
+	#if mode == \"transition\":
+		#transition_to()
+	#elif mode == \"untransition\":
+		#transition_from()
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	print(\"ALIVE\")
+
+func transition_to():
+	modulate.a = 0
+	var tween = get_tree().create_tween().set_parallel()
+	tween.tween_property(self, \"modulate:a\", 1, 1.5).set_trans(Tween.TRANS_LINEAR)
+	await tween.finished
+	get_tree().change_scene_to_packed(next_scene)
+	
+func transition_from():
+	modulate.a = 1
+	var tween = get_tree().create_tween().set_parallel()
+	tween.tween_property(self, \"modulate:a\", 0, 1.5).set_trans(Tween.TRANS_LINEAR)
+	await tween.finished
+"
+
+[node name="SceneTransition" type="Node2D"]
+script = SubResource("GDScript_wg72q")
+mode = "untransition"
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0, 0, 0, 1)

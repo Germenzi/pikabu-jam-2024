@@ -1,4 +1,4 @@
-[gd_scene load_steps=46 format=3 uid="uid://dg8pv0nc3mu1m"]
+[gd_scene load_steps=47 format=3 uid="uid://dg8pv0nc3mu1m"]
 
 [ext_resource type="PackedScene" uid="uid://dg5mqjc8kv415" path="res://player/Player.tscn" id="4_rvf3r"]
 [ext_resource type="Script" path="res://scenes/rotating.gd" id="5_8t18p"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://b816wn7lgqbjv" path="res://scenes/mug_objstacle.tscn" id="10_ndagk"]
 [ext_resource type="Texture2D" uid="uid://cqh7t0hjcn8jg" path="res://assets/gold-plus.png" id="10_y0aco"]
 [ext_resource type="PackedScene" uid="uid://hyrag57yencd" path="res://scenes/audio_button.tscn" id="11_328av"]
+[ext_resource type="PackedScene" uid="uid://dr7tpll5oie1u" path="res://scenes/scene_transition.tscn" id="12_w7jnw"]
 [ext_resource type="Texture2D" uid="uid://wgswcxn85mg3" path="res://assets/UI/arrow.png" id="12_x0dhc"]
 [ext_resource type="PackedScene" uid="uid://cu1opk84g5j3u" path="res://cockroaches/cockroach_shovel.tscn" id="13_24vki"]
 [ext_resource type="AudioStream" uid="uid://bfiykfpvdxbg2" path="res://sounds/Background_music.wav" id="14_vjdx6"]
@@ -25,7 +26,8 @@ var main_menu_tscn = preload(\"res://scenes/main_menu.tscn\")
 func _ready() -> void:
 	%Player.allow_walk = true
 	%PlayerMessageBG.show_message(\"  WASD - движение  \")
-
+	$LevelHUD/SceneTransition.transition_from()
+	
 func _on_player_energy_runout() -> void:
 	var scene : PackedScene = preload(\"res://scenes/game_over.tscn\")
 	await get_tree().create_timer(2).timeout
@@ -570,6 +572,8 @@ offset_left = 1152.0
 offset_top = 64.0
 offset_right = -64.0
 offset_bottom = -592.0
+
+[node name="SceneTransition" parent="LevelHUD" instance=ExtResource("12_w7jnw")]
 
 [node name="Cockroaches" type="Node" parent="."]
 unique_name_in_owner = true

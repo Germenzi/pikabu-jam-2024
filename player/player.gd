@@ -321,3 +321,4 @@ func _calc_energy_level() -> PlayerNamespace.EnergyLevel:
 func _on_energy_runout() -> void:
 	_state = State.NONE
 	velocity = Vector2.ZERO
+	

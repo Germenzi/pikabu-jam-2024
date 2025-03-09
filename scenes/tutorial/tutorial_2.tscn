@@ -36,6 +36,11 @@ func _on_menu_button_pressed() -> void:
 func _on_coockie_trigger_body_entered(body: Node2D) -> void:
 	$LevelHUD/SceneTransition.transition_to()
 	#get_tree().change_scene_to_packed(next_scene)
+
+
+func _on_player_energy_runout() -> void:
+	await get_tree().create_timer(1).timeout
+	get_tree().change_scene_to_file(\"res://scenes/game_over.tscn\")
 "
 
 [sub_resource type="GDScript" id="GDScript_v02n5"]
@@ -245,7 +250,7 @@ offset_bottom = 642.0
 color = Color(0.695503, 0.695503, 0.695503, 1)
 
 [node name="TutotialMessage" type="Node2D" parent="."]
-position = Vector2(448, 282)
+position = Vector2(232, 272)
 script = ExtResource("1_utvlv")
 
 [node name="Background" type="Sprite2D" parent="TutotialMessage"]
@@ -271,7 +276,7 @@ position = Vector2(56, 128)
 scale = Vector2(0.201512, 0.201512)
 
 [node name="TutotialMessage2" type="Node2D" parent="."]
-position = Vector2(1432, 280)
+position = Vector2(744, 280)
 script = SubResource("GDScript_v02n5")
 
 [node name="Background" type="Sprite2D" parent="TutotialMessage2"]
@@ -303,7 +308,7 @@ position = Vector2(57.5, 136.5)
 shape = SubResource("RectangleShape2D_baa0g")
 
 [node name="TutotialMessage3" type="Node2D" parent="."]
-position = Vector2(3288, 392)
+position = Vector2(2208, 392)
 script = SubResource("GDScript_v02n5")
 
 [node name="Background" type="Sprite2D" parent="TutotialMessage3"]
@@ -322,6 +327,7 @@ text = "Это было трудно, но ты справился!
 Будь осторожен, впереди много опасности..."
 horizontal_alignment = 1
 autowrap_mode = 2
+metadata/_edit_use_anchors_ = true
 
 [node name="Icon" type="Sprite2D" parent="TutotialMessage3"]
 position = Vector2(56, 128)
@@ -406,13 +412,13 @@ script = SubResource("GDScript_5mgue")
 [node name="PlayerBullets" type="Node" parent="."]
 
 [node name="TrashBarricade" parent="." instance=ExtResource("7_12cbc")]
-position = Vector2(2480, 176)
+position = Vector2(1400, 176)
 scale = Vector2(0.81, 0.81)
 script = SubResource("GDScript_6d6g1")
 health = 1e+10
 
 [node name="Cake" parent="." instance=ExtResource("3_fgmts")]
-position = Vector2(1469, 504)
+position = Vector2(784, 487)
 scale = Vector2(1.076, 1.076)
 
 [node name="Cookies" type="Node" parent="."]
@@ -437,15 +443,15 @@ wait_time = 5.0
 script = SubResource("GDScript_rt0vd")
 
 [node name="CockroachShovel" parent="Node" node_paths=PackedStringArray("cookie_container") instance=ExtResource("4_a464h")]
-position = Vector2(2264, 328)
+position = Vector2(1280, 341)
 cookie_container = NodePath("../../Cookies")
 
 [node name="CockroachShovel2" parent="Node" node_paths=PackedStringArray("cookie_container") instance=ExtResource("4_a464h")]
-position = Vector2(2336, 448)
+position = Vector2(1352, 461)
 cookie_container = NodePath("../../Cookies")
 
 [node name="CockroachShovel3" parent="Node" node_paths=PackedStringArray("cookie_container") instance=ExtResource("4_a464h")]
-position = Vector2(2200, 449)
+position = Vector2(1216, 462)
 cookie_container = NodePath("../../Cookies")
 
 [node name="LevelHUD" type="CanvasLayer" parent="."]
@@ -482,16 +488,17 @@ offset_right = -64.0
 offset_bottom = -592.0
 
 [node name="SceneTransition" parent="LevelHUD" instance=ExtResource("9_ogfwu")]
+visible = false
 next_scene = ExtResource("10_l48pq")
 
 [node name="CoockieTrigger" type="Area2D" parent="."]
-position = Vector2(3344, 552)
+position = Vector2(2264, 552)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CoockieTrigger"]
 shape = SubResource("RectangleShape2D_yxpiq")
 
 [node name="Cookie" parent="." instance=ExtResource("5_bui4f")]
-position = Vector2(3344, 552)
+position = Vector2(2264, 552)
 
 [node name="BgMusic" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("8_425gg")
@@ -501,6 +508,7 @@ script = SubResource("GDScript_su5li")
 
 [connection signal="body_entered" from="TutotialMessage2/Area2D" to="TutotialMessage2" method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="TutotialMessage3/Area2D" to="TutotialMessage3" method="_on_area_2d_body_entered"]
+[connection signal="energy_runout" from="Player" to="." method="_on_player_energy_runout"]
 [connection signal="timeout" from="Player/PlayerMessageBG/HideTimer" to="Player/PlayerMessageBG" method="_on_hide_timer_timeout"]
 [connection signal="timeout" from="Cookies/CookieSpawner/SpawnTimer" to="Cookies/CookieSpawner" method="_on_spawn_timer_timeout"]
 [connection signal="pressed" from="LevelHUD/MenuButton" to="." method="_on_menu_button_pressed"]

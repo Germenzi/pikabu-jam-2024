@@ -30,6 +30,11 @@ func _on_menu_button_pressed() -> void:
 func _on_coockie_trigger_body_entered(body: Node2D) -> void:
 	$LevelHUD/SceneTransition.transition_to()
 	#get_tree().change_scene_to_packed(next_scene)
+
+
+func _on_player_energy_runout() -> void:
+	await get_tree().create_timer(1).timeout
+	get_tree().change_scene_to_file(\"res://scenes/game_over.tscn\")
 "
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_y7yyu"]
@@ -368,6 +373,7 @@ shape = SubResource("RectangleShape2D_p7ewm")
 [node name="Cookie2" parent="." instance=ExtResource("7_doi7p")]
 position = Vector2(1800, 428)
 
+[connection signal="energy_runout" from="Player" to="." method="_on_player_energy_runout"]
 [connection signal="timeout" from="Player/PlayerMessageBG/HideTimer" to="Player/PlayerMessageBG" method="_on_hide_timer_timeout"]
 [connection signal="timeout" from="Cookies/CookieSpawner/SpawnTimer" to="Cookies/CookieSpawner" method="_on_spawn_timer_timeout"]
 [connection signal="pressed" from="LevelHUD/MenuButton" to="." method="_on_menu_button_pressed"]
